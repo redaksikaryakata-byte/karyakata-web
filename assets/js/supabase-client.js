@@ -640,7 +640,7 @@ async function adminGenerateAuthorAccess(orderId, adminEmail, namaPenulis) {
             const { error: updErr } = await supabaseClient.from('authors')
                 .update({ password_hash: password, updated_at: new Date().toISOString() })
                 .eq('email', email);
-            authError = updErr;
+            authErr = updErr;
         }
 
         if (authError) throw authError;
@@ -809,7 +809,8 @@ async function getPartners() {
             salesLink.innerHTML = '<i class="fa-solid fa-chart-line"></i><span>Input Penjualan</span>';
             konfirmasiLink.parentNode.insertBefore(salesLink, konfirmasiLink.nextSibling);
         }
-                // 3. Menu Data Penulis
+        
+        // 3. Menu Data Penulis
         const isAuthorPage = window.location.pathname.includes('admin-author.html');
         if (isAuthorPage) {
             nav.querySelectorAll('.sidebar-link.active').forEach(el => el.classList.remove('active'));
@@ -826,6 +827,89 @@ async function getPartners() {
         }
     });
 })();
+
+// ========================================
+// SMOOTH MOBILE MENU ANIMATION (TAMBAHAN BARU)
+// ========================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Kita pilih semua tombol burger yang umum dipakai
+    const menuBtns = document.querySelectorAll('#menuBtn, #btnMenuMobile, #sidebarToggle');
+    
+    menuBtns.forEach(btn => {
+        // Cari menu target berdasarkan tombol yang diklik
+        let targetMenu = document.getElementById('mobileMenu');
+        if (btn.id === 'sidebarToggle') targetMenu = document.getElementById('sidebar');
+
+        if (btn && targetMenu) {
+            // Hapus class 'hidden' bawaan agar kita bisa pakai animasi transisi CSS
+            targetMenu.classList.remove('hidden');
+            
+            // Set styling dasar untuk animasi
+            targetMenu.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            targetMenu.style.overflow = 'hidden';
+
+            // Jika ini sidebar (bukan menu mobile), gunakan animasi geser kiri-kanan
+            if (targetMenu.id === 'sidebar') {
+                targetMenu.style.transform = 'translateX(-100%)';
+                targetMenu.style.opacity = '0';
+                
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isOpen = targetMenu.style.transform === 'translateX(0px)' || targetMenu.style.transform === '';
+                    if (isOpen) {
+                        targetMenu.style.transform = 'translateX(-100%)';
+                        targetMenu.style.opacity = '0';
+                        setTimeout(() => targetMenu.classList.add('hidden'), 300);
+                    } else {
+                        targetMenu.classList.remove('hidden');
+                        targetMenu.style.transform = 'translateX(0)';
+                        targetMenu.style.opacity = '1';
+                    }
+                });
+            } 
+            // Jika ini menu mobile biasa, gunakan animasi slide down (buka-tutup ke bawah)
+            else {
+                targetMenu.style.maxHeight = '0';
+                targetMenu.style.opacity = '0';
+                targetMenu.style.transform = 'translateY(-10px)';
+                targetMenu.style.pointerEvents = 'none';
+
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isOpen = targetMenu.style.maxHeight !== '0px' && targetMenu.style.maxHeight !== '';
+
+                    if (isOpen) {
+                        targetMenu.style.maxHeight = '0';
+                        targetMenu.style.opacity = '0';
+                        targetMenu.style.transform = 'translateY(-10px)';
+                        targetMenu.style.pointerEvents = 'none';
+                    } else {
+                        targetMenu.style.maxHeight = targetMenu.scrollHeight + 'px';
+                        targetMenu.style.opacity = '1';
+                        targetMenu.style.transform = 'translateY(0)';
+                        targetMenu.style.pointerEvents = 'auto';
+                    }
+                });
+            }
+
+            // Tutup menu otomatis saat link di dalamnya diklik
+            targetMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (targetMenu.id === 'sidebar') {
+                        targetMenu.style.transform = 'translateX(-100%)';
+                        targetMenu.style.opacity = '0';
+                        setTimeout(() => targetMenu.classList.add('hidden'), 300);
+                    } else {
+                        targetMenu.style.maxHeight = '0';
+                        targetMenu.style.opacity = '0';
+                        targetMenu.style.transform = 'translateY(-10px)';
+                        targetMenu.style.pointerEvents = 'none';
+                    }
+                });
+            });
+        }
+    });
+});
 
 // Log
 console.log('%c🗄️ Supabase client loaded', 'color: #0B7BE8; font-weight: bold;');
