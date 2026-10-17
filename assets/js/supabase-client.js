@@ -810,7 +810,7 @@ async function getPartners() {
 })();
 
 // ========================================
-// SMOOTH MENU ANIMATION (CSS PURE APPROACH)
+// SMOOTH MENU ANIMATION (ANTI-KONFLIK)
 // ========================================
 document.addEventListener('DOMContentLoaded', () => {
     const menus = [
@@ -825,22 +825,23 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (!btnEl || !menuEl) return;
 
-        // Hapus hidden bawaan agar CSS transisi bisa bekerja
+        // Pastikan class hidden dari Tailwind dihapus agar animasi CSS bisa jalan
         menuEl.classList.remove('hidden');
 
         if (type === 'dropdown') {
-            // Styling awal untuk animasi dropdown
             menuEl.style.overflow = 'hidden';
             menuEl.style.maxHeight = '0';
             menuEl.style.opacity = '0';
             menuEl.style.transform = 'translateY(-10px)';
             menuEl.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-            menuEl.style.pointerEvents = 'none'; // Mencegah klik saat tertutup
+            menuEl.style.pointerEvents = 'none';
 
+            // Gunakan capture: true untuk mematikan script HTML lain yang sejenis
             btnEl.addEventListener('click', (e) => {
-                e.stopImmediatePropagation(); // Hentikan script lain yang bentrok
+                e.preventDefault();
+                e.stopImmediatePropagation(); 
                 
-                // Cek apakah sedang terbuka
+                const icon = btnEl.querySelector('i');
                 const isOpen = menuEl.style.maxHeight !== '0px' && menuEl.style.maxHeight !== '';
                 
                 if (isOpen) {
@@ -849,26 +850,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     menuEl.style.opacity = '0';
                     menuEl.style.transform = 'translateY(-10px)';
                     menuEl.style.pointerEvents = 'none';
+                    if (icon) { icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars'); }
                 } else {
                     // Buka
                     menuEl.style.maxHeight = menuEl.scrollHeight + 'px';
                     menuEl.style.opacity = '1';
                     menuEl.style.transform = 'translateY(0)';
                     menuEl.style.pointerEvents = 'auto';
+                    if (icon) { icon.classList.remove('fa-bars'); icon.classList.add('fa-xmark'); }
                 }
-                
-                // Ganti icon burger <-> silang
-                const icon = btnEl.querySelector('i');
-                if (icon) {
-                    if (isOpen) {
-                        icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars');
-                    } else {
-                        icon.classList.remove('fa-bars'); icon.classList.add('fa-xmark');
-                    }
-                }
-            });
+            }, true); // <--- capture: true
 
-            // Tutup otomatis saat link diklik
             menuEl.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
                     menuEl.style.maxHeight = '0';
@@ -876,19 +868,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     menuEl.style.transform = 'translateY(-10px)';
                     menuEl.style.pointerEvents = 'none';
                     const icon = btnEl.querySelector('i');
-                    if (icon) {
-                        icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars');
-                    }
+                    if (icon) { icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars'); }
                 });
             });
 
         } else if (type === 'drawer') {
-            // Styling awal untuk sidebar/drawer
             menuEl.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
             menuEl.style.transform = 'translateX(-100%)';
             menuEl.classList.add('shadow-2xl');
 
             btnEl.addEventListener('click', (e) => {
+                e.preventDefault();
                 e.stopImmediatePropagation();
                 
                 const isOpen = menuEl.style.transform === 'translateX(0px)' || menuEl.style.transform === '';
@@ -898,12 +888,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     menuEl.style.transform = 'translateX(0)';
                 }
-            });
+            }, true); // <--- capture: true
 
-            // Tutup otomatis saat link diklik (opsional untuk mobile)
             menuEl.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
-                    // Hanya tutup otomatis jika di layar kecil (mobile)
                     if (window.innerWidth < 1024) {
                         menuEl.style.transform = 'translateX(-100%)';
                     }
