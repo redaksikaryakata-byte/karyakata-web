@@ -810,95 +810,67 @@ async function getPartners() {
 })();
 
 // ========================================
-// SMOOTH MENU ANIMATION (ANTI-KONFLIK)
+// SMOOTH MOBILE MENU ANIMATION (CSS GRID)
 // ========================================
 document.addEventListener('DOMContentLoaded', () => {
-    const menus = [
-        { btn: 'menuBtn', menu: 'mobileMenu', type: 'dropdown' },
-        { btn: 'btnMenuMobile', menu: 'sidebar', type: 'drawer' },
-        { btn: 'sidebarToggle', menu: 'sidebar', type: 'drawer' }
-    ];
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
 
-    menus.forEach(({ btn, menu, type }) => {
-        const btnEl = document.getElementById(btn);
-        const menuEl = document.getElementById(menu);
+    if (menuBtn && mobileMenu) {
+        // Hapus class hidden bawaan Tailwind
+        mobileMenu.classList.remove('hidden');
         
-        if (!btnEl || !menuEl) return;
-
-        // Pastikan class hidden dari Tailwind dihapus agar animasi CSS bisa jalan
-        menuEl.classList.remove('hidden');
-
-        if (type === 'dropdown') {
-            menuEl.style.overflow = 'hidden';
-            menuEl.style.maxHeight = '0';
-            menuEl.style.opacity = '0';
-            menuEl.style.transform = 'translateY(-10px)';
-            menuEl.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-            menuEl.style.pointerEvents = 'none';
-
-            // Gunakan capture: true untuk mematikan script HTML lain yang sejenis
-            btnEl.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopImmediatePropagation(); 
-                
-                const icon = btnEl.querySelector('i');
-                const isOpen = menuEl.style.maxHeight !== '0px' && menuEl.style.maxHeight !== '';
-                
-                if (isOpen) {
-                    // Tutup
-                    menuEl.style.maxHeight = '0';
-                    menuEl.style.opacity = '0';
-                    menuEl.style.transform = 'translateY(-10px)';
-                    menuEl.style.pointerEvents = 'none';
-                    if (icon) { icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars'); }
-                } else {
-                    // Buka
-                    menuEl.style.maxHeight = menuEl.scrollHeight + 'px';
-                    menuEl.style.opacity = '1';
-                    menuEl.style.transform = 'translateY(0)';
-                    menuEl.style.pointerEvents = 'auto';
-                    if (icon) { icon.classList.remove('fa-bars'); icon.classList.add('fa-xmark'); }
-                }
-            }, true); // <--- capture: true
-
-            menuEl.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    menuEl.style.maxHeight = '0';
-                    menuEl.style.opacity = '0';
-                    menuEl.style.transform = 'translateY(-10px)';
-                    menuEl.style.pointerEvents = 'none';
-                    const icon = btnEl.querySelector('i');
-                    if (icon) { icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars'); }
-                });
-            });
-
-        } else if (type === 'drawer') {
-            menuEl.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-            menuEl.style.transform = 'translateX(-100%)';
-            menuEl.classList.add('shadow-2xl');
-
-            btnEl.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                
-                const isOpen = menuEl.style.transform === 'translateX(0px)' || menuEl.style.transform === '';
-                
-                if (isOpen) {
-                    menuEl.style.transform = 'translateX(-100%)';
-                } else {
-                    menuEl.style.transform = 'translateX(0)';
-                }
-            }, true); // <--- capture: true
-
-            menuEl.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    if (window.innerWidth < 1024) {
-                        menuEl.style.transform = 'translateX(-100%)';
-                    }
-                });
-            });
+        // Gunakan CSS Grid untuk animasi tinggi otomatis yang mulus
+        mobileMenu.style.display = 'grid';
+        mobileMenu.style.gridTemplateRows = '0fr';
+        mobileMenu.style.transition = 'grid-template-rows 0.3s ease-out, opacity 0.3s ease-out';
+        mobileMenu.style.opacity = '0';
+        mobileMenu.style.overflow = 'hidden';
+        
+        // Bungkus konten di dalam div pembungkus (wajib untuk trik grid)
+        if (!mobileMenu.querySelector('.menu-inner')) {
+            const innerDiv = document.createElement('div');
+            innerDiv.className = 'menu-inner overflow-hidden';
+            while (mobileMenu.firstChild) {
+                innerDiv.appendChild(mobileMenu.firstChild);
+            }
+            mobileMenu.appendChild(innerDiv);
         }
-    });
+
+        let isOpen = false;
+
+        // Gunakan capture: true agar tidak bentrok dengan script lain
+        menuBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            
+            isOpen = !isOpen;
+            const icon = menuBtn.querySelector('i');
+
+            if (isOpen) {
+                // Buka Menu
+                mobileMenu.style.gridTemplateRows = '1fr';
+                mobileMenu.style.opacity = '1';
+                if (icon) { icon.classList.remove('fa-bars'); icon.classList.add('fa-xmark'); }
+            } else {
+                // Tutup Menu
+                mobileMenu.style.gridTemplateRows = '0fr';
+                mobileMenu.style.opacity = '0';
+                if (icon) { icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars'); }
+            }
+        }, true); 
+
+        // Otomatis tutup menu jika salah satu link di dalamnya diklik
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                isOpen = false;
+                mobileMenu.style.gridTemplateRows = '0fr';
+                mobileMenu.style.opacity = '0';
+                const icon = menuBtn.querySelector('i');
+                if (icon) { icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars'); }
+            });
+        });
+    }
 });
 
 // Log
