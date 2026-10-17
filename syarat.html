@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Syarat &amp; Ketentuan — Karyakata.id</title>
+    <meta name="description" content="Syarat dan Ketentuan layanan penerbitan Karyakata.id." />
+
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/img/favicon.png" />
+    <link rel="shortcut icon" href="assets/img/favicon.png" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: {
+                            50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD',
+                            400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6',
+                            800: '#064485', 900: '#053364',
+                        },
+                        gold: {
+                            100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A',
+                            500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        html { scroll-behavior: smooth; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.8s ease-out forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #0B7BE8 0%, #0967C7 40%, #0755A6 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero-gradient::after {
+            content: '';
+            position: absolute;
+            bottom: -50%; left: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(245, 166, 35, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .nav-link { color: #334155; font-weight: 500; transition: all .2s ease; }
+        .nav-link:hover { color: #0B7BE8; }
+        .nav-link.active { color: #0B7BE8; font-weight: 700; }
+
+        .btn-gold {
+            background: #F5A623; color: #422006; font-weight: 700;
+            transition: all .3s ease;
+            box-shadow: 0 8px 20px rgba(245, 166, 35, 0.35);
+        }
+        .btn-gold:hover {
+            background: #D98B0E; color: white; transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(245, 166, 35, 0.45);
+        }
+
+        /* Article content */
+        .article-content { color: #334155; line-height: 1.85; font-size: 15px; }
+        .article-content h2 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 22px;
+            font-weight: 900;
+            color: #0f172a;
+            margin-top: 40px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #DBEAFE;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .article-content h2 .num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #0B7BE8, #0755A6);
+            color: white;
+            font-size: 16px;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+        .article-content h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 17px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-top: 24px;
+            margin-bottom: 10px;
+        }
+        .article-content p { margin-bottom: 14px; }
+        .article-content ul { margin: 12px 0 18px 0; padding-left: 0; list-style: none; }
+        .article-content ul li {
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 8px;
+        }
+        .article-content ul li::before {
+            content: '';
+            position: absolute;
+            left: 8px; top: 10px;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #F5A623;
+        }
+        .article-content strong { color: #0f172a; }
+
+        /* TOC */
+        .toc {
+            background: #EFF6FF;
+            border: 2px solid #DBEAFE;
+            border-radius: 16px;
+            padding: 20px 24px;
+        }
+        .toc-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 900;
+            color: #0f172a;
+            margin-bottom: 12px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .toc ol { list-style: none; padding: 0; margin: 0; counter-reset: item; }
+        .toc ol li {
+            counter-increment: item;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .toc ol li::before {
+            content: counter(item) ".";
+            color: #0B7BE8;
+            font-weight: 700;
+            margin-right: 8px;
+        }
+        .toc a {
+            color: #334155;
+            text-decoration: none;
+            transition: color .2s ease;
+        }
+        .toc a:hover { color: #0B7BE8; text-decoration: underline; }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #eff6ff; }
+        ::-webkit-scrollbar-thumb { background: #4A9EF0; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0B7BE8; }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-b border-sky-100" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+
+                <a href="index.html" class="flex items-center gap-2 group">
+                    <img src="assets/img/logo.png" alt="Karyakata.id" class="h-10 md:h-12 w-auto group-hover:scale-105 transition" />
+                    <span class="font-display text-xl md:text-2xl font-black leading-none">
+                        <span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span>
+                    </span>
+                </a>
+
+                <div class="hidden lg:flex items-center gap-8 text-sm">
+                    <a href="index.html" class="nav-link">Beranda</a>
+                    <a href="layanan.html" class="nav-link">Layanan</a>
+                    <a href="katalog.html" class="nav-link">Katalog</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="tentang.html" class="nav-link">Tentang</a>
+                    <a href="kontak.html" class="nav-link">Kontak</a>
+                </div>
+
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="kirim-naskah.html" class="btn-gold px-5 py-2.5 rounded-full text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Kirim Naskah</span>
+                    </a>
+                </div>
+
+                <button id="menuBtn" class="lg:hidden w-10 h-10 rounded-lg bg-sky-50 flex items-center justify-center text-sky-700">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobileMenu" class="hidden lg:hidden bg-white border-t border-sky-100 px-4 py-4 space-y-1">
+            <a href="index.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Beranda</a>
+            <a href="layanan.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Layanan</a>
+            <a href="katalog.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Katalog</a>
+            <a href="blog.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Blog</a>
+            <a href="tentang.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Tentang</a>
+            <a href="kontak.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Kontak</a>
+            <a href="kirim-naskah.html" class="block text-center btn-gold px-5 py-3 rounded-xl text-sm font-bold mt-2">
+                <i class="fa-solid fa-paper-plane mr-1"></i> Kirim Naskah
+            </a>
+        </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <section class="hero-gradient pt-32 md:pt-40 pb-16 md:pb-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <nav class="flex items-center justify-center lg:justify-start gap-2 text-sky-200 text-xs md:text-sm mb-6 animate-fade-up">
+                <a href="index.html" class="hover:text-white transition">Beranda</a>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                <span class="text-white font-bold">Syarat &amp; Ketentuan</span>
+            </nav>
+
+            <div class="text-center lg:text-left max-w-3xl">
+                <h1 class="font-display text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.1] animate-fade-up delay-1">
+                    Syarat &amp; <span class="text-gold-300">Ketentuan</span>
+                </h1>
+                <p class="text-sky-100 text-base md:text-lg mt-6 leading-relaxed animate-fade-up delay-2">
+                    Mohon dibaca dengan saksama sebelum menggunakan layanan Karyakata.id.
+                </p>
+            </div>
+        </div>
+
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+                <path d="M0 80L60 74.7C120 69.3 240 58.7 360 58.7C480 58.7 600 69.3 720 69.3C840 69.3 960 58.7 1080 53.3C1200 48 1320 48 1380 48L1440 48V80H0Z" fill="white"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- CONTENT -->
+    <section class="py-12 md:py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-10">
+
+                <!-- TOC -->
+                <aside class="lg:col-span-4 lg:sticky lg:top-28 lg:self-start">
+                    <div class="toc">
+                        <div class="toc-title">Daftar Isi</div>
+                        <ol>
+                            <li><a href="#umum">Ketentuan Umum</a></li>
+                            <li><a href="#layanan">Layanan</a></li>
+                            <li><a href="#pemesanan">Pemesanan &amp; Pembayaran</a></li>
+                            <li><a href="#naskah">Naskah &amp; Hak Cipta</a></li>
+                            <li><a href="#isbn">ISBN &amp; QRCBN</a></li>
+                            <li><a href="#royalti">Royalti</a></li>
+                            <li><a href="#akun">Akun Penulis &amp; Password</a></li>
+                            <li><a href="#pengiriman">Pengiriman</a></li>
+                            <li><a href="#refund">Pembatalan &amp; Refund</a></li>
+                            <li><a href="#larangan">Larangan</a></li>
+                            <li><a href="#perubahan">Perubahan Ketentuan</a></li>
+                            <li><a href="#kontak">Hubungi Kami</a></li>
+                        </ol>
+                    </div>
+                </aside>
+
+                <!-- ARTICLE -->
+                <article class="lg:col-span-8">
+                    <div class="article-content">
+
+                        <p class="text-slate-500 text-sm mb-6">
+                            <i class="fa-solid fa-calendar text-sky-500"></i>
+                            Terakhir diperbarui: <b>1 Januari 2026</b>
+                        </p>
+
+                        <p>
+                            Selamat datang di <strong>Karyakata.id</strong>. Syarat &amp; Ketentuan ini mengatur penggunaan layanan penerbitan, pembelian buku, dan seluruh aktivitas yang dilakukan di website <strong>karyakata.id</strong>.
+                        </p>
+                        <p>
+                            Dengan menggunakan layanan kami — baik melalui website, WhatsApp, email, maupun Lynk.id — Anda dianggap telah <strong>membaca, memahami, dan menyetujui</strong> seluruh ketentuan di bawah ini.
+                        </p>
+
+                        <!-- 1 -->
+                        <h2 id="umum"><span class="num">1</span> Ketentuan Umum</h2>
+                        <ul>
+                            <li>Layanan Karyakata.id diselenggarakan oleh <strong>Karyakata Publishing</strong>, penerbit buku independen yang beroperasi di Indonesia.</li>
+                            <li>Pengguna wajib memberikan informasi yang <strong>benar dan akurat</strong> saat melakukan pemesanan.</li>
+                            <li>Pengguna wajib berusia minimal <strong>17 tahun</strong>, atau mendapatkan izin dari orang tua/wali jika di bawah usia tersebut.</li>
+                            <li>Segala bentuk penyalahgunaan layanan dapat menyebabkan <strong>penangguhan atau pemblokiran</strong> akun tanpa pemberitahuan sebelumnya.</li>
+                        </ul>
+
+                        <!-- 2 -->
+                        <h2 id="layanan"><span class="num">2</span> Layanan</h2>
+                        <p>Karyakata.id menyediakan layanan:</p>
+                        <ul>
+                            <li><strong>Paket Penerbitan</strong> — layanan lengkap dari editing hingga distribusi (Paket Buku, Paket Buku Plus, Paket Modul).</li>
+                            <li><strong>Terbit &amp; Cetak Satuan</strong> — untuk naskah yang sudah siap terbit, minimal order 30 eksemplar.</li>
+                            <li><strong>Layanan Tambahan (Add-on)</strong> — desain cover, layout, editing, HAKI, ilustrasi, bookmark, flyer, e-book, sertifikat penulis.</li>
+                            <li><strong>Distribusi &amp; Penjualan Buku</strong> — melalui Karyakata Bookstore (Lynk.id), marketplace mitra, dan jaringan distribusi kami.</li>
+                            <li><strong>Dashboard Penulis</strong> — akses untuk memantau progres naskah, buku terbit, penjualan, dan royalti.</li>
+                        </ul>
+
+                        <!-- 3 -->
+                        <h2 id="pemesanan"><span class="num">3</span> Pemesanan &amp; Pembayaran</h2>
+                        <ul>
+                            <li>Pemesanan dapat dilakukan melalui <strong>Lynk.id</strong> (untuk paket penerbitan) atau <strong>WhatsApp</strong> (untuk terbit &amp; cetak satuan).</li>
+                            <li>Pembayaran dapat dilakukan melalui <strong>transfer bank</strong> atau <strong>QRIS</strong>.</li>
+                            <li>Bukti pembayaran <strong>wajib diunggah</strong> melalui form atau dikirim via WhatsApp.</li>
+                            <li>Pesanan baru akan diproses setelah <strong>pembayaran dikonfirmasi</strong> oleh admin.</li>
+                            <li>Skema pembayaran bertahap (DP + pelunasan) dapat didiskusikan dengan admin.</li>
+                        </ul>
+
+                        <!-- 4 -->
+                        <h2 id="naskah"><span class="num">4</span> Naskah &amp; Hak Cipta</h2>
+                        <ul>
+                            <li><strong>Hak cipta naskah 100% milik penulis.</strong> Karyakata.id hanya memegang izin penerbitan dan distribusi sesuai kesepakatan.</li>
+                            <li>Penulis <strong>menjamin</strong> bahwa naskah yang dikirim adalah <strong>karya asli</strong> dan tidak melanggar hak cipta pihak lain.</li>
+                            <li>Segala bentuk plagiarisme menjadi <strong>tanggung jawab penuh penulis</strong>.</li>
+                            <li>Penulis <strong>bebas</strong> mencetak, menjual, atau menerbitkan ulang karyanya di masa depan.</li>
+                            <li>Karyakata.id berhak <strong>menolak naskah</strong> yang tidak sesuai dengan nilai dan standar kami.</li>
+                        </ul>
+
+                        <!-- 5 -->
+                        <h2 id="isbn"><span class="num">5</span> ISBN &amp; QRCBN</h2>
+                        <ul>
+                            <li><strong>ISBN</strong> diajukan ke Perpusnas RI dan <strong>memerlukan validasi</strong> kelayakan serta kualitas naskah.</li>
+                            <li>Jika naskah tidak memenuhi syarat ISBN, buku tetap dapat diterbitkan dengan <strong>QRCBN</strong> sebagai nomor identitas resmi pengganti.</li>
+                            <li>Naskah yang <strong>umumnya tidak memerlukan ISBN</strong>: antologi komunitas/organisasi, tugas mahasiswa, pelaporan kegiatan/seminar, modul, prosiding, KTI, orasi ilmiah.</li>
+                            <li>ISBN tetap dapat diajukan dengan syarat buku <strong>diubah menjadi buku teks</strong> dan <strong>wajib didistribusikan</strong> (gratis atau berbayar).</li>
+                        </ul>
+
+                        <!-- 6 -->
+                        <h2 id="royalti"><span class="num">6</span> Royalti</h2>
+                        <ul>
+                            <li>Royalti standar: <strong>15-20%</strong> dari harga jual buku di katalog Karyakata, tergantung paket yang dipilih.</li>
+                            <li>Royalti dihitung dari <strong>penjualan buku di katalog</strong>, bukan dari biaya penerbitan yang dibayar penulis.</li>
+                            <li>Royalti dibayarkan <strong>setiap 3 bulan</strong> setelah buku resmi terbit dan terjual.</li>
+                            <li>Rekap penjualan dan perhitungan royalti akan dikirim ke penulis.</li>
+                            <li>Penulis dapat memilih royalti ditransfer <strong>cash</strong>, atau dijadikan <strong>potongan harga</strong> untuk pembelian buku berikutnya (opsional).</li>
+                        </ul>
+
+                        <!-- 7 -->
+                        <h2 id="akun"><span class="num">7</span> Akun Penulis &amp; Password</h2>
+                        <ul>
+                            <li>Akun penulis dibuat dan diaktifkan oleh <strong>Admin</strong> setelah pembayaran dikonfirmasi.</li>
+                            <li>Admin akan mengirimkan <strong>Email dan Password sementara</strong> melalui WhatsApp.</li>
+                            <li><strong>Keamanan Password:</strong> Penulis <strong>wajib segera mengganti password</strong> setelah login pertama melalui menu <em>Profil &gt; Keamanan Akun</em>.</li>
+                            <li><strong>Tanggung Jawab Penulis:</strong> Penulis bertanggung jawab penuh atas kerahasiaan password dan semua aktivitas yang terjadi di akunnya.</li>
+                            <li><strong>Lupa Password:</strong> Jika lupa password, penulis dapat menghubungi Admin via WhatsApp untuk proses reset ulang.</li>
+                        </ul>
+
+                        <!-- 8 -->
+                        <h2 id="pengiriman"><span class="num">8</span> Pengiriman</h2>
+                        <ul>
+                            <li>Pengiriman buku fisik dilakukan melalui <strong>ekspedisi mitra</strong> (JNE, J&amp;T, SiCepat, dll).</li>
+                            <li><strong>Ongkos kirim</strong> ditanggung pembeli, kecuali disebutkan lain di paket yang dipilih.</li>
+                            <li>Estimasi ongkir dapat dicek melalui <a href="https://berdu.id/cek-ongkir" target="_blank" rel="noopener" class="text-sky-600 font-bold hover:underline">Berdu.id</a>.</li>
+                            <li>Karyakata.id tidak bertanggung jawab atas <strong>keterlambatan pengiriman</strong> yang disebabkan oleh pihak ekspedisi.</li>
+                            <li>Kerusakan atau kehilangan paket selama pengiriman menjadi tanggung jawab ekspedisi. Kami akan bantu proses klaim.</li>
+                        </ul>
+
+                        <!-- 9 -->
+                        <h2 id="refund"><span class="num">9</span> Pembatalan &amp; Refund</h2>
+                        <ul>
+                            <li>Pembatalan pesanan dapat dilakukan <strong>sebelum proses produksi dimulai</strong> (editing, layout, cetak).</li>
+                            <li>Jika pesanan dibatalkan setelah proses produksi dimulai, <strong>biaya yang sudah dikeluarkan tidak dapat dikembalikan</strong>.</li>
+                            <li>Refund penuh (100%) diberikan apabila <strong>naskah ditolak</strong> pada tahap review <strong>sebelum pembayaran</strong>.</li>
+                            <li>Untuk kendala di tengah proses, kami akan carikan <strong>solusi terbaik</strong> — refund sebagian atau alihkan ke layanan lain.</li>
+                        </ul>
+
+                        <!-- 10 -->
+                        <h2 id="larangan"><span class="num">10</span> Larangan</h2>
+                        <p>Pengguna <strong>dilarang</strong> mengirimkan naskah yang mengandung:</p>
+                        <ul>
+                            <li>Konten SARA, ujaran kebencian, dan diskriminasi.</li>
+                            <li>Konten pornografi dan kekerasan eksplisit.</li>
+                            <li>Konten yang melanggar hukum Indonesia.</li>
+                            <li>Karya plagiat atau melanggar hak cipta pihak lain.</li>
+                            <li>Konten yang menyesatkan, fitnah, atau merugikan pihak lain.</li>
+                        </ul>
+                        <p>Karyakata.id berhak <strong>menolak naskah</strong> yang melanggar ketentuan di atas tanpa kewajiban memberikan alasan rinci.</p>
+
+                        <!-- 11 -->
+                        <h2 id="perubahan"><span class="num">11</span> Perubahan Ketentuan</h2>
+                        <ul>
+                            <li>Karyakata.id berhak <strong>mengubah Syarat &amp; Ketentuan</strong> ini kapan saja tanpa pemberitahuan sebelumnya.</li>
+                            <li>Versi terbaru akan selalu tersedia di halaman ini dengan tanggal pembaruan.</li>
+                            <li>Dengan terus menggunakan layanan kami, Anda dianggap menyetujui versi terbaru.</li>
+                        </ul>
+
+                        <!-- 12 -->
+                        <h2 id="kontak"><span class="num">12</span> Hubungi Kami</h2>
+                        <p>Jika ada pertanyaan tentang Syarat &amp; Ketentuan ini, silakan hubungi kami:</p>
+                        <ul>
+                            <li><strong>Email:</strong> redaksikaryakata@gmail.com</li>
+                            <li><strong>WhatsApp:</strong> <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="text-sky-600 font-bold hover:underline">+62 895-6200-00033</a></li>
+                            <li><strong>Instagram:</strong> <a href="https://www.instagram.com/karyakata.publishing" target="_blank" rel="noopener" class="text-sky-600 font-bold hover:underline">@karyakata.publishing</a></li>
+                        </ul>
+
+                        <div class="mt-10 p-5 bg-sky-50 rounded-2xl border-2 border-sky-100">
+                            <p class="text-sm text-slate-600 leading-relaxed">
+                                <i class="fa-solid fa-info-circle text-sky-500"></i>
+                                <b class="text-slate-800">Catatan:</b> Dengan menggunakan layanan Karyakata.id, Anda dianggap telah membaca, memahami, dan menyetujui seluruh Syarat &amp; Ketentuan di atas.
+                            </p>
+                        </div>
+
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-16 md:py-20 bg-sky-50">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="font-display text-2xl md:text-3xl font-black text-slate-800 mb-3">
+                Masih Ada Pertanyaan?
+            </h3>
+            <p class="text-slate-600 text-base mb-6">
+                Tim kami siap membantu. Hubungi kami via WhatsApp untuk respon cepat.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                <a href="https://wa.me/62895620000033?text=Halo%20Karyakata%2C%20saya%20mau%20tanya%20soal%20S%26K" target="_blank" rel="noopener" class="btn-gold px-7 py-3.5 rounded-full text-sm flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span>Chat via WhatsApp</span>
+                </a>
+                <a href="privacy.html" class="bg-white border-2 border-sky-500 text-sky-600 font-bold px-7 py-3.5 rounded-full text-sm flex items-center justify-center gap-2 hover:bg-sky-500 hover:text-white transition">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Privacy Policy</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-300 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-12 gap-10 mb-12">
+
+                <div class="md:col-span-4">
+                    <div class="mb-5 flex items-center gap-3">
+                        <img src="assets/img/logo-footer.png" alt="Karyakata.id" class="h-16 w-auto" />
+                        <span class="font-display text-2xl font-black leading-none">
+                            <span class="text-white">Karyakata</span><span class="text-gold-400">.id</span>
+                        </span>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                        Penerbit buku modern Indonesia. Mitra komunitas Yatta.id. <br>
+                        <span class="text-gold-400 font-semibold">Berkarya dengan Kata, Berkata dengan Karya.</span>
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <a href="https://www.instagram.com/karyakata.publishing" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-gradient-to-br hover:from-pink-500 hover:to-purple-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-black flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </a>
+                        <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-green-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-red-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">MENU</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="index.html" class="text-slate-400 hover:text-sky-400 transition">Beranda</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Layanan</a></li>
+                        <li><a href="katalog.html" class="text-slate-400 hover:text-sky-400 transition">Katalog</a></li>
+                        <li><a href="blog.html" class="text-slate-400 hover:text-sky-400 transition">Blog</a></li>
+                        <li><a href="tentang.html" class="text-slate-400 hover:text-sky-400 transition">Tentang</a></li>
+                        <li><a href="kontak.html" class="text-slate-400 hover:text-sky-400 transition">Kontak</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">LAYANAN</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="layanan.html#paket" class="text-slate-400 hover:text-sky-400 transition">Paket Penerbitan</a></li>
+                        <li><a href="terbit-satuan.html" class="text-slate-400 hover:text-sky-400 transition">Terbit &amp; Cetak Satuan</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Editing &amp; Proofreading</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Layout &amp; Desain Cover</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Cetak &amp; Distribusi</a></li>
+                        <li><a href="kirim-naskah.html" class="text-slate-400 hover:text-sky-400 transition">Kirim Naskah</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">KONTAK</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-envelope text-sky-400 mt-0.5"></i>
+                            <span class="text-slate-400">redaksikaryakata@gmail.com</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-brands fa-whatsapp text-sky-400 mt-0.5"></i>
+                            <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="text-slate-400 hover:text-sky-400 transition">+62 895-6200-00033</a>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot text-sky-400 mt-0.5"></i>
+                            <span class="text-slate-400">Yogyakarta-Gorontalo/Indonesia</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-users text-sky-400 mt-0.5"></i>
+                            <a href="https://www.yatta.id" target="_blank" rel="noopener" class="text-slate-400 hover:text-sky-400 transition">Komunitas Kami — www.yatta.id</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-slate-500 text-xs text-center md:text-left">
+                    &copy; <span id="year"></span> Karyakata.id — Karyakata Publishing. All rights reserved.
+                </p>
+                <div class="flex items-center gap-6 text-xs">
+                    <a href="syarat.html" class="text-sky-400 font-bold">Syarat &amp; Ketentuan</a>
+                    <a href="privacy.html" class="text-slate-500 hover:text-sky-400 transition">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                const icon = menuBtn.querySelector('i');
+                if (mobileMenu.classList.contains('hidden')) {
+                    icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars');
+                } else {
+                    icon.classList.remove('fa-bars'); icon.classList.add('fa-xmark');
+                }
+            });
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    const icon = menuBtn.querySelector('i');
+                    icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars');
+                });
+            });
+        }
+
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 50) {
+                navbar.classList.add('shadow-lg', 'shadow-sky-500/5');
+            } else {
+                navbar.classList.remove('shadow-lg', 'shadow-sky-500/5');
+            }
+        });
+
+        const yearEl = document.getElementById('year');
+        if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+        console.log('%c📚 Karyakata.id — Syarat & Ketentuan', 'font-size: 16px; font-weight: bold; color: #0B7BE8;');
+    </script>
+
+</body>
+</html>

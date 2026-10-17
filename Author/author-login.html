@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login & Daftar Penulis — Karyakata.id</title>
+
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: {
+                sky: { 50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD', 400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6', 800: '#064485', 900: '#053364' },
+                gold: { 100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A', 500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A' }
+            }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['"Plus Jakarta Sans"', 'sans-serif'] } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .form-input { width: 100%; padding: 14px 16px; border: 2px solid #DBEAFE; border-radius: 12px; font-size: 14px; outline: none; transition: all .2s ease; background: white; }
+        .form-input:focus { border-color: #0B7BE8; box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1); }
+        .form-label { display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px; }
+        .btn-primary { background: #0B7BE8; color: white; font-weight: 700; transition: all .3s ease; box-shadow: 0 8px 20px rgba(11, 123, 232, 0.35); }
+        .btn-primary:hover:not(:disabled) { background: #0967C7; transform: translateY(-2px); box-shadow: 0 12px 28px rgba(11, 123, 232, 0.45); }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+        .tab-btn { flex: 1; padding: 12px; text-align: center; font-weight: 700; font-size: 14px; cursor: pointer; border-bottom: 3px solid transparent; transition: all .2s ease; color: #64748B; }
+        .tab-btn.active { border-bottom-color: #0B7BE8; color: #0B7BE8; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
+
+    <!-- LOADING SCREEN -->
+    <div id="loadingScreen" class="fixed inset-0 bg-slate-50 z-50 flex flex-col items-center justify-center">
+        <i class="fa-solid fa-spinner fa-spin text-4xl text-sky-500 mb-4"></i>
+        <p class="text-slate-500 font-medium text-sm">Memeriksa sesi...</p>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div id="loginContainer" class="w-full max-w-md hidden opacity-0 transition-opacity duration-300">
+        
+        <div class="text-center mb-8">
+            <a href="../index.html" class="inline-flex items-center gap-2 group mb-4">
+                <img src="../assets/img/logo.png" alt="Karyakata.id" class="h-12 w-auto group-hover:scale-105 transition" />
+                <span class="font-display text-2xl font-black leading-none">
+                    <span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span>
+                </span>
+            </a>
+            <h1 class="font-display text-3xl font-black text-slate-800">Dashboard Penulis</h1>
+            <p class="text-slate-500 text-sm mt-2">Masuk dengan Email dan Password Anda.</p>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-xl shadow-sky-500/10 border border-sky-100 overflow-hidden">
+            
+            <!-- TABS -->
+            <div class="flex border-b border-slate-100">
+                <div id="tabLogin" class="tab-btn active" onclick="switchTab('login')">Masuk</div>
+                <div id="tabRegister" class="tab-btn" onclick="switchTab('register')">Daftar Baru</div>
+            </div>
+
+            <div class="p-8">
+                <!-- ALERT ERROR -->
+                <div id="alertError" class="hidden mb-5 p-4 bg-red-50 border-2 border-red-200 rounded-xl flex items-start gap-3">
+                    <i class="fa-solid fa-circle-exclamation text-red-500 mt-0.5"></i>
+                    <p class="text-sm text-red-700 font-medium" id="alertErrorText"></p>
+                </div>
+
+                <!-- FORM LOGIN -->
+                <form id="loginForm" class="space-y-5">
+                    <div>
+                        <label class="form-label">Email <span class="text-red-500">*</span></label>
+                        <input type="email" id="loginEmail" class="form-input" placeholder="email@anda.com" required />
+                    </div>
+                    <div>
+                        <label class="form-label">Password <span class="text-red-500">*</span></label>
+                        <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required />
+                    </div>
+                    <div class="flex justify-end">
+                        <a href="https://wa.me/62895620000033?text=Halo%20Admin%2C%20saya%20lupa%20password%20akun%20penulis%20saya." target="_blank" class="text-xs text-sky-600 font-bold hover:underline">Lupa Password?</a>
+                    </div>
+                    <button type="submit" id="btnLogin" class="w-full btn-primary px-8 py-4 rounded-xl text-base flex items-center justify-center gap-2">
+                        <span>Masuk Dashboard</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <!-- FORM REGISTER (Didaftarkan oleh Admin, tapi disiapkan UI-nya) -->
+                <form id="registerForm" class="space-y-4 hidden">
+                    <div class="p-4 bg-sky-50 rounded-xl border border-sky-100 mb-4 text-center">
+                        <p class="text-xs text-sky-700 leading-relaxed"><i class="fa-solid fa-info-circle"></i> Akun penulis dibuat oleh Admin setelah pembayaran dikonfirmasi. Jika Anda sudah menerima password via WhatsApp, silakan gunakan tab <b>Masuk</b>.</p>
+                    </div>
+                    <div>
+                        <label class="form-label">Nama Lengkap / Nama Pena <span class="text-red-500">*</span></label>
+                        <input type="text" id="regNama" class="form-input" placeholder="Nama Anda" required />
+                    </div>
+                    <div>
+                        <label class="form-label">Email <span class="text-red-500">*</span></label>
+                        <input type="email" id="regEmail" class="form-input" placeholder="email@anda.com" required />
+                    </div>
+                    <div>
+                        <label class="form-label">Password Baru <span class="text-red-500">*</span></label>
+                        <input type="password" id="regPassword" class="form-input" placeholder="Minimal 6 karakter" minlength="6" required />
+                    </div>
+                    <button type="submit" id="btnRegister" class="w-full btn-primary px-8 py-4 rounded-xl text-base flex items-center justify-center gap-2 mt-2">
+                        <span>Daftar Sekarang</span>
+                        <i class="fa-solid fa-user-plus"></i>
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-slate-50 p-4 border-t border-slate-100 text-center">
+                <p class="text-xs text-slate-500 leading-relaxed">
+                    <i class="fa-solid fa-shield-halved text-sky-500"></i>
+                    Dashboard hanya bisa diakses jika pembayaran sudah dikonfirmasi oleh Admin.
+                </p>
+            </div>
+        </div>
+
+        <div class="text-center mt-8">
+            <a href="../index.html" class="text-sm text-slate-500 hover:text-sky-600 transition font-medium">
+                <i class="fa-solid fa-arrow-left mr-1"></i> Kembali ke Beranda
+            </a>
+        </div>
+    </div>
+
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/supabase-client.js"></script>
+
+    <script>
+        async function checkAuth() {
+            if (!isAuthorLoggedIn()) { showLoginForm(); return; }
+            const res = await authorValidate();
+            if (res.success) {
+                window.location.replace('author-dashboard.html');
+            } else {
+                clearAuthorSession();
+                showLoginForm();
+            }
+        }
+
+        function showLoginForm() {
+            document.getElementById('loadingScreen').classList.add('hidden');
+            const container = document.getElementById('loginContainer');
+            container.classList.remove('hidden');
+            void container.offsetWidth;
+            container.classList.remove('opacity-0');
+        }
+
+        checkAuth();
+
+        // Tab switcher
+        function switchTab(tab) {
+            document.getElementById('alertError').classList.add('hidden');
+            if (tab === 'login') {
+                document.getElementById('tabLogin').classList.add('active');
+                document.getElementById('tabRegister').classList.remove('active');
+                document.getElementById('loginForm').classList.remove('hidden');
+                document.getElementById('registerForm').classList.add('hidden');
+            } else {
+                document.getElementById('tabRegister').classList.add('active');
+                document.getElementById('tabLogin').classList.remove('active');
+                document.getElementById('registerForm').classList.remove('hidden');
+                document.getElementById('loginForm').classList.add('hidden');
+            }
+        }
+
+        function showError(msg) {
+            document.getElementById('alertErrorText').textContent = msg;
+            document.getElementById('alertError').classList.remove('hidden');
+        }
+
+        // Handle Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnLogin');
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPassword').value;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Memeriksa...</span>';
+            document.getElementById('alertError').classList.add('hidden');
+
+            const result = await authorLogin(email, pass);
+
+            if (!result.success) {
+                showError(result.error);
+                btn.disabled = false;
+                btn.innerHTML = '<span>Masuk Dashboard</span><i class="fa-solid fa-arrow-right"></i>';
+                return;
+            }
+
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> <span>Berhasil!</span>';
+            btn.classList.remove('btn-primary');
+            btn.classList.add('bg-green-500', 'text-white');
+
+            setTimeout(() => { window.location.href = 'author-dashboard.html'; }, 800);
+        });
+
+        // Handle Register
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnRegister');
+            const nama = document.getElementById('regNama').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const pass = document.getElementById('regPassword').value;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Mendaftar...</span>';
+            document.getElementById('alertError').classList.add('hidden');
+
+            const result = await authorRegister(email, nama, pass);
+
+            if (!result.success) {
+                showError(result.error);
+                btn.disabled = false;
+                btn.innerHTML = '<span>Daftar Sekarang</span><i class="fa-solid fa-user-plus"></i>';
+                return;
+            }
+
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> <span>Berhasil!</span>';
+            btn.classList.remove('btn-primary');
+            btn.classList.add('bg-green-500', 'text-white');
+
+            setTimeout(() => { window.location.href = 'author-dashboard.html'; }, 800);
+        });
+    </script>
+</body>
+</html>

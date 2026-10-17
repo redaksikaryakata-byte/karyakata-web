@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin — Subscriber — Karyakata.id</title>
+    <meta name="robots" content="noindex, nofollow" />
+
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/img/favicon.png" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: {
+                            50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD',
+                            400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6',
+                            800: '#064485', 900: '#053364',
+                        },
+                        gold: {
+                            100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A',
+                            500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #F8FAFC; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.4s ease-out forwards; opacity: 0; }
+
+        .sidebar-link {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px; font-weight: 600;
+            color: #475569;
+            transition: all .2s ease;
+            text-decoration: none;
+        }
+        .sidebar-link:hover { background: #EFF6FF; color: #0B7BE8; }
+        .sidebar-link.active {
+            background: linear-gradient(135deg, #0B7BE8, #0967C7);
+            color: white;
+            box-shadow: 0 6px 16px rgba(11, 123, 232, 0.3);
+        }
+        .sidebar-link.active i { color: white; }
+        .sidebar-link i { width: 20px; text-align: center; font-size: 15px; }
+
+        .order-table th {
+            text-align: left;
+            padding: 14px 16px;
+            font-size: 11px; font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748B;
+            background: #F1F5F9;
+            white-space: nowrap;
+        }
+        .order-table td {
+            padding: 16px;
+            font-size: 13px;
+            color: #334155;
+            border-top: 1px solid #F1F5F9;
+            vertical-align: middle;
+        }
+        .order-table tbody tr { transition: background .15s ease; }
+        .order-table tbody tr:hover { background: #F8FAFC; }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 9px 16px;
+            border-radius: 10px;
+            font-size: 12px; font-weight: 700;
+            cursor: pointer;
+            transition: all .2s ease;
+            border: none;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .btn-primary { background: #0B7BE8; color: white; }
+        .btn-primary:hover { background: #0967C7; transform: translateY(-1px); }
+        .btn-outline { background: white; color: #475569; border: 2px solid #E2E8F0; }
+        .btn-outline:hover { border-color: #0B7BE8; color: #0B7BE8; }
+        .btn-green { background: #10B981; color: white; }
+        .btn-green:hover { background: #059669; }
+        .btn-danger { background: #EF4444; color: white; }
+        .btn-danger:hover { background: #DC2626; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .form-input {
+            width: 100%; padding: 12px 14px;
+            border: 2px solid #E2E8F0; border-radius: 12px;
+            font-size: 14px; outline: none;
+            transition: all .2s ease; background: white;
+        }
+        .form-input:focus { border-color: #0B7BE8; box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1); }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #F1F5F9; }
+        ::-webkit-scrollbar-thumb { background: #94A3B8; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748B; }
+
+        #sidebarOverlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            z-index: 40;
+        }
+        #sidebarOverlay.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <div id="sidebarOverlay"></div>
+
+    <div class="flex min-h-screen">
+
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50 -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
+
+            <div class="p-5 border-b border-slate-100">
+                <a href="admin-order.html" class="flex items-center gap-3 group">
+                    <img src="../assets/img/logo.png" alt="Karyakata" class="h-10 w-auto" onerror="this.style.display='none'" />
+                    <span class="font-display text-lg font-black leading-none">
+                        <span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span>
+                    </span>
+                </a>
+                <div class="mt-3 flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1 bg-gold-100 text-gold-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        <i class="fa-solid fa-shield-halved text-[8px]"></i>
+                        ADMIN PANEL
+                    </span>
+                </div>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-2">MENU UTAMA</p>
+
+                <a href="admin-order.html" class="sidebar-link">
+                    <i class="fa-solid fa-receipt"></i>
+                    <span>Order</span>
+                    <span id="sidebarOrderCount" class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                </a>
+
+                <a href="admin-naskah.html" class="sidebar-link">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span>Naskah Masuk</span>
+                    <span id="sidebarSubmissionCount" class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                </a>
+
+                <a href="admin-pesan.html" class="sidebar-link">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span>Pesan Kontak</span>
+                    <span id="sidebarContactCount" class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                </a>
+
+                <a href="admin-subscriber.html" class="sidebar-link active">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Subscriber</span>
+                </a>
+
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">KONTEN</p>
+
+                <a href="admin-buku.html" class="sidebar-link">
+                    <i class="fa-solid fa-book"></i>
+                    <span>Buku / Katalog</span>
+                </a>
+
+                <a href="admin-blog.html" class="sidebar-link">
+                    <i class="fa-solid fa-newspaper"></i>
+                    <span>Blog</span>
+                </a>
+
+                <a href="admin-mitra.html" class="sidebar-link">
+                    <i class="fa-solid fa-handshake"></i>
+                    <span>Mitra &amp; Komunitas</span>
+                </a>
+
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">LAINNYA</p>
+
+                <a href="../index.html" target="_blank" class="sidebar-link">
+                    <i class="fa-solid fa-external-link-alt"></i>
+                    <span>Lihat Website</span>
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-slate-100">
+                <div class="bg-slate-50 rounded-2xl p-3">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">
+                            A
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-bold text-slate-800 truncate" id="userEmail">admin@...</p>
+                            <p class="text-[10px] text-slate-500">Administrator</p>
+                        </div>
+                    </div>
+                    <button id="logoutBtn" class="w-full btn btn-outline text-xs justify-center">
+                        <i class="fa-solid fa-right-from-bracket text-[10px]"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="flex-1 min-w-0">
+
+            <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-lg border-b border-slate-200">
+                <div class="flex items-center justify-between px-4 md:px-6 h-16">
+                    <div class="flex items-center gap-3">
+                        <button id="sidebarToggle" class="lg:hidden w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+                            <i class="fa-solid fa-bars"></i>
+                        </button>
+                        <div>
+                            <h1 class="font-display text-lg md:text-xl font-black text-slate-800">Subscriber</h1>
+                            <p class="text-[11px] text-slate-500 hidden md:block">Daftar email newsletter</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <button id="exportBtn" class="btn btn-outline text-xs">
+                            <i class="fa-solid fa-download"></i>
+                            <span class="hidden sm:inline">Export CSV</span>
+                        </button>
+                        <button id="refreshBtn" class="btn btn-outline text-xs">
+                            <i class="fa-solid fa-rotate"></i>
+                            <span class="hidden sm:inline">Refresh</span>
+                        </button>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">
+                            A
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-4 md:p-6">
+
+                <!-- STATS -->
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center text-sky-600">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">TOTAL SUBSCRIBER</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statTotal">—</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-600">
+                                <i class="fa-solid fa-calendar-day"></i>
+                            </div>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">HARI INI</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statToday">—</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200 col-span-2 md:col-span-1">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-gold-100 flex items-center justify-center text-gold-600">
+                                <i class="fa-solid fa-calendar-week"></i>
+                            </div>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">7 HARI TERAKHIR</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statWeek">—</p>
+                    </div>
+                </div>
+
+                <!-- TOOLBAR -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 mb-4">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input
+                            type="text"
+                            id="searchInput"
+                            class="form-input pl-10"
+                            placeholder="Cari email subscriber..."
+                        />
+                    </div>
+                </div>
+
+                <!-- TABLE -->
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+
+                    <div id="loadingState" class="p-6">
+                        <div class="space-y-3">
+                            <div class="skeleton h-12 w-full"></div>
+                            <div class="skeleton h-12 w-full"></div>
+                            <div class="skeleton h-12 w-full"></div>
+                            <div class="skeleton h-12 w-full"></div>
+                        </div>
+                    </div>
+
+                    <div id="emptyState" class="hidden p-12 text-center">
+                        <div class="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-users text-slate-400 text-3xl"></i>
+                        </div>
+                        <h3 class="font-display text-lg font-black text-slate-700 mb-1">Belum ada subscriber</h3>
+                        <p class="text-slate-500 text-sm" id="emptyMsg">Subscriber dari footer website akan muncul di sini.</p>
+                    </div>
+
+                    <div id="tableWrap" class="hidden overflow-x-auto">
+                        <table class="order-table w-full min-w-[600px]">
+                            <thead>
+                                <tr>
+                                    <th style="width: 60px;">#</th>
+                                    <th>Email</th>
+                                    <th>Tanggal Daftar</th>
+                                    <th class="text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subscriberTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <p class="text-[11px] text-slate-500 text-center mt-4">
+                    Menampilkan <span id="shownCount" class="font-bold text-slate-700">0</span> subscriber
+                    <span id="totalCountWrap" class="hidden">dari <span id="totalCount" class="font-bold text-slate-700">0</span></span>
+                </p>
+
+            </div>
+        </main>
+    </div>
+
+    <div id="toastWrap" class="fixed top-4 right-4 z-[200] space-y-2"></div>
+
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/supabase-client.js"></script>
+
+    <script>
+    // ========================================
+    // ADMIN SUBSCRIBER — MAIN SCRIPT
+    // ========================================
+
+    let allSubscribers = [];
+    let filteredSubscribers = [];
+    let searchQuery = '';
+    let currentUser = null;
+
+    const subscriberTbody = document.getElementById('subscriberTbody');
+    const loadingState = document.getElementById('loadingState');
+    const emptyState = document.getElementById('emptyState');
+    const emptyMsg = document.getElementById('emptyMsg');
+    const tableWrap = document.getElementById('tableWrap');
+    const searchInput = document.getElementById('searchInput');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userEmail = document.getElementById('userEmail');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const toastWrap = document.getElementById('toastWrap');
+
+    const statTotal = document.getElementById('statTotal');
+    const statToday = document.getElementById('statToday');
+    const statWeek = document.getElementById('statWeek');
+
+    // ========================================
+    // TOAST
+    // ========================================
+    function showToast(message, type = 'info') {
+        const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-sky-500', warning: 'bg-gold-500' };
+        const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info', warning: 'fa-triangle-exclamation' };
+        const toast = document.createElement('div');
+        toast.className = `${colors[type]} text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-bold animate-fade-up max-w-sm`;
+        toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span class="flex-1">${message}</span>`;
+        toastWrap.appendChild(toast);
+        setTimeout(() => {
+            toast.style.transition = 'all 0.3s ease';
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // ========================================
+    // HELPERS
+    // ========================================
+    function formatDateTime(dateStr) {
+        if (!dateStr) return '—';
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('id-ID', {
+            day: '2-digit', month: 'long', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+    }
+
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    // ========================================
+    // AUTH
+    // ========================================
+    async function checkAuth() {
+        try {
+            const user = await getCurrentUser();
+            if (!user) {
+                window.location.href = 'admin-login.html';
+                return false;
+            }
+            currentUser = user;
+            userEmail.textContent = user.email;
+            return true;
+        } catch (err) {
+            window.location.href = 'admin-login.html';
+            return false;
+        }
+    }
+
+    // ========================================
+    // LOAD
+    // ========================================
+    async function loadSubscribers() {
+        loadingState.classList.remove('hidden');
+        tableWrap.classList.add('hidden');
+        emptyState.classList.add('hidden');
+
+        try {
+            const { data, error } = await supabaseClient
+                .from('subscribers')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            allSubscribers = data || [];
+            updateStats();
+            applyFilters();
+
+        } catch (err) {
+            console.error('Load subscribers error:', err);
+            showToast('Gagal memuat: ' + err.message, 'error');
+            loadingState.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            emptyMsg.textContent = 'Gagal memuat data. Coba refresh.';
+        }
+    }
+
+    // ========================================
+    // STATS
+    // ========================================
+    function updateStats() {
+        const now = new Date();
+        const todayStr = now.toDateString();
+
+        const weekAgo = new Date();
+        weekAgo.setDate(now.getDate() - 7);
+
+        const total = allSubscribers.length;
+
+        const today = allSubscribers.filter(s => {
+            if (!s.created_at) return false;
+            return new Date(s.created_at).toDateString() === todayStr;
+        }).length;
+
+        const week = allSubscribers.filter(s => {
+            if (!s.created_at) return false;
+            return new Date(s.created_at) >= weekAgo;
+        }).length;
+
+        statTotal.textContent = total;
+        statToday.textContent = today;
+        statWeek.textContent = week;
+    }
+
+    // ========================================
+    // FILTER
+    // ========================================
+    function applyFilters() {
+        const q = searchQuery.toLowerCase().trim();
+
+        filteredSubscribers = allSubscribers.filter(s => {
+            if (!q) return true;
+            return (s.email || '').toLowerCase().includes(q);
+        });
+
+        renderTable();
+    }
+
+    // ========================================
+    // RENDER
+    // ========================================
+    function renderTable() {
+        loadingState.classList.add('hidden');
+
+        const shownCount = document.getElementById('shownCount');
+        const totalCountWrap = document.getElementById('totalCountWrap');
+        const totalCount = document.getElementById('totalCount');
+
+        shownCount.textContent = filteredSubscribers.length;
+
+        if (allSubscribers.length > 0 && filteredSubscribers.length !== allSubscribers.length) {
+            totalCountWrap.classList.remove('hidden');
+            totalCount.textContent = allSubscribers.length;
+        } else {
+            totalCountWrap.classList.add('hidden');
+        }
+
+        if (filteredSubscribers.length === 0) {
+            tableWrap.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            emptyMsg.textContent = allSubscribers.length === 0
+                ? 'Subscriber dari footer website akan muncul di sini.'
+                : 'Tidak ada subscriber yang cocok dengan pencarian.';
+            return;
+        }
+
+        emptyState.classList.add('hidden');
+        tableWrap.classList.remove('hidden');
+
+        subscriberTbody.innerHTML = filteredSubscribers.map((s, i) => {
+            const email = s.email || '—';
+            const date = s.created_at;
+
+            return `
+                <tr>
+                    <td>
+                        <span class="text-slate-400 text-xs font-bold">${i + 1}</span>
+                    </td>
+                    <td>
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-sky-400 to-sky-700 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+                                ${email.charAt(0).toUpperCase()}
+                            </div>
+                            <div class="font-bold text-slate-800 text-sm break-all">${escapeHtml(email)}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="text-slate-600 text-xs">${formatDateTime(date)}</div>
+                    </td>
+                    <td class="text-right">
+                        <div class="flex items-center justify-end gap-1.5">
+                            <a href="mailto:${escapeHtml(email)}" class="btn btn-outline !px-2.5 !py-2" title="Kirim email">
+                                <i class="fa-solid fa-envelope"></i>
+                            </a>
+                            <button onclick="deleteSubscriber('${s.id}', '${escapeHtml(email)}')" class="btn btn-danger !px-2.5 !py-2" title="Hapus">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    // ========================================
+    // DELETE
+    // ========================================
+    async function deleteSubscriber(id, email) {
+        if (!confirm(`Yakin hapus subscriber "${email}"?`)) return;
+
+        try {
+            const { error } = await supabaseClient
+                .from('subscribers')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+
+            // Update local
+            allSubscribers = allSubscribers.filter(s => s.id !== id);
+            updateStats();
+            applyFilters();
+
+            showToast('Subscriber berhasil dihapus', 'success');
+
+        } catch (err) {
+            console.error('Delete error:', err);
+            showToast('Gagal hapus: ' + err.message, 'error');
+        }
+    }
+
+    // ========================================
+    // EXPORT CSV
+    // ========================================
+    function exportCSV() {
+        if (filteredSubscribers.length === 0) {
+            showToast('Tidak ada data untuk diexport', 'warning');
+            return;
+        }
+
+        const rows = [
+            ['No', 'Email', 'Tanggal Daftar'],
+            ...filteredSubscribers.map((s, i) => [
+                i + 1,
+                s.email || '',
+                s.created_at ? new Date(s.created_at).toLocaleString('id-ID') : ''
+            ])
+        ];
+
+        // Convert to CSV
+        const csv = rows.map(row =>
+            row.map(cell => {
+                const str = String(cell);
+                if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                    return `"${str.replace(/"/g, '""')}"`;
+                }
+                return str;
+            }).join(',')
+        ).join('\n');
+
+        // Add BOM for Excel
+        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+
+        const date = new Date().toISOString().split('T')[0];
+        link.href = url;
+        link.download = `karyakata-subscribers-${date}.csv`;
+        link.click();
+
+        URL.revokeObjectURL(url);
+
+        showToast(`${filteredSubscribers.length} subscriber diexport ke CSV`, 'success');
+    }
+
+    // ========================================
+    // LOGOUT / SIDEBAR
+    // ========================================
+    async function handleLogout() {
+        if (!confirm('Yakin mau logout?')) return;
+        await adminSignOut();
+        window.location.href = 'admin-login.html';
+    }
+
+    function toggleSidebar() {
+        sidebar.classList.toggle('-translate-x-full');
+        sidebarOverlay.classList.toggle('active');
+    }
+
+    // ========================================
+    // EVENTS
+    // ========================================
+    function bindEvents() {
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            applyFilters();
+        });
+
+        refreshBtn.addEventListener('click', () => {
+            refreshBtn.disabled = true;
+            refreshBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span class="hidden sm:inline">Loading...</span>';
+            loadSubscribers().finally(() => {
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = '<i class="fa-solid fa-rotate"></i><span class="hidden sm:inline">Refresh</span>';
+            });
+        });
+
+        exportBtn.addEventListener('click', exportCSV);
+        logoutBtn.addEventListener('click', handleLogout);
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+    }
+
+    // ========================================
+    // INIT
+    // ========================================
+    (async () => {
+        const ok = await checkAuth();
+        if (!ok) return;
+
+        bindEvents();
+        await loadSubscribers();
+
+        console.log('%c👥 Karyakata Admin Subscriber loaded', 'font-size: 14px; font-weight: bold; color: #0B7BE8;');
+    })();
+
+    window.deleteSubscriber = deleteSubscriber;
+    </script>
+
+</body>
+</html>

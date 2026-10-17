@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin — Pesan Kontak — Karyakata.id</title>
+    <meta name="robots" content="noindex, nofollow" />
+
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/img/favicon.png" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: {
+                            50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD',
+                            400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6',
+                            800: '#064485', 900: '#053364',
+                        },
+                        gold: {
+                            100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A',
+                            500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #F8FAFC; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.4s ease-out forwards; opacity: 0; }
+
+        .sidebar-link {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px; font-weight: 600;
+            color: #475569;
+            transition: all .2s ease;
+            text-decoration: none;
+        }
+        .sidebar-link:hover { background: #EFF6FF; color: #0B7BE8; }
+        .sidebar-link.active {
+            background: linear-gradient(135deg, #0B7BE8, #0967C7);
+            color: white;
+            box-shadow: 0 6px 16px rgba(11, 123, 232, 0.3);
+        }
+        .sidebar-link.active i { color: white; }
+        .sidebar-link i { width: 20px; text-align: center; font-size: 15px; }
+
+        .badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 11px; font-weight: 700;
+            white-space: nowrap;
+        }
+        .badge-baru { background: #FEF3C7; color: #92400E; }
+        .badge-dibaca { background: #DBEAFE; color: #1E40AF; }
+        .badge-dibalas { background: #D1FAE5; color: #065F46; }
+
+        .filter-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 14px;
+            border: 2px solid #E2E8F0;
+            border-radius: 9999px;
+            font-size: 12px; font-weight: 700;
+            color: #475569; background: white;
+            cursor: pointer;
+            transition: all .2s ease;
+            white-space: nowrap;
+        }
+        .filter-chip:hover { border-color: #93C5FD; color: #0B7BE8; }
+        .filter-chip.active { background: #0B7BE8; border-color: #0B7BE8; color: white; }
+
+        .order-table th {
+            text-align: left;
+            padding: 14px 16px;
+            font-size: 11px; font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748B;
+            background: #F1F5F9;
+            white-space: nowrap;
+        }
+        .order-table td {
+            padding: 16px;
+            font-size: 13px;
+            color: #334155;
+            border-top: 1px solid #F1F5F9;
+            vertical-align: middle;
+        }
+        .order-table tbody tr { transition: background .15s ease; }
+        .order-table tbody tr:hover { background: #F8FAFC; }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 9px 16px;
+            border-radius: 10px;
+            font-size: 12px; font-weight: 700;
+            cursor: pointer;
+            transition: all .2s ease;
+            border: none;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .btn-primary { background: #0B7BE8; color: white; }
+        .btn-primary:hover { background: #0967C7; transform: translateY(-1px); }
+        .btn-outline { background: white; color: #475569; border: 2px solid #E2E8F0; }
+        .btn-outline:hover { border-color: #0B7BE8; color: #0B7BE8; }
+        .btn-green { background: #10B981; color: white; }
+        .btn-green:hover { background: #059669; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .form-input {
+            width: 100%; padding: 12px 14px;
+            border: 2px solid #E2E8F0; border-radius: 12px;
+            font-size: 14px; outline: none;
+            transition: all .2s ease; background: white;
+        }
+        .form-input:focus { border-color: #0B7BE8; box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1); }
+        .form-label {
+            display: block; font-size: 12px; font-weight: 700;
+            color: #334155; margin-bottom: 6px;
+        }
+
+        .modal-backdrop {
+            position: fixed; inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: flex; align-items: center; justify-content: center;
+            padding: 16px;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            max-width: 640px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: fadeUp 0.3s ease-out;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #F1F5F9; }
+        ::-webkit-scrollbar-thumb { background: #94A3B8; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748B; }
+
+        #sidebarOverlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            z-index: 40;
+        }
+        #sidebarOverlay.active { display: block; }
+
+        .info-row {
+            display: flex; align-items: start; gap: 12px;
+            padding: 12px;
+            background: #F8FAFC;
+            border-radius: 12px;
+            border: 1px solid #F1F5F9;
+        }
+        .info-row i {
+            color: #94A3B8;
+            margin-top: 2px;
+            width: 16px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .info-row .info-label {
+            font-size: 10px;
+            color: #64748B;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+        .info-row .info-value {
+            font-size: 13px;
+            color: #1E293B;
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        .topic-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px; font-weight: 700;
+            background: #EFF6FF;
+            color: #0B7BE8;
+            border: 1px solid #DBEAFE;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebarOverlay"></div>
+
+    <div class="flex min-h-screen">
+
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50 -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
+
+            <div class="p-5 border-b border-slate-100">
+                <a href="admin-order.html" class="flex items-center gap-3 group">
+                    <img src="../assets/img/logo.png" alt="Karyakata" class="h-10 w-auto" onerror="this.style.display='none'" />
+                    <span class="font-display text-lg font-black leading-none">
+                        <span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span>
+                    </span>
+                </a>
+                <div class="mt-3 flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1 bg-gold-100 text-gold-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        <i class="fa-solid fa-shield-halved text-[8px]"></i>
+                        ADMIN PANEL
+                    </span>
+                </div>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-2">MENU UTAMA</p>
+
+                <a href="admin-order.html" class="sidebar-link">
+                    <i class="fa-solid fa-receipt"></i>
+                    <span>Order</span>
+                    <span id="sidebarOrderCount" class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                </a>
+
+                <a href="admin-naskah.html" class="sidebar-link">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span>Naskah Masuk</span>
+                    <span id="sidebarSubmissionCount" class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                </a>
+
+                <a href="admin-pesan.html" class="sidebar-link active">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span>Pesan Kontak</span>
+                    <span id="sidebarContactCount" class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                </a>
+
+                <a href="admin-subscriber.html" class="sidebar-link">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Subscriber</span>
+                </a>
+
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">KONTEN</p>
+
+                <a href="admin-buku.html" class="sidebar-link">
+                    <i class="fa-solid fa-book"></i>
+                    <span>Buku / Katalog</span>
+                </a>
+
+                <a href="admin-blog.html" class="sidebar-link">
+                    <i class="fa-solid fa-newspaper"></i>
+                    <span>Blog</span>
+                </a>
+
+                <a href="admin-mitra.html" class="sidebar-link">
+                    <i class="fa-solid fa-handshake"></i>
+                    <span>Mitra &amp; Komunitas</span>
+                </a>
+
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">LAINNYA</p>
+
+                <a href="../index.html" target="_blank" class="sidebar-link">
+                    <i class="fa-solid fa-external-link-alt"></i>
+                    <span>Lihat Website</span>
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-slate-100">
+                <div class="bg-slate-50 rounded-2xl p-3">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">
+                            A
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-bold text-slate-800 truncate" id="userEmail">admin@...</p>
+                            <p class="text-[10px] text-slate-500">Administrator</p>
+                        </div>
+                    </div>
+                    <button id="logoutBtn" class="w-full btn btn-outline text-xs justify-center">
+                        <i class="fa-solid fa-right-from-bracket text-[10px]"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="flex-1 min-w-0">
+
+            <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-lg border-b border-slate-200">
+                <div class="flex items-center justify-between px-4 md:px-6 h-16">
+                    <div class="flex items-center gap-3">
+                        <button id="sidebarToggle" class="lg:hidden w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+                            <i class="fa-solid fa-bars"></i>
+                        </button>
+                        <div>
+                            <h1 class="font-display text-lg md:text-xl font-black text-slate-800">Pesan Kontak</h1>
+                            <p class="text-[11px] text-slate-500 hidden md:block">Pesan dari form kontak website</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <button id="refreshBtn" class="btn btn-outline text-xs">
+                            <i class="fa-solid fa-rotate"></i>
+                            <span class="hidden sm:inline">Refresh</span>
+                        </button>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">
+                            A
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-4 md:p-6">
+
+                <!-- STATS -->
+                <div class="grid grid-cols-3 gap-4 mb-6">
+
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-yellow-100 flex items-center justify-center text-yellow-600">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">BARU</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statBaru">—</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center text-sky-600">
+                                <i class="fa-solid fa-envelope-open"></i>
+                            </div>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">DIBACA</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statDibaca">—</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-600">
+                                <i class="fa-solid fa-reply"></i>
+                            </div>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">DIBALAS</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statDibalas">—</p>
+                    </div>
+                </div>
+
+                <!-- TOOLBAR -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 mb-4">
+
+                    <div class="flex flex-col md:flex-row gap-3 mb-4">
+                        <div class="relative flex-1">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                            <input
+                                type="text"
+                                id="searchInput"
+                                class="form-input pl-10"
+                                placeholder="Cari nama, email, WA, topik, atau pesan..."
+                            />
+                        </div>
+                        <select id="topikFilter" class="form-input md:w-56">
+                            <option value="all">Semua Topik</option>
+                            <option value="Tanya Paket Penerbitan">Tanya Paket Penerbitan</option>
+                            <option value="Tanya Terbit & Cetak Satuan">Tanya Terbit &amp; Cetak Satuan</option>
+                            <option value="Tanya Kirim Naskah">Tanya Kirim Naskah</option>
+                            <option value="Kerja Sama / Kolaborasi">Kerja Sama / Kolaborasi</option>
+                            <option value="Kendala Order / Pembayaran">Kendala Order / Pembayaran</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-2 overflow-x-auto pb-1">
+                        <button class="filter-chip active" data-status="all">
+                            <i class="fa-solid fa-list text-[10px]"></i>
+                            <span>Semua</span>
+                            <span class="bg-white/30 px-1.5 rounded text-[10px]" id="chipCountAll">0</span>
+                        </button>
+                        <button class="filter-chip" data-status="baru">
+                            <i class="fa-solid fa-envelope text-[10px]"></i>
+                            <span>Baru</span>
+                        </button>
+                        <button class="filter-chip" data-status="dibaca">
+                            <i class="fa-solid fa-envelope-open text-[10px]"></i>
+                            <span>Dibaca</span>
+                        </button>
+                        <button class="filter-chip" data-status="dibalas">
+                            <i class="fa-solid fa-reply text-[10px]"></i>
+                            <span>Dibalas</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TABLE -->
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+
+                    <div id="loadingState" class="p-6">
+                        <div class="space-y-3">
+                            <div class="skeleton h-12 w-full"></div>
+                            <div class="skeleton h-12 w-full"></div>
+                            <div class="skeleton h-12 w-full"></div>
+                            <div class="skeleton h-12 w-full"></div>
+                        </div>
+                    </div>
+
+                    <div id="emptyState" class="hidden p-12 text-center">
+                        <div class="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-envelope text-slate-400 text-3xl"></i>
+                        </div>
+                        <h3 class="font-display text-lg font-black text-slate-700 mb-1">Belum ada pesan</h3>
+                        <p class="text-slate-500 text-sm" id="emptyMsg">Pesan dari form kontak akan muncul di sini.</p>
+                    </div>
+
+                    <div id="tableWrap" class="hidden overflow-x-auto">
+                        <table class="order-table w-full min-w-[900px]">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Pengirim</th>
+                                    <th>Topik</th>
+                                    <th>Pesan</th>
+                                    <th>Status</th>
+                                    <th class="text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="contactTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <p class="text-[11px] text-slate-500 text-center mt-4">
+                    Menampilkan <span id="shownCount" class="font-bold text-slate-700">0</span> pesan
+                    <span id="totalCountWrap" class="hidden">dari <span id="totalCount" class="font-bold text-slate-700">0</span></span>
+                </p>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL -->
+    <div id="detailModal" class="modal-backdrop hidden">
+        <div class="modal-content">
+
+            <div class="sticky top-0 bg-white border-b border-slate-100 p-5 flex items-center justify-between rounded-t-3xl z-10">
+                <div>
+                    <h3 class="font-display text-lg font-black text-slate-800">Detail Pesan</h3>
+                    <p class="text-xs text-slate-500" id="modalContactId">—</p>
+                </div>
+                <button onclick="closeDetailModal()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-5 md:p-6 space-y-5" id="modalBody"></div>
+
+            <div class="sticky bottom-0 bg-slate-50 border-t border-slate-100 p-4 md:p-5 rounded-b-3xl flex flex-wrap gap-2 justify-end">
+                <button onclick="closeDetailModal()" class="btn btn-outline">
+                    <i class="fa-solid fa-xmark"></i>
+                    <span>Tutup</span>
+                </button>
+                <button id="modalWaBtn" class="btn btn-green">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <span>Balas via WA</span>
+                </button>
+                <button id="modalSaveBtn" class="btn btn-primary">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span>Simpan</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastWrap" class="fixed top-4 right-4 z-[200] space-y-2"></div>
+
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/supabase-client.js"></script>
+
+    <script>
+    // ========================================
+    // ADMIN PESAN — MAIN SCRIPT
+    // ========================================
+
+    let allContacts = [];
+    let filteredContacts = [];
+    let activeStatus = 'all';
+    let activeTopik = 'all';
+    let searchQuery = '';
+    let currentContact = null;
+    let currentUser = null;
+
+    const contactTbody = document.getElementById('contactTbody');
+    const loadingState = document.getElementById('loadingState');
+    const emptyState = document.getElementById('emptyState');
+    const emptyMsg = document.getElementById('emptyMsg');
+    const tableWrap = document.getElementById('tableWrap');
+    const searchInput = document.getElementById('searchInput');
+    const topikFilter = document.getElementById('topikFilter');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userEmail = document.getElementById('userEmail');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const detailModal = document.getElementById('detailModal');
+    const modalContactId = document.getElementById('modalContactId');
+    const modalBody = document.getElementById('modalBody');
+    const modalWaBtn = document.getElementById('modalWaBtn');
+    const modalSaveBtn = document.getElementById('modalSaveBtn');
+    const toastWrap = document.getElementById('toastWrap');
+
+    const statBaru = document.getElementById('statBaru');
+    const statDibaca = document.getElementById('statDibaca');
+    const statDibalas = document.getElementById('statDibalas');
+
+    // ========================================
+    // TOAST
+    // ========================================
+    function showToast(message, type = 'info') {
+        const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-sky-500', warning: 'bg-gold-500' };
+        const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info', warning: 'fa-triangle-exclamation' };
+        const toast = document.createElement('div');
+        toast.className = `${colors[type]} text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-bold animate-fade-up max-w-sm`;
+        toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span class="flex-1">${message}</span>`;
+        toastWrap.appendChild(toast);
+        setTimeout(() => {
+            toast.style.transition = 'all 0.3s ease';
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // ========================================
+    // HELPERS
+    // ========================================
+    function getStatusBadge(status) {
+        const map = {
+            baru:    { class: 'badge-baru',    icon: 'fa-envelope',      label: 'Baru' },
+            dibaca:  { class: 'badge-dibaca',  icon: 'fa-envelope-open', label: 'Dibaca' },
+            dibalas: { class: 'badge-dibalas', icon: 'fa-reply',         label: 'Dibalas' },
+        };
+        const s = map[status] || map.baru;
+        return `<span class="badge ${s.class}"><i class="fa-solid ${s.icon} text-[9px]"></i>${s.label}</span>`;
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return '—';
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function formatDateTime(dateStr) {
+        if (!dateStr) return '—';
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('id-ID', {
+            day: '2-digit', month: 'long', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+    }
+
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function waLink(phone, message) {
+        let clean = String(phone || '').replace(/\D/g, '');
+        if (clean.startsWith('0')) clean = '62' + clean.slice(1);
+        if (!clean.startsWith('62')) clean = '62' + clean;
+        const text = message ? `?text=${encodeURIComponent(message)}` : '';
+        return `https://wa.me/${clean}${text}`;
+    }
+
+    function truncate(str, n = 70) {
+        if (!str) return '—';
+        return str.length > n ? str.substring(0, n) + '...' : str;
+    }
+
+    // ========================================
+    // AUTH
+    // ========================================
+    async function checkAuth() {
+        try {
+            const user = await getCurrentUser();
+            if (!user) {
+                window.location.href = 'admin-login.html';
+                return false;
+            }
+            currentUser = user;
+            userEmail.textContent = user.email;
+            return true;
+        } catch (err) {
+            window.location.href = 'admin-login.html';
+            return false;
+        }
+    }
+
+    // ========================================
+    // LOAD
+    // ========================================
+    async function loadContacts() {
+        loadingState.classList.remove('hidden');
+        tableWrap.classList.add('hidden');
+        emptyState.classList.add('hidden');
+
+        try {
+            const { data, error } = await supabaseClient
+                .from('contacts')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            allContacts = data || [];
+            updateStats();
+            applyFilters();
+
+        } catch (err) {
+            console.error('Load contacts error:', err);
+            showToast('Gagal memuat: ' + err.message, 'error');
+            loadingState.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            emptyMsg.textContent = 'Gagal memuat data. Coba refresh.';
+        }
+    }
+
+    function updateStats() {
+        const counts = {
+            baru:    allContacts.filter(c => (c.status || 'baru') === 'baru').length,
+            dibaca:  allContacts.filter(c => c.status === 'dibaca').length,
+            dibalas: allContacts.filter(c => c.status === 'dibalas').length,
+        };
+        statBaru.textContent = counts.baru;
+        statDibaca.textContent = counts.dibaca;
+        statDibalas.textContent = counts.dibalas;
+
+        document.getElementById('chipCountAll').textContent = allContacts.length;
+
+        const sidebarContactCount = document.getElementById('sidebarContactCount');
+        if (counts.baru > 0) {
+            sidebarContactCount.textContent = counts.baru;
+            sidebarContactCount.classList.remove('hidden');
+        } else {
+            sidebarContactCount.classList.add('hidden');
+        }
+    }
+
+    // ========================================
+    // FILTER
+    // ========================================
+    function applyFilters() {
+        const q = searchQuery.toLowerCase().trim();
+
+        filteredContacts = allContacts.filter(c => {
+            const status = c.status || 'baru';
+            if (activeStatus !== 'all' && status !== activeStatus) return false;
+            if (activeTopik !== 'all' && c.topik !== activeTopik) return false;
+
+            if (q) {
+                const haystack = [
+                    c.nama, c.email, c.wa, c.topik, c.pesan
+                ].filter(Boolean).join(' ').toLowerCase();
+                if (!haystack.includes(q)) return false;
+            }
+            return true;
+        });
+
+        renderTable();
+    }
+
+    // ========================================
+    // RENDER
+    // ========================================
+    function renderTable() {
+        loadingState.classList.add('hidden');
+
+        const shownCount = document.getElementById('shownCount');
+        const totalCountWrap = document.getElementById('totalCountWrap');
+        const totalCount = document.getElementById('totalCount');
+
+        shownCount.textContent = filteredContacts.length;
+
+        if (allContacts.length > 0 && filteredContacts.length !== allContacts.length) {
+            totalCountWrap.classList.remove('hidden');
+            totalCount.textContent = allContacts.length;
+        } else {
+            totalCountWrap.classList.add('hidden');
+        }
+
+        if (filteredContacts.length === 0) {
+            tableWrap.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            emptyMsg.textContent = allContacts.length === 0
+                ? 'Pesan dari form kontak akan muncul di sini.'
+                : 'Tidak ada pesan yang cocok dengan filter.';
+            return;
+        }
+
+        emptyState.classList.add('hidden');
+        tableWrap.classList.remove('hidden');
+
+        contactTbody.innerHTML = filteredContacts.map(c => {
+            const nama = c.nama || '—';
+            const wa = c.wa || '';
+            const topik = c.topik || '—';
+            const pesan = c.pesan || '';
+            const status = c.status || 'baru';
+            const date = c.created_at;
+
+            return `
+                <tr class="${status === 'baru' ? 'bg-yellow-50/40' : ''}">
+                    <td>
+                        <div class="text-slate-600 text-xs">${formatDate(date)}</div>
+                    </td>
+                    <td>
+                        <div class="font-bold text-slate-800 text-sm">${escapeHtml(nama)}</div>
+                        <div class="text-[11px] text-slate-500">${escapeHtml(c.email || '')}</div>
+                    </td>
+                    <td>
+                        <span class="topic-badge"><i class="fa-solid fa-tag text-[9px]"></i>${escapeHtml(topik)}</span>
+                    </td>
+                    <td>
+                        <div class="text-slate-700 text-xs max-w-[280px]" title="${escapeHtml(pesan)}">${escapeHtml(truncate(pesan, 70))}</div>
+                    </td>
+                    <td>${getStatusBadge(status)}</td>
+                    <td class="text-right">
+                        <div class="flex items-center justify-end gap-1.5">
+                            <a href="${waLink(wa, `Halo ${nama}, saya admin Karyakata.`)}" target="_blank" class="btn btn-green !px-2.5 !py-2" title="Chat WA">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </a>
+                            <button onclick="openDetail('${c.id}')" class="btn btn-primary !px-3 !py-2" title="Lihat Detail">
+                                <i class="fa-solid fa-eye"></i>
+                                <span class="hidden md:inline">Detail</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    // ========================================
+    // MODAL
+    // ========================================
+    async function openDetail(id) {
+        const contact = allContacts.find(c => String(c.id) === String(id));
+        if (!contact) {
+            showToast('Pesan tidak ditemukan', 'error');
+            return;
+        }
+
+        currentContact = contact;
+        modalContactId.textContent = `ID: ${String(contact.id).substring(0, 8)}...`;
+
+        // Auto-mark as "dibaca" kalau status "baru"
+        if ((contact.status || 'baru') === 'baru') {
+            await markAsDibaca(contact);
+        }
+
+        modalBody.innerHTML = renderModalContent(currentContact);
+
+        detailModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDetailModal() {
+        detailModal.classList.add('hidden');
+        document.body.style.overflow = '';
+        currentContact = null;
+    }
+
+    async function markAsDibaca(contact) {
+        try {
+            const { error } = await supabaseClient
+                .from('contacts')
+                .update({ status: 'dibaca' })
+                .eq('id', contact.id);
+
+            if (error) throw error;
+
+            // Update local state
+            const idx = allContacts.findIndex(c => c.id === contact.id);
+            if (idx !== -1) {
+                allContacts[idx].status = 'dibaca';
+                currentContact = allContacts[idx];
+            }
+
+            updateStats();
+            applyFilters();
+
+        } catch (err) {
+            console.warn('Gagal mark as dibaca:', err);
+        }
+    }
+
+    function renderModalContent(c) {
+        const status = c.status || 'baru';
+
+        return `
+            <!-- STATUS -->
+            <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-bold text-slate-500 tracking-wide">STATUS PESAN</span>
+                    ${getStatusBadge(status)}
+                </div>
+                <select id="modalStatus" class="form-input">
+                    <option value="baru"    ${status === 'baru'    ? 'selected' : ''}>📥 Baru</option>
+                    <option value="dibaca"  ${status === 'dibaca'  ? 'selected' : ''}>👀 Dibaca</option>
+                    <option value="dibalas" ${status === 'dibalas' ? 'selected' : ''}>✅ Dibalas</option>
+                </select>
+            </div>
+
+            <!-- PENGIRIM -->
+            <div>
+                <p class="text-xs font-bold text-slate-500 tracking-wide mb-3"><i class="fa-solid fa-user text-sky-500"></i> PENGIRIM</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="info-row">
+                        <i class="fa-solid fa-user"></i>
+                        <div class="flex-1 min-w-0">
+                            <p class="info-label">Nama</p>
+                            <p class="info-value">${escapeHtml(c.nama || '—')}</p>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <i class="fa-brands fa-whatsapp"></i>
+                        <div class="flex-1 min-w-0">
+                            <p class="info-label">WhatsApp</p>
+                            <a href="${waLink(c.wa)}" target="_blank" class="info-value text-sky-600 hover:underline">${escapeHtml(c.wa || '—')}</a>
+                        </div>
+                    </div>
+                    <div class="info-row md:col-span-2">
+                        <i class="fa-solid fa-envelope"></i>
+                        <div class="flex-1 min-w-0">
+                            <p class="info-label">Email</p>
+                            <a href="mailto:${escapeHtml(c.email || '')}" class="info-value text-sky-600 hover:underline break-all">${escapeHtml(c.email || '—')}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOPIK -->
+            <div>
+                <p class="text-xs font-bold text-slate-500 tracking-wide mb-3"><i class="fa-solid fa-tag text-sky-500"></i> TOPIK</p>
+                <div class="bg-sky-50 border-2 border-sky-200 rounded-xl p-4 flex items-center gap-3">
+                    <i class="fa-solid fa-tag text-sky-600 text-xl"></i>
+                    <p class="text-sm font-bold text-sky-700">${escapeHtml(c.topik || '—')}</p>
+                </div>
+            </div>
+
+            <!-- PESAN -->
+            <div>
+                <p class="text-xs font-bold text-slate-500 tracking-wide mb-3"><i class="fa-solid fa-comment text-sky-500"></i> PESAN</p>
+                <div class="bg-white border border-slate-200 rounded-xl p-4">
+                    <p class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">${escapeHtml(c.pesan || '—')}</p>
+                </div>
+            </div>
+
+            <!-- CATATAN ADMIN -->
+            <div>
+                <p class="text-xs font-bold text-slate-500 tracking-wide mb-3"><i class="fa-solid fa-note-sticky text-sky-500"></i> CATATAN ADMIN</p>
+                <textarea id="modalCatatan" class="form-input" rows="3" placeholder="Catatan internal...">${escapeHtml(c.catatan_admin || '')}</textarea>
+            </div>
+
+            <!-- META -->
+            <div class="bg-slate-50 rounded-2xl p-4 text-[11px] text-slate-500 space-y-1.5">
+                <div class="flex justify-between">
+                    <span>Dikirim</span>
+                    <span class="font-bold text-slate-700">${formatDateTime(c.created_at)}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Diupdate</span>
+                    <span class="font-bold text-slate-700">${formatDateTime(c.updated_at || c.created_at)}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    // ========================================
+    // SAVE
+    // ========================================
+    async function saveContact() {
+        if (!currentContact) return;
+
+        const newStatus = document.getElementById('modalStatus')?.value;
+        const newCatatan = document.getElementById('modalCatatan')?.value || '';
+
+        const originalHTML = modalSaveBtn.innerHTML;
+        modalSaveBtn.disabled = true;
+        modalSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Menyimpan...</span>';
+
+        try {
+            const updates = {
+                status: newStatus,
+                catatan_admin: newCatatan,
+                updated_at: new Date().toISOString()
+            };
+
+            const { error } = await supabaseClient
+                .from('contacts')
+                .update(updates)
+                .eq('id', currentContact.id);
+
+            if (error) throw error;
+
+            const idx = allContacts.findIndex(c => c.id === currentContact.id);
+            if (idx !== -1) {
+                allContacts[idx] = { ...allContacts[idx], ...updates };
+                currentContact = allContacts[idx];
+            }
+
+            showToast('Pesan berhasil diupdate!', 'success');
+            updateStats();
+            applyFilters();
+            setTimeout(() => closeDetailModal(), 500);
+
+        } catch (err) {
+            console.error('Save error:', err);
+            showToast('Gagal menyimpan: ' + err.message, 'error');
+        } finally {
+            modalSaveBtn.disabled = false;
+            modalSaveBtn.innerHTML = originalHTML;
+        }
+    }
+
+    // ========================================
+    // LOGOUT / SIDEBAR
+    // ========================================
+    async function handleLogout() {
+        if (!confirm('Yakin mau logout?')) return;
+        await adminSignOut();
+        window.location.href = 'admin-login.html';
+    }
+
+    function toggleSidebar() {
+        sidebar.classList.toggle('-translate-x-full');
+        sidebarOverlay.classList.toggle('active');
+    }
+
+    // ========================================
+    // EVENTS
+    // ========================================
+    function bindEvents() {
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            applyFilters();
+        });
+
+        topikFilter.addEventListener('change', (e) => {
+            activeTopik = e.target.value;
+            applyFilters();
+        });
+
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                activeStatus = chip.dataset.status;
+                applyFilters();
+            });
+        });
+
+        refreshBtn.addEventListener('click', () => {
+            refreshBtn.disabled = true;
+            refreshBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span class="hidden sm:inline">Loading...</span>';
+            loadContacts().finally(() => {
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = '<i class="fa-solid fa-rotate"></i><span class="hidden sm:inline">Refresh</span>';
+            });
+        });
+
+        logoutBtn.addEventListener('click', handleLogout);
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+
+        detailModal.addEventListener('click', (e) => {
+            if (e.target === detailModal) closeDetailModal();
+        });
+
+        modalWaBtn.addEventListener('click', () => {
+            if (!currentContact) return;
+            const msg = `Halo ${currentContact.nama}, saya admin Karyakata.\n\nTerima kasih sudah menghubungi kami terkait "${currentContact.topik}".\n\n`;
+            window.open(waLink(currentContact.wa, msg), '_blank');
+        });
+
+        modalSaveBtn.addEventListener('click', saveContact);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !detailModal.classList.contains('hidden')) {
+                closeDetailModal();
+            }
+        });
+    }
+
+    // ========================================
+    // INIT
+    // ========================================
+    (async () => {
+        const ok = await checkAuth();
+        if (!ok) return;
+
+        bindEvents();
+        await loadContacts();
+
+        console.log('%c📧 Karyakata Admin Pesan loaded', 'font-size: 14px; font-weight: bold; color: #0B7BE8;');
+    })();
+
+    window.openDetail = openDetail;
+    window.closeDetailModal = closeDetailModal;
+    </script>
+
+</body>
+</html>

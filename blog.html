@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog — Karyakata.id</title>
+    <meta name="description" content="Blog Karyakata.id — tips menulis, info penerbitan, review buku, cerita penulis, dan berita dari komunitas." />
+
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/img/favicon.png" />
+    <link rel="shortcut icon" href="assets/img/favicon.png" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: {
+                            50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD',
+                            400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6',
+                            800: '#064485', 900: '#053364',
+                        },
+                        gold: {
+                            100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A',
+                            500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        html { scroll-behavior: smooth; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.8s ease-out forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 166, 35, 0.7); }
+            50% { box-shadow: 0 0 0 12px rgba(245, 166, 35, 0); }
+        }
+        .pulse-glow { animation: pulseGlow 2s infinite; }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #0B7BE8 0%, #0967C7 40%, #0755A6 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero-gradient::after {
+            content: '';
+            position: absolute;
+            bottom: -50%; left: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(245, 166, 35, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .card-lift { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 24px 48px -16px rgba(11, 123, 232, 0.25);
+        }
+
+        .nav-link { color: #334155; font-weight: 500; transition: all .2s ease; }
+        .nav-link:hover { color: #0B7BE8; }
+        .nav-link.active { color: #0B7BE8; font-weight: 700; }
+
+        .btn-primary {
+            background: #0B7BE8; color: white; font-weight: 700;
+            transition: all .3s ease;
+            box-shadow: 0 8px 20px rgba(11, 123, 232, 0.35);
+        }
+        .btn-primary:hover {
+            background: #0967C7; transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(11, 123, 232, 0.45);
+        }
+        .btn-gold {
+            background: #F5A623; color: #422006; font-weight: 700;
+            transition: all .3s ease;
+            box-shadow: 0 8px 20px rgba(245, 166, 35, 0.35);
+        }
+        .btn-gold:hover {
+            background: #D98B0E; color: white; transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(245, 166, 35, 0.45);
+        }
+
+        .filter-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 10px 18px;
+            border: 2px solid #DBEAFE;
+            border-radius: 9999px;
+            font-size: 13px; font-weight: 700;
+            color: #334155; background: white;
+            cursor: pointer;
+            transition: all .2s ease;
+            white-space: nowrap;
+        }
+        .filter-chip:hover { border-color: #93C5FD; color: #0B7BE8; }
+        .filter-chip.active {
+            background: #0B7BE8; border-color: #0B7BE8; color: white;
+            box-shadow: 0 8px 20px rgba(11, 123, 232, 0.35);
+        }
+        .filter-chip.active i { color: white; }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            border: 2px solid #DBEAFE;
+            border-radius: 9999px;
+            font-size: 14px;
+            outline: none;
+            transition: all .2s ease;
+        }
+        .search-input:focus { border-color: #0B7BE8; box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1); }
+
+        /* Post card */
+        .post-card {
+            background: white;
+            border: 2px solid #DBEAFE;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all .3s ease;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+        }
+        .post-card:hover {
+            border-color: #93C5FD;
+            transform: translateY(-6px);
+            box-shadow: 0 24px 48px -16px rgba(11, 123, 232, 0.25);
+        }
+
+        .post-cover {
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .post-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .4s ease;
+        }
+        .post-card:hover .post-cover img { transform: scale(1.05); }
+        .post-cover .placeholder { color: #94A3B8; font-size: 48px; }
+
+        .post-category {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #EFF6FF;
+            color: #0B7BE8;
+            border: 1px solid #DBEAFE;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            align-self: flex-start;
+            margin-bottom: 10px;
+        }
+
+        /* Skeleton */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #e0f2fe 25%, #f0f9ff 50%, #e0f2fe 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 12px;
+        }
+
+        /* Featured card */
+        .featured-card {
+            background: white;
+            border: 2px solid #F5A623;
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all .3s ease;
+            text-decoration: none;
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+        @media (min-width: 768px) {
+            .featured-card { grid-template-columns: 1.2fr 1fr; }
+        }
+        .featured-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 24px 48px -16px rgba(245, 166, 35, 0.3);
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #eff6ff; }
+        ::-webkit-scrollbar-thumb { background: #4A9EF0; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0B7BE8; }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-b border-sky-100" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+
+                <a href="index.html" class="flex items-center gap-2 group">
+                    <img src="assets/img/logo.png" alt="Karyakata.id" class="h-10 md:h-12 w-auto group-hover:scale-105 transition" />
+                    <span class="font-display text-xl md:text-2xl font-black leading-none">
+                        <span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span>
+                    </span>
+                </a>
+
+                <div class="hidden lg:flex items-center gap-8 text-sm">
+                    <a href="index.html" class="nav-link">Beranda</a>
+                    <a href="layanan.html" class="nav-link">Layanan</a>
+                    <a href="katalog.html" class="nav-link">Katalog</a>
+                    <a href="blog.html" class="nav-link active">Blog</a>
+                    <a href="tentang.html" class="nav-link">Tentang</a>
+                    <a href="kontak.html" class="nav-link">Kontak</a>
+                </div>
+
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="kirim-naskah.html" class="btn-gold px-5 py-2.5 rounded-full text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Kirim Naskah</span>
+                    </a>
+                </div>
+
+                <button id="menuBtn" class="lg:hidden w-10 h-10 rounded-lg bg-sky-50 flex items-center justify-center text-sky-700">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobileMenu" class="hidden lg:hidden bg-white border-t border-sky-100 px-4 py-4 space-y-1">
+            <a href="index.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Beranda</a>
+            <a href="layanan.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Layanan</a>
+            <a href="katalog.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Katalog</a>
+            <a href="blog.html" class="block px-4 py-2.5 bg-sky-50 text-sky-700 rounded-xl font-bold">Blog</a>
+            <a href="tentang.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Tentang</a>
+            <a href="kontak.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Kontak</a>
+            <a href="kirim-naskah.html" class="block text-center btn-gold px-5 py-3 rounded-xl text-sm font-bold mt-2">
+                <i class="fa-solid fa-paper-plane mr-1"></i> Kirim Naskah
+            </a>
+        </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <section class="hero-gradient pt-32 md:pt-40 pb-16 md:pb-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <nav class="flex items-center justify-center lg:justify-start gap-2 text-sky-200 text-xs md:text-sm mb-6 animate-fade-up">
+                <a href="index.html" class="hover:text-white transition">Beranda</a>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                <span class="text-white font-bold">Blog</span>
+            </nav>
+
+            <div class="text-center lg:text-left max-w-3xl">
+                <h1 class="font-display text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.1] animate-fade-up delay-1">
+                    Blog <span class="text-gold-300">Karyakata</span>
+                </h1>
+                <p class="text-sky-100 text-base md:text-lg mt-6 leading-relaxed animate-fade-up delay-2">
+                    Tips menulis, info penerbitan, review buku, cerita penulis, dan berita dari komunitas. Semua di satu tempat.
+                </p>
+            </div>
+        </div>
+
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+                <path d="M0 80L60 74.7C120 69.3 240 58.7 360 58.7C480 58.7 600 69.3 720 69.3C840 69.3 960 58.7 1080 53.3C1200 48 1320 48 1380 48L1440 48V80H0Z" fill="white"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- FEATURED POST -->
+    <section id="featuredSection" class="py-12 md:py-16 bg-white hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="inline-flex items-center gap-2 bg-gold-100 border border-gold-200 rounded-full px-4 py-1.5">
+                    <i class="fa-solid fa-star text-gold-600 text-xs"></i>
+                    <span class="text-gold-700 text-xs font-bold tracking-wide">ARTIKEL PILIHAN</span>
+                </div>
+            </div>
+            <div id="featuredWrap"></div>
+        </div>
+    </section>
+
+    <!-- SEARCH & FILTER -->
+    <section class="py-8 md:py-10 bg-white border-b border-sky-100 sticky top-16 md:top-20 z-40 backdrop-blur-lg bg-white/95">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="relative mb-6 max-w-xl mx-auto md:mx-0">
+                <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Cari artikel..." />
+            </div>
+
+            <div class="flex items-center gap-3 overflow-x-auto pb-2">
+                <button class="filter-chip active" data-category="all">
+                    <i class="fa-solid fa-list text-xs"></i>
+                    <span>Semua</span>
+                </button>
+                <button class="filter-chip" data-category="Tips Menulis">
+                    <i class="fa-solid fa-pen-nib text-xs"></i>
+                    <span>Tips Menulis</span>
+                </button>
+                <button class="filter-chip" data-category="Info Penerbitan">
+                    <i class="fa-solid fa-book text-xs"></i>
+                    <span>Info Penerbitan</span>
+                </button>
+                <button class="filter-chip" data-category="Review Buku">
+                    <i class="fa-solid fa-star text-xs"></i>
+                    <span>Review Buku</span>
+                </button>
+                <button class="filter-chip" data-category="Cerita Penulis">
+                    <i class="fa-solid fa-feather text-xs"></i>
+                    <span>Cerita Penulis</span>
+                </button>
+                <button class="filter-chip" data-category="Berita Karyakata">
+                    <i class="fa-solid fa-bullhorn text-xs"></i>
+                    <span>Berita</span>
+                </button>
+                <button class="filter-chip" data-category="Komunitas">
+                    <i class="fa-solid fa-users text-xs"></i>
+                    <span>Komunitas</span>
+                </button>
+                <button class="filter-chip" data-category="Lainnya">
+                    <i class="fa-solid fa-tag text-xs"></i>
+                    <span>Lainnya</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- POST GRID -->
+    <section class="py-12 md:py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="flex items-center justify-between mb-8">
+                <p class="text-slate-600 text-sm">
+                    Menampilkan <span id="hasilCount" class="font-bold text-sky-600">0</span> artikel
+                </p>
+            </div>
+
+            <!-- Loading -->
+            <div id="loadingState">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div>
+                        <div class="skeleton aspect-video"></div>
+                        <div class="skeleton h-5 w-3/4 mt-4"></div>
+                        <div class="skeleton h-4 w-full mt-2"></div>
+                        <div class="skeleton h-4 w-2/3 mt-2"></div>
+                    </div>
+                    <div>
+                        <div class="skeleton aspect-video"></div>
+                        <div class="skeleton h-5 w-3/4 mt-4"></div>
+                        <div class="skeleton h-4 w-full mt-2"></div>
+                        <div class="skeleton h-4 w-2/3 mt-2"></div>
+                    </div>
+                    <div>
+                        <div class="skeleton aspect-video"></div>
+                        <div class="skeleton h-5 w-3/4 mt-4"></div>
+                        <div class="skeleton h-4 w-full mt-2"></div>
+                        <div class="skeleton h-4 w-2/3 mt-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty -->
+            <div id="emptyState" class="hidden text-center py-20">
+                <div class="w-24 h-24 rounded-full bg-sky-50 flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-newspaper text-sky-300 text-4xl"></i>
+                </div>
+                <h3 class="font-display text-xl font-black text-slate-700 mb-2">Belum ada artikel</h3>
+                <p class="text-slate-500 text-sm" id="emptyMsg">Artikel akan muncul di sini.</p>
+            </div>
+
+            <!-- Grid -->
+            <div id="postGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
+
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-16 md:py-24 relative overflow-hidden">
+        <div class="hero-gradient absolute inset-0"></div>
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+
+            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-1.5 mb-6">
+                <span class="w-2 h-2 rounded-full bg-gold-400 pulse-glow"></span>
+                <span class="text-white/90 text-xs md:text-sm font-semibold tracking-wide">PUNYA CERITA?</span>
+            </div>
+
+            <h2 class="font-display text-4xl sm:text-5xl md:text-6xl font-black text-white leading-tight mb-6">
+                Bagikan <span class="text-gold-300">Karyamu</span>
+            </h2>
+
+            <p class="text-sky-100 text-base md:text-lg leading-relaxed mb-10 max-w-2xl mx-auto">
+                Kirim naskahmu, atau hubungi kami untuk kolaborasi konten di blog Karyakata.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="kirim-naskah.html" class="btn-gold px-8 py-4 rounded-full text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Kirim Naskah</span>
+                </a>
+                <a href="kontak.html" class="bg-white/10 backdrop-blur-md hover:bg-white/20 border border-white/30 text-white font-bold px-8 py-4 rounded-full text-sm flex items-center justify-center gap-2 transition">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span>Kolaborasi Konten</span>
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-300 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-12 gap-10 mb-12">
+
+                <div class="md:col-span-4">
+                    <div class="mb-5 flex items-center gap-3">
+                        <img src="assets/img/logo-footer.png" alt="Karyakata.id" class="h-16 w-auto" />
+                        <span class="font-display text-2xl font-black leading-none">
+                            <span class="text-white">Karyakata</span><span class="text-gold-400">.id</span>
+                        </span>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                        Penerbit buku modern Indonesia. Mitra komunitas Yatta.id. <br>
+                        <span class="text-gold-400 font-semibold">Berkarya dengan Kata, Berkata dengan Karya.</span>
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <a href="https://www.instagram.com/karyakata.publishing" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-gradient-to-br hover:from-pink-500 hover:to-purple-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-black flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </a>
+                        <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-green-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-red-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">MENU</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="index.html" class="text-slate-400 hover:text-sky-400 transition">Beranda</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Layanan</a></li>
+                        <li><a href="katalog.html" class="text-slate-400 hover:text-sky-400 transition">Katalog</a></li>
+                        <li><a href="blog.html" class="text-slate-400 hover:text-sky-400 transition">Blog</a></li>
+                        <li><a href="tentang.html" class="text-slate-400 hover:text-sky-400 transition">Tentang</a></li>
+                        <li><a href="kontak.html" class="text-slate-400 hover:text-sky-400 transition">Kontak</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">LAYANAN</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="layanan.html#paket" class="text-slate-400 hover:text-sky-400 transition">Paket Penerbitan</a></li>
+                        <li><a href="terbit-satuan.html" class="text-slate-400 hover:text-sky-400 transition">Terbit &amp; Cetak Satuan</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Editing &amp; Proofreading</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Layout &amp; Desain Cover</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Cetak &amp; Distribusi</a></li>
+                        <li><a href="kirim-naskah.html" class="text-slate-400 hover:text-sky-400 transition">Kirim Naskah</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">KONTAK</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-envelope text-sky-400 mt-0.5"></i>
+                            <span class="text-slate-400">redaksikaryakata@gmail.com</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-brands fa-whatsapp text-sky-400 mt-0.5"></i>
+                            <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="text-slate-400 hover:text-sky-400 transition">+62 895-6200-00033</a>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot text-sky-400 mt-0.5"></i>
+                            <span class="text-slate-400">Indonesia</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-users text-sky-400 mt-0.5"></i>
+                            <a href="https://www.yatta.id" target="_blank" rel="noopener" class="text-slate-400 hover:text-sky-400 transition">Komunitas Kami — www.yatta.id</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-slate-500 text-xs text-center md:text-left">
+                    &copy; <span id="year"></span> Karyakata.id — Karyakata Publishing. All rights reserved.
+                </p>
+                <div class="flex items-center gap-6 text-xs">
+                    <a href="syarat.html" class="text-slate-500 hover:text-sky-400 transition">Syarat &amp; Ketentuan</a>
+                    <a href="privacy.html" class="text-slate-500 hover:text-sky-400 transition">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/supabase-client.js"></script>
+
+    <script>
+    // ========================================
+    // BLOG PUBLIC — MAIN SCRIPT
+    // ========================================
+
+    let allPosts = [];
+    let filteredPosts = [];
+    let activeCategory = 'all';
+    let searchQuery = '';
+
+    const postGrid = document.getElementById('postGrid');
+    const loadingState = document.getElementById('loadingState');
+    const emptyState = document.getElementById('emptyState');
+    const emptyMsg = document.getElementById('emptyMsg');
+    const hasilCount = document.getElementById('hasilCount');
+    const searchInput = document.getElementById('searchInput');
+    const featuredSection = document.getElementById('featuredSection');
+    const featuredWrap = document.getElementById('featuredWrap');
+
+    // ========================================
+    // MOBILE MENU
+    // ========================================
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = menuBtn.querySelector('i');
+            if (mobileMenu.classList.contains('hidden')) {
+                icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars');
+            } else {
+                icon.classList.remove('fa-bars'); icon.classList.add('fa-xmark');
+            }
+        });
+    }
+
+    // ========================================
+    // NAVBAR SCROLL
+    // ========================================
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 50) {
+            navbar.classList.add('shadow-lg', 'shadow-sky-500/5');
+        } else {
+            navbar.classList.remove('shadow-lg', 'shadow-sky-500/5');
+        }
+    });
+
+    // Year
+    const yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+    // ========================================
+    // HELPERS
+    // ========================================
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return '—';
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+    }
+
+    function getCoverUrl(post) {
+        if (!post.cover_url) return null;
+        if (post.cover_url.startsWith('http')) return post.cover_url;
+        const { data } = supabaseClient.storage.from('blog-covers').getPublicUrl(post.cover_url);
+        return data.publicUrl;
+    }
+
+    function stripHtml(html) {
+        if (!html) return '';
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || '';
+    }
+
+    // ========================================
+    // LOAD POSTS
+    // ========================================
+    async function loadPosts() {
+        try {
+            const { data, error } = await supabaseClient
+                .from('posts')
+                .select('*')
+                .eq('is_published', true)
+                .order('published_at', { ascending: false, nullsFirst: false });
+
+            if (error) throw error;
+
+            allPosts = (data || []).filter(p => p.is_published);
+
+            renderFeatured();
+            applyFilters();
+
+        } catch (err) {
+            console.error('Load posts error:', err);
+            loadingState.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            emptyMsg.textContent = 'Gagal memuat artikel. Coba refresh.';
+        }
+    }
+
+    // ========================================
+    // RENDER FEATURED
+    // ========================================
+    function renderFeatured() {
+        const featured = allPosts.filter(p => p.is_featured);
+
+        if (featured.length === 0) {
+            featuredSection.classList.add('hidden');
+            return;
+        }
+
+        const post = featured[0]; // Ambil 1 featured
+        const coverUrl = getCoverUrl(post);
+        const excerpt = post.excerpt || stripHtml(post.content || '').substring(0, 200);
+
+        const coverHtml = coverUrl
+            ? `<img src="${escapeHtml(coverUrl)}" alt="${escapeHtml(post.title)}" class="w-full h-full object-cover" />`
+            : `<div class="w-full h-full flex items-center justify-center text-slate-300 text-6xl"><i class="fa-solid fa-newspaper"></i></div>`;
+
+        featuredWrap.innerHTML = `
+            <a href="blog-detail.html?slug=${encodeURIComponent(post.slug)}" class="featured-card">
+                <div class="aspect-video md:aspect-auto md:h-full bg-sky-50 relative overflow-hidden">
+                    ${coverHtml}
+                </div>
+                <div class="p-6 md:p-8 flex flex-col justify-center">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="inline-flex items-center gap-1 bg-gold-500 text-white text-[10px] font-bold px-2 py-1 rounded-full">
+                            <i class="fa-solid fa-star text-[8px]"></i> FEATURED
+                        </span>
+                        <span class="inline-flex items-center gap-1 bg-sky-100 text-sky-700 text-[10px] font-bold px-2 py-1 rounded-full">
+                            ${escapeHtml(post.category || 'Lainnya')}
+                        </span>
+                    </div>
+                    <h2 class="font-display text-2xl md:text-3xl font-black text-slate-800 leading-tight mb-3 hover:text-sky-600 transition">
+                        ${escapeHtml(post.title)}
+                    </h2>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4 line-clamp-3">${escapeHtml(excerpt)}</p>
+                    <div class="flex items-center gap-4 text-xs text-slate-500">
+                        <span><i class="fa-solid fa-user text-[10px]"></i> ${escapeHtml(post.author_name || 'Admin')}</span>
+                        <span><i class="fa-solid fa-calendar text-[10px]"></i> ${formatDate(post.published_at || post.created_at)}</span>
+                        <span><i class="fa-solid fa-eye text-[10px]"></i> ${(post.views_count || 0).toLocaleString('id-ID')}</span>
+                    </div>
+                </div>
+            </a>
+        `;
+
+        featuredSection.classList.remove('hidden');
+    }
+
+    // ========================================
+    // FILTER
+    // ========================================
+    function applyFilters() {
+        const q = searchQuery.toLowerCase().trim();
+
+        // Tampilkan semua artikel (termasuk yang featured)
+        filteredPosts = allPosts
+            .filter(p => {
+                if (activeCategory !== 'all' && p.category !== activeCategory) return false;
+
+                if (q) {
+                    const haystack = [
+                        p.title, p.author_name, p.category, p.excerpt,
+                        stripHtml(p.content || '').substring(0, 500)
+                    ].filter(Boolean).join(' ').toLowerCase();
+                    if (!haystack.includes(q)) return false;
+                }
+                return true;
+            });
+
+        renderGrid();
+    }
+
+    // ========================================
+    // RENDER GRID
+    // ========================================
+    function renderGrid() {
+        loadingState.classList.add('hidden');
+        hasilCount.textContent = filteredPosts.length;
+
+        if (filteredPosts.length === 0) {
+            postGrid.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            emptyMsg.textContent = allPosts.length === 0
+                ? 'Belum ada artikel yang dipublish.'
+                : 'Tidak ada artikel yang cocok dengan filter.';
+            return;
+        }
+
+        emptyState.classList.add('hidden');
+        postGrid.classList.remove('hidden');
+
+        postGrid.innerHTML = filteredPosts.map(post => {
+            const coverUrl = getCoverUrl(post);
+            const excerpt = post.excerpt || stripHtml(post.content || '').substring(0, 120);
+
+            const coverHtml = coverUrl
+                ? `<img src="${escapeHtml(coverUrl)}" alt="${escapeHtml(post.title)}" />`
+                : `<div class="placeholder"><i class="fa-solid fa-newspaper"></i></div>`;
+
+            return `
+                <a href="blog-detail.html?slug=${encodeURIComponent(post.slug)}" class="post-card">
+                    <div class="post-cover">${coverHtml}</div>
+                    <div class="p-5 flex-1 flex flex-col">
+                        <span class="post-category">
+                            <i class="fa-solid fa-tag text-[9px]"></i>
+                            ${escapeHtml(post.category || 'Lainnya')}
+                        </span>
+                        <h3 class="font-display font-black text-slate-800 text-lg leading-tight mb-2 line-clamp-2">
+                            ${escapeHtml(post.title)}
+                        </h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4 line-clamp-3 flex-1">
+                            ${escapeHtml(excerpt)}
+                        </p>
+                        <div class="flex items-center justify-between pt-4 border-t border-sky-50 text-xs text-slate-500">
+                            <span><i class="fa-solid fa-user text-[10px]"></i> ${escapeHtml(post.author_name || 'Admin')}</span>
+                            <span><i class="fa-solid fa-eye text-[10px]"></i> ${(post.views_count || 0).toLocaleString('id-ID')}</span>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }).join('');
+    }
+
+    // ========================================
+    // EVENTS
+    // ========================================
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            activeCategory = chip.dataset.category;
+            applyFilters();
+        });
+    });
+
+    searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value;
+        applyFilters();
+    });
+
+    // ========================================
+    // INIT
+    // ========================================
+    (async () => {
+        await loadPosts();
+        console.log('%c📰 Karyakata Blog loaded', 'font-size: 14px; font-weight: bold; color: #0B7BE8;');
+    })();
+    </script>
+
+</body>
+</html>

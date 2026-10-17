@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin — Mitra & Komunitas — Karyakata.id</title>
+    <meta name="robots" content="noindex, nofollow" />
+
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/img/favicon.png" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: {
+                            50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD',
+                            400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6',
+                            800: '#064485', 900: '#053364',
+                        },
+                        gold: {
+                            100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A',
+                            500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #F8FAFC; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.4s ease-out forwards; opacity: 0; }
+
+        .sidebar-link {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px; font-weight: 600;
+            color: #475569;
+            transition: all .2s ease;
+            text-decoration: none;
+        }
+        .sidebar-link:hover { background: #EFF6FF; color: #0B7BE8; }
+        .sidebar-link.active {
+            background: linear-gradient(135deg, #0B7BE8, #0967C7);
+            color: white;
+            box-shadow: 0 6px 16px rgba(11, 123, 232, 0.3);
+        }
+        .sidebar-link.active i { color: white; }
+        .sidebar-link i { width: 20px; text-align: center; font-size: 15px; }
+
+        .badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 11px; font-weight: 700;
+            white-space: nowrap;
+        }
+        .badge-published { background: #D1FAE5; color: #065F46; }
+        .badge-draft { background: #FEF3C7; color: #92400E; }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 9px 16px;
+            border-radius: 10px;
+            font-size: 12px; font-weight: 700;
+            cursor: pointer;
+            transition: all .2s ease;
+            border: none;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .btn-primary { background: #0B7BE8; color: white; }
+        .btn-primary:hover { background: #0967C7; transform: translateY(-1px); }
+        .btn-outline { background: white; color: #475569; border: 2px solid #E2E8F0; }
+        .btn-outline:hover { border-color: #0B7BE8; color: #0B7BE8; }
+        .btn-gold { background: #F5A623; color: white; }
+        .btn-gold:hover { background: #D98B0E; transform: translateY(-1px); }
+        .btn-danger { background: #EF4444; color: white; }
+        .btn-danger:hover { background: #DC2626; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .form-input {
+            width: 100%; padding: 12px 14px;
+            border: 2px solid #E2E8F0; border-radius: 12px;
+            font-size: 14px; outline: none;
+            transition: all .2s ease; background: white;
+        }
+        .form-input:focus { border-color: #0B7BE8; box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1); }
+        .form-label {
+            display: block; font-size: 12px; font-weight: 700;
+            color: #334155; margin-bottom: 6px;
+        }
+        .form-label .req { color: #EF4444; }
+
+        .modal-backdrop {
+            position: fixed; inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: flex; align-items: center; justify-content: center;
+            padding: 16px;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            max-width: 540px;
+            width: 100%;
+            max-height: 92vh;
+            overflow-y: auto;
+            animation: fadeUp 0.3s ease-out;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #F1F5F9; }
+        ::-webkit-scrollbar-thumb { background: #94A3B8; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748B; }
+
+        #sidebarOverlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            z-index: 40;
+        }
+        #sidebarOverlay.active { display: block; }
+
+        /* Partner card */
+        .partner-card {
+            background: white;
+            border: 2px solid #E2E8F0;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all .3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .partner-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -12px rgba(11, 123, 232, 0.15);
+            border-color: #93C5FD;
+        }
+
+        .partner-logo {
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+        }
+        .partner-logo img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .partner-logo .placeholder {
+            color: #94A3B8;
+            font-size: 40px;
+        }
+
+        .partner-badges {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .partner-actions {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity .2s ease;
+            z-index: 10;
+        }
+        .partner-card:hover .partner-actions { opacity: 1; }
+
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all .2s ease;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .icon-btn-edit { background: white; color: #0B7BE8; }
+        .icon-btn-edit:hover { background: #0B7BE8; color: white; }
+        .icon-btn-delete { background: white; color: #EF4444; }
+        .icon-btn-delete:hover { background: #EF4444; color: white; }
+
+        /* Logo upload */
+        .logo-upload {
+            aspect-ratio: 16/9;
+            border: 2px dashed #CBD5E1;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all .2s ease;
+            overflow: hidden;
+            position: relative;
+            background: #F8FAFC;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+        .logo-upload:hover {
+            border-color: #0B7BE8;
+            background: #EFF6FF;
+        }
+        .logo-upload img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+        }
+        .logo-upload .upload-placeholder {
+            text-align: center;
+            color: #94A3B8;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebarOverlay"></div>
+
+    <div class="flex min-h-screen">
+
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50 -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
+
+            <div class="p-5 border-b border-slate-100">
+                <a href="admin-order.html" class="flex items-center gap-3 group">
+                    <img src="../assets/img/logo.png" alt="Karyakata" class="h-10 w-auto" onerror="this.style.display='none'" />
+                    <span class="font-display text-lg font-black leading-none">
+                        <span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span>
+                    </span>
+                </a>
+                <div class="mt-3 flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1 bg-gold-100 text-gold-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        <i class="fa-solid fa-shield-halved text-[8px]"></i>
+                        ADMIN PANEL
+                    </span>
+                </div>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-2">MENU UTAMA</p>
+
+                <a href="admin-order.html" class="sidebar-link">
+                    <i class="fa-solid fa-receipt"></i>
+                    <span>Order</span>
+                    <span id="sidebarOrderCount" class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                </a>
+
+                <a href="admin-naskah.html" class="sidebar-link">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span>Naskah Masuk</span>
+                    <span id="sidebarSubmissionCount" class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                </a>
+
+                <a href="admin-pesan.html" class="sidebar-link">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span>Pesan Kontak</span>
+                    <span id="sidebarContactCount" class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                </a>
+
+                <a href="admin-subscriber.html" class="sidebar-link">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Subscriber</span>
+                </a>
+
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">KONTEN</p>
+
+                <a href="admin-buku.html" class="sidebar-link">
+                    <i class="fa-solid fa-book"></i>
+                    <span>Buku / Katalog</span>
+                </a>
+
+                <a href="admin-blog.html" class="sidebar-link">
+                    <i class="fa-solid fa-newspaper"></i>
+                    <span>Blog</span>
+                </a>
+
+                <a href="admin-mitra.html" class="sidebar-link active">
+                    <i class="fa-solid fa-handshake"></i>
+                    <span>Mitra &amp; Komunitas</span>
+                </a>
+
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">LAINNYA</p>
+
+                <a href="../index.html" target="_blank" class="sidebar-link">
+                    <i class="fa-solid fa-external-link-alt"></i>
+                    <span>Lihat Website</span>
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-slate-100">
+                <div class="bg-slate-50 rounded-2xl p-3">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">
+                            A
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-bold text-slate-800 truncate" id="userEmail">admin@...</p>
+                            <p class="text-[10px] text-slate-500">Administrator</p>
+                        </div>
+                    </div>
+                    <button id="logoutBtn" class="w-full btn btn-outline text-xs justify-center">
+                        <i class="fa-solid fa-right-from-bracket text-[10px]"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="flex-1 min-w-0">
+
+            <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-lg border-b border-slate-200">
+                <div class="flex items-center justify-between px-4 md:px-6 h-16">
+                    <div class="flex items-center gap-3">
+                        <button id="sidebarToggle" class="lg:hidden w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+                            <i class="fa-solid fa-bars"></i>
+                        </button>
+                        <div>
+                            <h1 class="font-display text-lg md:text-xl font-black text-slate-800">Mitra &amp; Komunitas</h1>
+                            <p class="text-[11px] text-slate-500 hidden md:block">Kelola partner &amp; komunitas</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <button id="refreshBtn" class="btn btn-outline text-xs">
+                            <i class="fa-solid fa-rotate"></i>
+                            <span class="hidden sm:inline">Refresh</span>
+                        </button>
+                        <button id="addBtn" class="btn btn-gold text-xs">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Tambah Mitra</span>
+                        </button>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">
+                            A
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-4 md:p-6">
+
+                <!-- STATS -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center text-sky-600">
+                                <i class="fa-solid fa-handshake"></i>
+                            </div>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">TOTAL MITRA</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statTotal">—</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-600">
+                                <i class="fa-solid fa-eye"></i>
+                            </div>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">PUBLISHED</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statPublished">—</p>
+                    </div>
+                </div>
+
+                <!-- GRID -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 md:p-6">
+
+                    <div id="loadingState">
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                            <div class="skeleton aspect-video rounded-2xl"></div>
+                            <div class="skeleton aspect-video rounded-2xl"></div>
+                            <div class="skeleton aspect-video rounded-2xl"></div>
+                            <div class="skeleton aspect-video rounded-2xl"></div>
+                        </div>
+                    </div>
+
+                    <div id="emptyState" class="hidden py-16 text-center">
+                        <div class="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-handshake text-slate-400 text-3xl"></i>
+                        </div>
+                        <h3 class="font-display text-lg font-black text-slate-700 mb-1">Belum ada mitra</h3>
+                        <p class="text-slate-500 text-sm mb-4">Klik "Tambah Mitra" untuk menambahkan partner &amp; komunitas.</p>
+                        <button onclick="openForm()" class="btn btn-gold inline-flex">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Tambah Mitra Pertama</span>
+                        </button>
+                    </div>
+
+                    <div id="partnerGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 hidden"></div>
+                </div>
+
+                <p class="text-[11px] text-slate-500 text-center mt-4">
+                    Menampilkan <span id="shownCount" class="font-bold text-slate-700">0</span> mitra
+                </p>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- MODAL: FORM MITRA -->
+    <!-- ======================================== -->
+    <div id="formModal" class="modal-backdrop hidden">
+        <div class="modal-content">
+
+            <div class="sticky top-0 bg-white border-b border-slate-100 p-5 flex items-center justify-between rounded-t-3xl z-10">
+                <div>
+                    <h3 class="font-display text-lg font-black text-slate-800" id="formTitle">Tambah Mitra</h3>
+                    <p class="text-xs text-slate-500" id="formSubtitle">Isi detail mitra &amp; komunitas</p>
+                </div>
+                <button onclick="closeForm()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="partnerForm" class="p-5 md:p-6 space-y-5">
+
+                <!-- LOGO -->
+                <div>
+                    <label class="form-label">Logo Mitra</label>
+                    <div class="logo-upload" id="logoUpload">
+                        <input type="file" id="logoInput" accept="image/*" class="hidden" />
+                        <div id="logoPreviewPlaceholder" class="upload-placeholder">
+                            <i class="fa-solid fa-cloud-arrow-up text-3xl mb-2"></i>
+                            <p class="text-xs font-bold mb-0.5">Klik untuk upload logo</p>
+                            <p class="text-[10px]">PNG/JPG/SVG · Maks 1MB</p>
+                        </div>
+                        <img id="logoPreview" src="" alt="Logo" class="hidden" />
+                    </div>
+                </div>
+
+                <!-- NAMA -->
+                <div>
+                    <label class="form-label">Nama Mitra <span class="req">*</span></label>
+                    <input type="text" id="nama" class="form-input" placeholder="Contoh: Yatta.id" required />
+                </div>
+
+                <!-- DESKRIPSI -->
+                <div>
+                    <label class="form-label">Deskripsi Singkat (opsional)</label>
+                    <input type="text" id="deskripsi" class="form-input" placeholder="Contoh: Komunitas Penulis Indonesia" />
+                </div>
+
+                <!-- LINK -->
+                <div>
+                    <label class="form-label">Link Website (opsional)</label>
+                    <input type="url" id="linkUrl" class="form-input" placeholder="https://www.yatta.id" />
+                </div>
+
+                <!-- SORT ORDER -->
+                <div>
+                    <label class="form-label">Urutan Tampil (opsional)</label>
+                    <input type="number" id="sortOrder" class="form-input" placeholder="0" value="0" min="0" />
+                    <p class="text-[10px] text-slate-500 mt-1">Angka kecil = tampil lebih dulu.</p>
+                </div>
+
+                <!-- TOGGLES -->
+                <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer border-2 border-transparent hover:border-sky-200 transition">
+                    <input type="checkbox" id="isPublished" class="w-5 h-5 accent-sky-500 cursor-pointer" checked />
+                    <div>
+                        <p class="text-xs font-bold text-slate-800">Tampilkan di Website</p>
+                        <p class="text-[10px] text-slate-500">Muncul di section "Partner &amp; Komunitas"</p>
+                    </div>
+                </label>
+
+            </form>
+
+            <div class="sticky bottom-0 bg-slate-50 border-t border-slate-100 p-4 md:p-5 rounded-b-3xl flex flex-wrap gap-2 justify-end">
+                <button onclick="closeForm()" class="btn btn-outline">
+                    <i class="fa-solid fa-xmark"></i>
+                    <span>Batal</span>
+                </button>
+                <button id="formSaveBtn" class="btn btn-primary">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span>Simpan Mitra</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastWrap" class="fixed top-4 right-4 z-[200] space-y-2"></div>
+
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/supabase-client.js"></script>
+
+    <script>
+    // ========================================
+    // ADMIN MITRA — MAIN SCRIPT
+    // ========================================
+
+    let allPartners = [];
+    let currentUser = null;
+    let editingPartnerId = null;
+    let logoFile = null;
+    let existingLogoUrl = null;
+
+    // DOM refs
+    const partnerGrid = document.getElementById('partnerGrid');
+    const loadingState = document.getElementById('loadingState');
+    const emptyState = document.getElementById('emptyState');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const addBtn = document.getElementById('addBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userEmail = document.getElementById('userEmail');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const toastWrap = document.getElementById('toastWrap');
+
+    const formModal = document.getElementById('formModal');
+    const formTitle = document.getElementById('formTitle');
+    const formSubtitle = document.getElementById('formSubtitle');
+    const partnerForm = document.getElementById('partnerForm');
+    const formSaveBtn = document.getElementById('formSaveBtn');
+
+    const logoUpload = document.getElementById('logoUpload');
+    const logoInput = document.getElementById('logoInput');
+    const logoPreview = document.getElementById('logoPreview');
+    const logoPreviewPlaceholder = document.getElementById('logoPreviewPlaceholder');
+
+    const statTotal = document.getElementById('statTotal');
+    const statPublished = document.getElementById('statPublished');
+
+    // ========================================
+    // TOAST
+    // ========================================
+    function showToast(message, type = 'info') {
+        const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-sky-500', warning: 'bg-gold-500' };
+        const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info', warning: 'fa-triangle-exclamation' };
+        const toast = document.createElement('div');
+        toast.className = `${colors[type]} text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-bold animate-fade-up max-w-sm`;
+        toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span class="flex-1">${message}</span>`;
+        toastWrap.appendChild(toast);
+        setTimeout(() => {
+            toast.style.transition = 'all 0.3s ease';
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // ========================================
+    // HELPERS
+    // ========================================
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function getLogoUrl(partner) {
+        if (!partner.logo_url) return null;
+        if (partner.logo_url.startsWith('http')) return partner.logo_url;
+        const { data } = supabaseClient.storage.from('partners-logo').getPublicUrl(partner.logo_url);
+        return data.publicUrl;
+    }
+
+    // ========================================
+    // AUTH
+    // ========================================
+    async function checkAuth() {
+        try {
+            const user = await getCurrentUser();
+            if (!user) {
+                window.location.href = 'admin-login.html';
+                return false;
+            }
+            currentUser = user;
+            userEmail.textContent = user.email;
+            return true;
+        } catch (err) {
+            window.location.href = 'admin-login.html';
+            return false;
+        }
+    }
+
+    // ========================================
+    // LOAD PARTNERS
+    // ========================================
+    async function loadPartners() {
+        loadingState.classList.remove('hidden');
+        partnerGrid.classList.add('hidden');
+        emptyState.classList.add('hidden');
+
+        try {
+            // Admin bisa lihat semua (published + draft)
+            const { data, error } = await supabaseClient
+                .from('partners')
+                .select('*')
+                .order('sort_order', { ascending: true })
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            allPartners = data || [];
+            updateStats();
+            renderGrid();
+
+        } catch (err) {
+            console.error('Load partners error:', err);
+            showToast('Gagal memuat: ' + err.message, 'error');
+            loadingState.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+        }
+    }
+
+    // ========================================
+    // STATS
+    // ========================================
+    function updateStats() {
+        const total = allPartners.length;
+        const published = allPartners.filter(p => p.is_published).length;
+
+        statTotal.textContent = total;
+        statPublished.textContent = published;
+    }
+
+    // ========================================
+    // RENDER GRID
+    // ========================================
+    function renderGrid() {
+        loadingState.classList.add('hidden');
+
+        document.getElementById('shownCount').textContent = allPartners.length;
+
+        if (allPartners.length === 0) {
+            partnerGrid.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            return;
+        }
+
+        emptyState.classList.add('hidden');
+        partnerGrid.classList.remove('hidden');
+
+        partnerGrid.innerHTML = allPartners.map(partner => {
+            const logoUrl = getLogoUrl(partner);
+            const nama = partner.nama || 'Tanpa Nama';
+            const deskripsi = partner.deskripsi || '';
+            const linkUrl = partner.link_url || '';
+
+            const logoHtml = logoUrl
+                ? `<img src="${escapeHtml(logoUrl)}" alt="${escapeHtml(nama)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                   <div class="placeholder" style="display:none;"><i class="fa-solid fa-handshake"></i></div>`
+                : `<div class="placeholder"><i class="fa-solid fa-handshake"></i></div>`;
+
+            const badge = partner.is_published
+                ? `<span class="badge badge-published"><i class="fa-solid fa-eye text-[8px]"></i>Published</span>`
+                : `<span class="badge badge-draft"><i class="fa-solid fa-eye-slash text-[8px]"></i>Draft</span>`;
+
+            const content = `
+                <div class="partner-logo">
+                    ${logoHtml}
+                    <div class="partner-badges">${badge}</div>
+                    <div class="partner-actions">
+                        <button onclick="event.stopPropagation(); event.preventDefault(); openForm('${partner.id}')" class="icon-btn icon-btn-edit" title="Edit">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="event.stopPropagation(); event.preventDefault(); deletePartner('${partner.id}', '${escapeHtml(nama)}')" class="icon-btn icon-btn-delete" title="Hapus">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-4 flex-1 flex flex-col">
+                    <p class="font-display font-black text-slate-800 text-sm leading-tight mb-1 line-clamp-1">${escapeHtml(nama)}</p>
+                    ${deskripsi ? `<p class="text-slate-500 text-[11px] line-clamp-2 mb-2">${escapeHtml(deskripsi)}</p>` : '<p class="text-slate-400 text-[11px] mb-2">—</p>'}
+                    ${linkUrl ? `<a href="${escapeHtml(linkUrl)}" target="_blank" rel="noopener" class="text-sky-600 hover:text-sky-700 text-[11px] font-bold inline-flex items-center gap-1 mt-auto"><i class="fa-solid fa-external-link-alt text-[9px]"></i>Kunjungi</a>` : ''}
+                </div>
+            `;
+
+            // Kalau ada link, seluruh card jadi link
+            if (linkUrl) {
+                return `<a href="${escapeHtml(linkUrl)}" target="_blank" rel="noopener" class="partner-card">${content}</a>`;
+            }
+            return `<div class="partner-card">${content}</div>`;
+        }).join('');
+    }
+
+    // ========================================
+    // OPEN FORM
+    // ========================================
+    function openForm(partnerId = null) {
+        editingPartnerId = partnerId;
+        logoFile = null;
+        existingLogoUrl = null;
+
+        partnerForm.reset();
+        logoInput.value = '';
+        document.getElementById('sortOrder').value = '0';
+        document.getElementById('isPublished').checked = true;
+
+        if (partnerId) {
+            const partner = allPartners.find(p => String(p.id) === String(partnerId));
+            if (!partner) {
+                showToast('Mitra tidak ditemukan', 'error');
+                return;
+            }
+
+            formTitle.textContent = 'Edit Mitra';
+            formSubtitle.textContent = `Edit: ${partner.nama}`;
+
+            document.getElementById('nama').value = partner.nama || '';
+            document.getElementById('deskripsi').value = partner.deskripsi || '';
+            document.getElementById('linkUrl').value = partner.link_url || '';
+            document.getElementById('sortOrder').value = partner.sort_order || 0;
+            document.getElementById('isPublished').checked = !!partner.is_published;
+
+            if (partner.logo_url) {
+                existingLogoUrl = partner.logo_url;
+                const url = getLogoUrl(partner);
+                logoPreview.src = url;
+                logoPreview.classList.remove('hidden');
+                logoPreviewPlaceholder.classList.add('hidden');
+            } else {
+                logoPreview.classList.add('hidden');
+                logoPreviewPlaceholder.classList.remove('hidden');
+            }
+
+        } else {
+            formTitle.textContent = 'Tambah Mitra';
+            formSubtitle.textContent = 'Isi detail mitra & komunitas';
+
+            logoPreview.classList.add('hidden');
+            logoPreviewPlaceholder.classList.remove('hidden');
+        }
+
+        formModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeForm() {
+        formModal.classList.add('hidden');
+        document.body.style.overflow = '';
+        editingPartnerId = null;
+        logoFile = null;
+        existingLogoUrl = null;
+    }
+
+    // ========================================
+    // LOGO UPLOAD
+    // ========================================
+    logoUpload.addEventListener('click', () => logoInput.click());
+
+    logoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            showToast('File harus gambar', 'error');
+            logoInput.value = '';
+            return;
+        }
+
+        if (file.size > 1024 * 1024) {
+            showToast('File terlalu besar. Maks 1MB.', 'error');
+            logoInput.value = '';
+            return;
+        }
+
+        logoFile = file;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            logoPreview.src = event.target.result;
+            logoPreview.classList.remove('hidden');
+            logoPreviewPlaceholder.classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // ========================================
+    // SAVE
+    // ========================================
+    async function savePartner() {
+        const nama = document.getElementById('nama').value.trim();
+        const deskripsi = document.getElementById('deskripsi').value.trim();
+        const linkUrl = document.getElementById('linkUrl').value.trim();
+        const sortOrder = parseInt(document.getElementById('sortOrder').value) || 0;
+        const isPublished = document.getElementById('isPublished').checked;
+
+        if (!nama) {
+            showToast('Nama mitra wajib diisi', 'error');
+            return;
+        }
+
+        const originalHTML = formSaveBtn.innerHTML;
+        formSaveBtn.disabled = true;
+        formSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Menyimpan...</span>';
+
+        try {
+            let logoUrl = existingLogoUrl;
+
+            if (logoFile) {
+                formSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Upload logo...</span>';
+                const uploadResult = await uploadPartnerLogo(logoFile);
+                if (!uploadResult.success) {
+                    throw new Error('Upload logo gagal: ' + uploadResult.error);
+                }
+                logoUrl = uploadResult.path;
+            }
+
+            const partnerData = {
+                nama,
+                deskripsi: deskripsi || null,
+                link_url: linkUrl || null,
+                logo_url: logoUrl,
+                sort_order: sortOrder,
+                is_published: isPublished
+            };
+
+            formSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Menyimpan...</span>';
+
+            if (editingPartnerId) {
+                const { error } = await supabaseClient
+                    .from('partners')
+                    .update(partnerData)
+                    .eq('id', editingPartnerId);
+
+                if (error) throw error;
+                showToast('Mitra berhasil diupdate!', 'success');
+            } else {
+                const { error } = await supabaseClient
+                    .from('partners')
+                    .insert([partnerData]);
+
+                if (error) throw error;
+                showToast('Mitra berhasil ditambahkan!', 'success');
+            }
+
+            closeForm();
+            await loadPartners();
+
+        } catch (err) {
+            console.error('Save error:', err);
+            showToast('Gagal menyimpan: ' + err.message, 'error');
+        } finally {
+            formSaveBtn.disabled = false;
+            formSaveBtn.innerHTML = originalHTML;
+        }
+    }
+
+    // ========================================
+    // DELETE
+    // ========================================
+    async function deletePartner(id, nama) {
+        if (!confirm(`Yakin hapus mitra "${nama}"?\n\nTindakan ini tidak bisa dibatalkan.`)) return;
+
+        try {
+            const partner = allPartners.find(p => String(p.id) === String(id));
+
+            // Hapus logo dari storage
+            if (partner && partner.logo_url && !partner.logo_url.startsWith('http')) {
+                await supabaseClient.storage
+                    .from('partners-logo')
+                    .remove([partner.logo_url])
+                    .catch(err => console.warn('Gagal hapus logo:', err));
+            }
+
+            const { error } = await supabaseClient
+                .from('partners')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+
+            allPartners = allPartners.filter(p => String(p.id) !== String(id));
+            updateStats();
+            renderGrid();
+
+            showToast('Mitra berhasil dihapus', 'success');
+
+        } catch (err) {
+            console.error('Delete error:', err);
+            showToast('Gagal hapus: ' + err.message, 'error');
+        }
+    }
+
+    // ========================================
+    // LOGOUT / SIDEBAR
+    // ========================================
+    async function handleLogout() {
+        if (!confirm('Yakin mau logout?')) return;
+        await adminSignOut();
+        window.location.href = 'admin-login.html';
+    }
+
+    function toggleSidebar() {
+        sidebar.classList.toggle('-translate-x-full');
+        sidebarOverlay.classList.toggle('active');
+    }
+
+    // ========================================
+    // EVENTS
+    // ========================================
+    function bindEvents() {
+        refreshBtn.addEventListener('click', () => {
+            refreshBtn.disabled = true;
+            refreshBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span class="hidden sm:inline">Loading...</span>';
+            loadPartners().finally(() => {
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = '<i class="fa-solid fa-rotate"></i><span class="hidden sm:inline">Refresh</span>';
+            });
+        });
+
+        addBtn.addEventListener('click', () => openForm());
+        logoutBtn.addEventListener('click', handleLogout);
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+
+        formModal.addEventListener('click', (e) => {
+            if (e.target === formModal) closeForm();
+        });
+
+        formSaveBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            savePartner();
+        });
+
+        partnerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            savePartner();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !formModal.classList.contains('hidden')) {
+                closeForm();
+            }
+        });
+    }
+
+    // ========================================
+    // INIT
+    // ========================================
+    (async () => {
+        const ok = await checkAuth();
+        if (!ok) return;
+
+        bindEvents();
+        await loadPartners();
+
+        console.log('%c🤝 Karyakata Admin Mitra loaded', 'font-size: 14px; font-weight: bold; color: #0B7BE8;');
+    })();
+
+    // Expose
+    window.openForm = openForm;
+    window.closeForm = closeForm;
+    window.deletePartner = deletePartner;
+    </script>
+
+</body>
+</html>

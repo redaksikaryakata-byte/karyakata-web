@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detail Buku — Karyakata.id</title>
+
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/img/favicon.png" />
+    <link rel="shortcut icon" href="assets/img/favicon.png" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: {
+                            50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD',
+                            400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6',
+                            800: '#064485', 900: '#053364',
+                        },
+                        gold: {
+                            100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A',
+                            500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        html { scroll-behavior: smooth; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.6s ease-out forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 166, 35, 0.7); }
+            50% { box-shadow: 0 0 0 12px rgba(245, 166, 35, 0); }
+        }
+        .pulse-glow { animation: pulseGlow 2s infinite; }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #0B7BE8 0%, #0967C7 40%, #0755A6 100%);
+        }
+
+        .nav-link { color: #334155; font-weight: 500; transition: all .2s ease; }
+        .nav-link:hover { color: #0B7BE8; }
+        .nav-link.active { color: #0B7BE8; font-weight: 700; }
+
+        .btn-gold {
+            background: #F5A623; color: #422006; font-weight: 700;
+            transition: all .3s ease;
+            box-shadow: 0 8px 20px rgba(245, 166, 35, 0.35);
+        }
+        .btn-gold:hover {
+            background: #D98B0E; color: white; transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(245, 166, 35, 0.45);
+        }
+
+        .btn-primary {
+            background: #0B7BE8; color: white; font-weight: 700;
+            transition: all .3s ease;
+            box-shadow: 0 8px 20px rgba(11, 123, 232, 0.35);
+        }
+        .btn-primary:hover {
+            background: #0967C7; transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(11, 123, 232, 0.45);
+        }
+
+        .book-detail-cover {
+            aspect-ratio: 2/3;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px -12px rgba(11, 123, 232, 0.25);
+            background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .book-detail-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #e0f2fe 25%, #f0f9ff 50%, #e0f2fe 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 12px;
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #eff6ff; }
+        ::-webkit-scrollbar-thumb { background: #4A9EF0; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0B7BE8; }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-b border-sky-100" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+                <a href="index.html" class="flex items-center gap-2 group">
+                    <img src="assets/img/logo.png" alt="Karyakata.id" class="h-10 md:h-12 w-auto group-hover:scale-105 transition" />
+                    <span class="font-display text-xl md:text-2xl font-black leading-none">
+                        <span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span>
+                    </span>
+                </a>
+
+                <div class="hidden lg:flex items-center gap-8 text-sm">
+                    <a href="index.html" class="nav-link">Beranda</a>
+                    <a href="layanan.html" class="nav-link">Layanan</a>
+                    <a href="katalog.html" class="nav-link active">Katalog</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="tentang.html" class="nav-link">Tentang</a>
+                    <a href="kontak.html" class="nav-link">Kontak</a>
+                </div>
+
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="kirim-naskah.html" class="btn-gold px-5 py-2.5 rounded-full text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Kirim Naskah</span>
+                    </a>
+                </div>
+
+                <button id="menuBtn" class="lg:hidden w-10 h-10 rounded-lg bg-sky-50 flex items-center justify-center text-sky-700">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobileMenu" class="hidden lg:hidden bg-white border-t border-sky-100 px-4 py-4 space-y-1">
+            <a href="index.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Beranda</a>
+            <a href="layanan.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Layanan</a>
+            <a href="katalog.html" class="block px-4 py-2.5 bg-sky-50 text-sky-700 rounded-xl font-bold">Katalog</a>
+            <a href="blog.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Blog</a>
+            <a href="tentang.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Tentang</a>
+            <a href="kontak.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Kontak</a>
+        </div>
+    </nav>
+
+    <!-- LOADING -->
+    <section id="loadingState" class="pt-28 md:pt-36 pb-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-12 gap-10">
+                <div class="md:col-span-4">
+                    <div class="skeleton aspect-[2/3] rounded-2xl"></div>
+                </div>
+                <div class="md:col-span-8 space-y-4">
+                    <div class="skeleton h-6 w-24"></div>
+                    <div class="skeleton h-10 w-3/4"></div>
+                    <div class="skeleton h-5 w-1/2"></div>
+                    <div class="skeleton h-20 w-full"></div>
+                    <div class="skeleton h-12 w-full"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ERROR -->
+    <section id="errorState" class="hidden pt-28 md:pt-36 pb-16 bg-white min-h-screen">
+        <div class="max-w-2xl mx-auto px-4 text-center">
+            <div class="w-24 h-24 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-6">
+                <i class="fa-solid fa-circle-exclamation text-red-400 text-4xl"></i>
+            </div>
+            <h1 class="font-display text-3xl font-black text-slate-800 mb-3">Buku tidak ditemukan</h1>
+            <p class="text-slate-600 mb-8">Buku yang kamu cari mungkin sudah dihapus atau URL-nya salah.</p>
+            <a href="katalog.html" class="btn-primary inline-flex px-6 py-3 rounded-full text-sm">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Kembali ke Katalog</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- MAIN -->
+    <article id="detailWrap" class="hidden">
+
+        <!-- BREADCRUMB + HERO -->
+        <section class="pt-28 md:pt-36 pb-10 bg-gradient-to-b from-sky-50 to-white">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                <nav class="flex items-center gap-2 text-slate-500 text-xs md:text-sm mb-8">
+                    <a href="index.html" class="hover:text-sky-600 transition">Beranda</a>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    <a href="katalog.html" class="hover:text-sky-600 transition">Katalog</a>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    <span class="text-sky-600 font-bold" id="breadcrumbJudul">Detail Buku</span>
+                </nav>
+
+                <div class="grid md:grid-cols-12 gap-8 md:gap-12 items-start">
+
+                    <!-- COVER -->
+                    <div class="md:col-span-4 animate-fade-up">
+                        <div class="book-detail-cover sticky top-24" id="coverWrap">
+                            <img id="bookCover" src="" alt="" class="hidden" />
+                            <div id="coverPlaceholder" class="text-center text-white p-8">
+                                <i class="fa-solid fa-book-open text-6xl mb-3 opacity-80"></i>
+                                <p class="font-display font-black text-lg leading-tight" id="coverPlaceholderTitle">Buku</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- INFO -->
+                    <div class="md:col-span-8 animate-fade-up delay-1">
+
+                        <!-- Category + Type badges -->
+                        <div class="flex flex-wrap gap-2 mb-4" id="badgesWrap">
+                            <span class="inline-flex items-center gap-1.5 bg-sky-100 text-sky-700 text-xs font-bold px-3 py-1 rounded-full" id="badgeGenre">
+                                <i class="fa-solid fa-tag text-[10px]"></i>
+                                <span>Fiksi</span>
+                            </span>
+                        </div>
+
+                        <!-- Title -->
+                        <h1 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight mb-3" id="bookTitle">
+                            Judul Buku
+                        </h1>
+
+                        <!-- Author -->
+                        <p class="text-slate-500 text-base mb-6">
+                            oleh <span class="font-bold text-slate-700" id="bookAuthor">Penulis</span>
+                        </p>
+
+                        <!-- Price section -->
+                        <div class="bg-gradient-to-br from-sky-50 to-white border-2 border-sky-100 rounded-2xl p-5 md:p-6 mb-6" id="priceWrap">
+                            <!-- diisi JS -->
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-6">
+                            <h2 class="font-display text-lg font-black text-slate-800 mb-3">Deskripsi</h2>
+                            <p class="text-slate-600 leading-relaxed text-sm md:text-base" id="bookDesc">
+                                Belum ada deskripsi.
+                            </p>
+                        </div>
+
+                        <!-- Meta info -->
+                        <div class="grid grid-cols-2 gap-3 mb-6" id="metaWrap">
+                            <!-- diisi JS -->
+                        </div>
+
+                        <!-- Share -->
+                        <div class="pt-6 border-t border-slate-200">
+                            <p class="text-xs font-bold text-slate-500 tracking-wide mb-3">BAGIKAN</p>
+                            <div class="flex flex-wrap gap-2">
+                                <a id="shareWa" href="#" target="_blank" class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-2 rounded-full text-xs transition">
+                                    <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                                </a>
+                                <a id="shareFb" href="#" target="_blank" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-full text-xs transition">
+                                    <i class="fa-brands fa-facebook-f"></i> Facebook
+                                </a>
+                                <a id="shareTw" href="#" target="_blank" class="inline-flex items-center gap-2 bg-slate-800 hover:bg-black text-white font-bold px-4 py-2 rounded-full text-xs transition">
+                                    <i class="fa-brands fa-x-twitter"></i> X
+                                </a>
+                                <button id="copyLinkBtn" class="inline-flex items-center gap-2 bg-white border-2 border-sky-200 hover:border-sky-400 text-sky-700 font-bold px-4 py-2 rounded-full text-xs transition">
+                                    <i class="fa-solid fa-link"></i>
+                                    <span id="copyLinkText">Copy Link</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- RELATED BOOKS -->
+        <section id="relatedSection" class="hidden py-16 md:py-20 bg-sky-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-8 md:mb-12">
+                    <div class="inline-flex items-center gap-2 bg-sky-100 border border-sky-200 rounded-full px-4 py-1.5 mb-3">
+                        <i class="fa-solid fa-book-open text-sky-600 text-xs"></i>
+                        <span class="text-sky-700 text-xs font-bold tracking-wide">BUKU LAINNYA</span>
+                    </div>
+                    <h2 class="font-display text-2xl sm:text-3xl md:text-4xl font-black text-slate-800">
+                        Karya <span class="text-sky-600">Terkait</span>
+                    </h2>
+                </div>
+                <div id="relatedGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6"></div>
+            </div>
+        </section>
+    </article>
+
+    <!-- CTA -->
+    <section class="py-16 md:py-24 relative overflow-hidden">
+        <div class="hero-gradient absolute inset-0"></div>
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight mb-6">
+                Punya Naskah <span class="text-gold-300">Sendiri?</span>
+            </h2>
+            <p class="text-sky-100 text-base md:text-lg leading-relaxed mb-8 max-w-2xl mx-auto">
+                Kirim naskahmu dan terbitkan bersama Karyakata.
+            </p>
+            <a href="kirim-naskah.html" class="btn-gold px-8 py-4 rounded-full text-sm inline-flex items-center gap-2">
+                <i class="fa-solid fa-paper-plane"></i>
+                <span>Kirim Naskah</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-300 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-12 gap-10 mb-12">
+                <div class="md:col-span-4">
+                    <div class="mb-5 flex items-center gap-3">
+                        <img src="assets/img/logo-footer.png" alt="Karyakata.id" class="h-16 w-auto" />
+                        <span class="font-display text-2xl font-black leading-none">
+                            <span class="text-white">Karyakata</span><span class="text-gold-400">.id</span>
+                        </span>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                        Penerbit buku modern Indonesia. Mitra komunitas Yatta.id. <br>
+                        <span class="text-gold-400 font-semibold">Berkarya dengan Kata, Berkata dengan Karya.</span>
+                    </p>
+                </div>
+                <div class="md:col-span-2">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">MENU</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="index.html" class="text-slate-400 hover:text-sky-400 transition">Beranda</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Layanan</a></li>
+                        <li><a href="katalog.html" class="text-slate-400 hover:text-sky-400 transition">Katalog</a></li>
+                        <li><a href="blog.html" class="text-slate-400 hover:text-sky-400 transition">Blog</a></li>
+                        <li><a href="tentang.html" class="text-slate-400 hover:text-sky-400 transition">Tentang</a></li>
+                        <li><a href="kontak.html" class="text-slate-400 hover:text-sky-400 transition">Kontak</a></li>
+                    </ul>
+                </div>
+                <div class="md:col-span-3">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">KONTAK</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-envelope text-sky-400 mt-0.5"></i>
+                            <span class="text-slate-400">redaksikaryakata@gmail.com</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-brands fa-whatsapp text-sky-400 mt-0.5"></i>
+                            <a href="https://wa.me/62895620000033" target="_blank" class="text-slate-400 hover:text-sky-400 transition">+62 895-6200-00033</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-slate-800 text-center">
+                <p class="text-slate-500 text-xs">
+                    &copy; <span id="year"></span> Karyakata.id — Karyakata Publishing
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/supabase-client.js"></script>
+
+    <script>
+    // ========================================
+    // BUKU DETAIL
+    // ========================================
+
+    const loadingState = document.getElementById('loadingState');
+    const errorState = document.getElementById('errorState');
+    const detailWrap = document.getElementById('detailWrap');
+    const relatedSection = document.getElementById('relatedSection');
+    const relatedGrid = document.getElementById('relatedGrid');
+
+    let currentBook = null;
+
+    // Helpers
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+    function rp(n) {
+        return 'Rp ' + Math.round(n || 0).toLocaleString('id-ID');
+    }
+    function getCoverUrl(book) {
+        if (!book.cover_url) return null;
+        if (book.cover_url.startsWith('http')) return book.cover_url;
+        const { data } = supabaseClient.storage.from('covers').getPublicUrl(book.cover_url);
+        return data.publicUrl;
+    }
+    function showError() {
+        loadingState.classList.add('hidden');
+        detailWrap.classList.add('hidden');
+        errorState.classList.remove('hidden');
+    }
+
+    // Mobile menu
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = menuBtn.querySelector('i');
+            icon.className = mobileMenu.classList.contains('hidden') ? 'fa-solid fa-bars text-lg' : 'fa-solid fa-xmark text-lg';
+        });
+    }
+
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Load book
+    async function loadBook() {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+
+        if (!id) return showError();
+
+        try {
+            const { data, error } = await supabaseClient
+                .from('books')
+                .select('*')
+                .eq('id', id)
+                .eq('is_published', true)
+                .maybeSingle();
+
+            if (error) throw error;
+            if (!data) return showError();
+
+            currentBook = data;
+            document.title = `${data.judul} — Karyakata.id`;
+            renderBook(data);
+            loadRelated(data);
+
+            loadingState.classList.add('hidden');
+            detailWrap.classList.remove('hidden');
+
+        } catch (err) {
+            console.error('Load book error:', err);
+            showError();
+        }
+    }
+
+    function renderBook(book) {
+        const coverUrl = getCoverUrl(book);
+        const tipeArr = Array.isArray(book.tipe_buku) ? book.tipe_buku : ['fisik'];
+        const isFisik = tipeArr.includes('fisik');
+        const isEbook = tipeArr.includes('ebook');
+
+        // Breadcrumb + title + author
+        document.getElementById('breadcrumbJudul').textContent = book.judul;
+        document.getElementById('bookTitle').textContent = book.judul;
+        document.getElementById('bookAuthor').textContent = book.penulis || 'Anonim';
+        document.getElementById('bookDesc').textContent = book.deskripsi || 'Belum ada deskripsi untuk buku ini.';
+
+        // Cover
+        const coverImg = document.getElementById('bookCover');
+        const coverPlaceholder = document.getElementById('coverPlaceholder');
+        const coverWrap = document.getElementById('coverWrap');
+        if (coverUrl) {
+            coverImg.src = coverUrl;
+            coverImg.alt = book.judul;
+            coverImg.classList.remove('hidden');
+            coverPlaceholder.classList.add('hidden');
+        } else {
+            coverImg.classList.add('hidden');
+            coverPlaceholder.classList.remove('hidden');
+            document.getElementById('coverPlaceholderTitle').textContent = book.judul;
+            coverWrap.style.background = 'linear-gradient(135deg, #0B7BE8, #0755A6)';
+        }
+
+        // Badges
+        const badgesWrap = document.getElementById('badgesWrap');
+        let badgesHtml = `
+            <span class="inline-flex items-center gap-1.5 bg-sky-100 text-sky-700 text-xs font-bold px-3 py-1 rounded-full">
+                <i class="fa-solid fa-tag text-[10px]"></i>
+                <span>${escapeHtml(book.genre || 'Lainnya')}</span>
+            </span>
+        `;
+        if (isFisik && isEbook) {
+            badgesHtml += `
+                <span class="inline-flex items-center gap-1.5 bg-sky-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                    <i class="fa-solid fa-book text-[10px]"></i>
+                    <i class="fa-solid fa-tablet-screen-button text-[10px]"></i>
+                    <span>Fisik & E-Book</span>
+                </span>
+            `;
+        } else if (isEbook) {
+            badgesHtml += `
+                <span class="inline-flex items-center gap-1.5 bg-gold-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                    <i class="fa-solid fa-tablet-screen-button text-[10px]"></i>
+                    <span>E-Book</span>
+                </span>
+            `;
+        } else {
+            badgesHtml += `
+                <span class="inline-flex items-center gap-1.5 bg-sky-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                    <i class="fa-solid fa-book text-[10px]"></i>
+                    <span>Buku Fisik</span>
+                </span>
+            `;
+        }
+        badgesWrap.innerHTML = badgesHtml;
+
+        // Price section
+        const priceWrap = document.getElementById('priceWrap');
+        let priceHtml = '<p class="text-xs font-bold text-slate-500 tracking-wide mb-4">PILIH FORMAT</p>';
+
+        if (isFisik && isEbook) {
+            priceHtml += `
+                <div class="space-y-3">
+                    <!-- Fisik -->
+                    <div class="flex items-center justify-between bg-white border-2 border-sky-200 rounded-xl p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-sky-100 flex items-center justify-center text-sky-600">
+                                <i class="fa-solid fa-book"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-800 text-sm">Buku Fisik</p>
+                                <p class="text-[11px] text-slate-500">Cetak & kirim</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-display font-black text-sky-600 text-lg">${rp(book.harga)}</p>
+                            <a href="${escapeHtml(book.link_beli || 'https://lynk.id/karyakata')}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs px-3 py-1.5 rounded-full transition mt-1">
+                                <i class="fa-solid fa-cart-shopping text-[10px]"></i> Beli
+                            </a>
+                        </div>
+                    </div>
+                    <!-- E-book -->
+                    <div class="flex items-center justify-between bg-white border-2 border-gold-200 rounded-xl p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-gold-100 flex items-center justify-center text-gold-600">
+                                <i class="fa-solid fa-tablet-screen-button"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-800 text-sm">E-Book</p>
+                                <p class="text-[11px] text-slate-500">PDF / EPUB</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-display font-black text-gold-600 text-lg">${rp(book.harga_ebook)}</p>
+                            <a href="${escapeHtml(book.link_beli_ebook || 'https://lynk.id/karyakata')}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 bg-gold-500 hover:bg-gold-600 text-white font-bold text-xs px-3 py-1.5 rounded-full transition mt-1">
+                                <i class="fa-solid fa-download text-[10px]"></i> Beli
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (isEbook) {
+            priceHtml += `
+                <div class="flex items-center justify-between bg-white border-2 border-gold-200 rounded-xl p-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-gold-100 flex items-center justify-center text-gold-600">
+                            <i class="fa-solid fa-tablet-screen-button"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 text-sm">E-Book</p>
+                            <p class="text-[11px] text-slate-500">PDF / EPUB</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-display font-black text-gold-600 text-2xl">${rp(book.harga_ebook)}</p>
+                        <a href="${escapeHtml(book.link_beli_ebook || 'https://lynk.id/karyakata')}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 btn-gold text-xs px-4 py-2 rounded-full transition mt-2">
+                            <i class="fa-solid fa-download text-[10px]"></i> Beli E-Book
+                        </a>
+                    </div>
+                </div>
+            `;
+        } else {
+            priceHtml += `
+                <div class="flex items-center justify-between bg-white border-2 border-sky-200 rounded-xl p-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-sky-100 flex items-center justify-center text-sky-600">
+                            <i class="fa-solid fa-book"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 text-sm">Buku Fisik</p>
+                            <p class="text-[11px] text-slate-500">Cetak & kirim</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-display font-black text-sky-600 text-2xl">${rp(book.harga)}</p>
+                        <a href="${escapeHtml(book.link_beli || 'https://lynk.id/karyakata')}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 btn-primary text-xs px-4 py-2 rounded-full transition mt-2">
+                            <i class="fa-solid fa-cart-shopping text-[10px]"></i> Beli Buku
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+        priceWrap.innerHTML = priceHtml;
+
+        // Meta (halaman, genre, dll)
+        const metaWrap = document.getElementById('metaWrap');
+        let metaHtml = `
+            <div class="bg-white border border-slate-200 rounded-xl p-3 flex items-center gap-3">
+                <i class="fa-solid fa-tag text-sky-500"></i>
+                <div>
+                    <p class="text-[10px] font-bold text-slate-500 tracking-wide">GENRE</p>
+                    <p class="text-sm font-bold text-slate-800">${escapeHtml(book.genre || '—')}</p>
+                </div>
+            </div>
+        `;
+        if (book.halaman) {
+            metaHtml += `
+                <div class="bg-white border border-slate-200 rounded-xl p-3 flex items-center gap-3">
+                    <i class="fa-solid fa-file-lines text-sky-500"></i>
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-500 tracking-wide">HALAMAN</p>
+                        <p class="text-sm font-bold text-slate-800">${book.halaman} hal</p>
+                    </div>
+                </div>
+            `;
+        }
+        metaWrap.innerHTML = metaHtml;
+
+        // Share
+        const url = window.location.href;
+        const text = encodeURIComponent(`Buku "${book.judul}" karya ${book.penulis} — via Karyakata.id`);
+        const urlEnc = encodeURIComponent(url);
+        document.getElementById('shareWa').href = `https://wa.me/?text=${text}%20${urlEnc}`;
+        document.getElementById('shareFb').href = `https://www.facebook.com/sharer/sharer.php?u=${urlEnc}`;
+        document.getElementById('shareTw').href = `https://twitter.com/intent/tweet?text=${text}&url=${urlEnc}`;
+
+        document.getElementById('copyLinkBtn').addEventListener('click', () => {
+            navigator.clipboard.writeText(url).then(() => {
+                const textEl = document.getElementById('copyLinkText');
+                const orig = textEl.textContent;
+                textEl.textContent = '✓ Tersalin!';
+                setTimeout(() => textEl.textContent = orig, 1500);
+            });
+        });
+    }
+
+    // Related books
+    async function loadRelated(book) {
+        try {
+            const { data, error } = await supabaseClient
+                .from('books')
+                .select('*')
+                .eq('is_published', true)
+                .neq('id', book.id)
+                .eq('genre', book.genre || '')
+                .limit(4);
+
+            if (error) throw error;
+
+            let related = data || [];
+
+            // Fallback: kalau kurang, ambil buku lain
+            if (related.length < 4) {
+                const { data: more } = await supabaseClient
+                    .from('books')
+                    .select('*')
+                    .eq('is_published', true)
+                    .neq('id', book.id)
+                    .limit(4 - related.length);
+
+                if (more) {
+                    const existing = new Set(related.map(r => r.id));
+                    more.forEach(m => { if (!existing.has(m.id)) related.push(m); });
+                }
+            }
+
+            if (related.length === 0) {
+                relatedSection.classList.add('hidden');
+                return;
+            }
+
+            relatedGrid.innerHTML = related.slice(0, 4).map(b => {
+                const coverUrl = getCoverUrl(b);
+                const tipeArr = Array.isArray(b.tipe_buku) ? b.tipe_buku : ['fisik'];
+                const isFisik = tipeArr.includes('fisik');
+                const isEbook = tipeArr.includes('ebook');
+
+                let tipeBadge = '';
+                if (isFisik && isEbook) {
+                    tipeBadge = `<span class="absolute top-2 left-2 inline-flex items-center gap-0.5 bg-sky-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full z-10"><i class="fa-solid fa-book text-[6px]"></i><i class="fa-solid fa-tablet-screen-button text-[6px]"></i></span>`;
+                } else if (isEbook) {
+                    tipeBadge = `<span class="absolute top-2 left-2 inline-flex items-center gap-0.5 bg-gold-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full z-10"><i class="fa-solid fa-tablet-screen-button text-[6px]"></i></span>`;
+                } else {
+                    tipeBadge = `<span class="absolute top-2 left-2 inline-flex items-center gap-0.5 bg-sky-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full z-10"><i class="fa-solid fa-book text-[6px]"></i></span>`;
+                }
+
+                const coverHtml = coverUrl
+                    ? `<img src="${escapeHtml(coverUrl)}" alt="${escapeHtml(b.judul)}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                       <div class="text-center text-white p-4" style="display:none;">
+                           <i class="fa-solid fa-book-open text-3xl mb-2 opacity-80"></i>
+                           <p class="font-display font-black text-sm leading-tight">${escapeHtml(b.judul)}</p>
+                       </div>`
+                    : `<div class="text-center text-white p-4">
+                           <i class="fa-solid fa-book-open text-3xl mb-2 opacity-80"></i>
+                           <p class="font-display font-black text-sm leading-tight">${escapeHtml(b.judul)}</p>
+                       </div>`;
+
+                const bgStyle = coverUrl ? '' : 'background: linear-gradient(135deg, #0B7BE8, #0755A6);';
+
+                return `
+                    <a href="buku-detail.html?id=${b.id}" class="group block">
+                        <div class="book-card-cover relative" style="${bgStyle} border-radius:12px; overflow:hidden; box-shadow:0 8px 24px -8px rgba(0,0,0,0.15); transition: all 0.3s ease;">
+                            ${coverHtml}
+                            ${tipeBadge}
+                        </div>
+                        <div class="mt-3">
+                            <h3 class="font-display font-bold text-slate-800 text-sm line-clamp-1 group-hover:text-sky-600 transition">${escapeHtml(b.judul)}</h3>
+                            <p class="text-slate-500 text-xs">oleh ${escapeHtml(b.penulis || 'Anonim')}</p>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+
+            relatedSection.classList.remove('hidden');
+
+        } catch (err) {
+            console.warn('Load related error:', err);
+            relatedSection.classList.add('hidden');
+        }
+    }
+
+    loadBook();
+
+    console.log('%c📖 Karyakata Buku Detail loaded', 'font-size: 14px; font-weight: bold; color: #0B7BE8;');
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin — Blog — Karyakata.id</title>
+    <meta name="robots" content="noindex, nofollow" />
+
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/img/favicon.png" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: {
+                            50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD',
+                            400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6',
+                            800: '#064485', 900: '#053364',
+                        },
+                        gold: {
+                            100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A',
+                            500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <!-- Quill Editor -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #F8FAFC; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.4s ease-out forwards; opacity: 0; }
+
+        .sidebar-link {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px; font-weight: 600;
+            color: #475569;
+            transition: all .2s ease;
+            text-decoration: none;
+        }
+        .sidebar-link:hover { background: #EFF6FF; color: #0B7BE8; }
+        .sidebar-link.active {
+            background: linear-gradient(135deg, #0B7BE8, #0967C7);
+            color: white;
+            box-shadow: 0 6px 16px rgba(11, 123, 232, 0.3);
+        }
+        .sidebar-link.active i { color: white; }
+        .sidebar-link i { width: 20px; text-align: center; font-size: 15px; }
+
+        .badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 11px; font-weight: 700;
+            white-space: nowrap;
+        }
+        .badge-published { background: #D1FAE5; color: #065F46; }
+        .badge-draft { background: #FEF3C7; color: #92400E; }
+        .badge-featured { background: #FCE7F3; color: #9F1239; }
+
+        .filter-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 14px;
+            border: 2px solid #E2E8F0;
+            border-radius: 9999px;
+            font-size: 12px; font-weight: 700;
+            color: #475569; background: white;
+            cursor: pointer;
+            transition: all .2s ease;
+            white-space: nowrap;
+        }
+        .filter-chip:hover { border-color: #93C5FD; color: #0B7BE8; }
+        .filter-chip.active { background: #0B7BE8; border-color: #0B7BE8; color: white; }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 9px 16px;
+            border-radius: 10px;
+            font-size: 12px; font-weight: 700;
+            cursor: pointer;
+            transition: all .2s ease;
+            border: none;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .btn-primary { background: #0B7BE8; color: white; }
+        .btn-primary:hover { background: #0967C7; transform: translateY(-1px); }
+        .btn-outline { background: white; color: #475569; border: 2px solid #E2E8F0; }
+        .btn-outline:hover { border-color: #0B7BE8; color: #0B7BE8; }
+        .btn-gold { background: #F5A623; color: white; }
+        .btn-gold:hover { background: #D98B0E; transform: translateY(-1px); }
+        .btn-danger { background: #EF4444; color: white; }
+        .btn-danger:hover { background: #DC2626; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .form-input {
+            width: 100%; padding: 12px 14px;
+            border: 2px solid #E2E8F0; border-radius: 12px;
+            font-size: 14px; outline: none;
+            transition: all .2s ease; background: white;
+        }
+        .form-input:focus { border-color: #0B7BE8; box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1); }
+        .form-label {
+            display: block; font-size: 12px; font-weight: 700;
+            color: #334155; margin-bottom: 6px;
+        }
+        .form-label .req { color: #EF4444; }
+
+        .modal-backdrop {
+            position: fixed; inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: flex; align-items: center; justify-content: center;
+            padding: 16px;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 92vh;
+            overflow-y: auto;
+            animation: fadeUp 0.3s ease-out;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #F1F5F9; }
+        ::-webkit-scrollbar-thumb { background: #94A3B8; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748B; }
+
+        #sidebarOverlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            z-index: 40;
+        }
+        #sidebarOverlay.active { display: block; }
+
+        /* POST CARD */
+        .post-card {
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all .3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .post-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -12px rgba(11, 123, 232, 0.15);
+            border-color: #93C5FD;
+        }
+
+        .post-cover {
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .post-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .post-cover .placeholder {
+            color: #94A3B8;
+            font-size: 40px;
+        }
+
+        .post-body {
+            padding: 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .post-category {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #EFF6FF;
+            color: #0B7BE8;
+            border: 1px solid #DBEAFE;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            align-self: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .post-title {
+            font-weight: 800;
+            font-size: 15px;
+            color: #1E293B;
+            line-height: 1.35;
+            margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .post-excerpt {
+            font-size: 12px;
+            color: #64748B;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #94A3B8;
+            padding-top: 10px;
+            border-top: 1px solid #F1F5F9;
+        }
+
+        /* COVER UPLOAD */
+        .cover-upload {
+            aspect-ratio: 16/9;
+            border: 2px dashed #CBD5E1;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all .2s ease;
+            overflow: hidden;
+            position: relative;
+            background: #F8FAFC;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .cover-upload:hover {
+            border-color: #0B7BE8;
+            background: #EFF6FF;
+        }
+        .cover-upload img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .cover-upload .upload-placeholder {
+            text-align: center;
+            color: #94A3B8;
+            padding: 20px;
+        }
+
+        /* QUILL EDITOR */
+        #editorContainer {
+            background: white;
+            border-radius: 12px;
+        }
+        #quillEditor {
+            min-height: 300px;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+        .ql-toolbar.ql-snow {
+            border: 2px solid #E2E8F0 !important;
+            border-bottom: none !important;
+            border-radius: 12px 12px 0 0 !important;
+            background: #F8FAFC;
+            padding: 10px 12px !important;
+        }
+        .ql-container.ql-snow {
+            border: 2px solid #E2E8F0 !important;
+            border-radius: 0 0 12px 12px !important;
+            font-family: 'Inter', sans-serif !important;
+        }
+        .ql-container.ql-snow:focus-within {
+            border-color: #0B7BE8 !important;
+            box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1);
+        }
+        .ql-editor {
+            font-family: 'Inter', sans-serif;
+            padding: 16px;
+        }
+        .ql-editor.ql-blank::before {
+            color: #94A3B8;
+            font-style: normal;
+        }
+        .ql-editor h1, .ql-editor h2, .ql-editor h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            color: #0F172A;
+        }
+        .ql-editor p { margin-bottom: 12px; }
+        .ql-editor img {
+            border-radius: 8px;
+            max-width: 100%;
+        }
+        .ql-editor blockquote {
+            border-left: 4px solid #0B7BE8;
+            padding-left: 16px;
+            color: #475569;
+            font-style: italic;
+        }
+
+        /* TAG INPUT */
+        .tag-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 8px;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            background: white;
+            min-height: 46px;
+            align-items: center;
+        }
+        .tag-input:focus-within {
+            border-color: #0B7BE8;
+            box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1);
+        }
+        .tag-input input {
+            border: none;
+            outline: none;
+            flex: 1;
+            min-width: 80px;
+            font-size: 14px;
+            background: transparent;
+        }
+        .tag-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: #EFF6FF;
+            color: #0B7BE8;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .tag-chip button {
+            background: transparent;
+            border: none;
+            color: #0B7BE8;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 0;
+            line-height: 1;
+        }
+        .tag-chip button:hover { color: #EF4444; }
+    </style>
+</head>
+<body>
+
+    <div id="sidebarOverlay"></div>
+
+    <div class="flex min-h-screen">
+
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50 -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
+
+            <div class="p-5 border-b border-slate-100">
+                <a href="admin-order.html" class="flex items-center gap-3 group">
+                    <img src="../assets/img/logo.png" alt="Karyakata" class="h-10 w-auto" onerror="this.style.display='none'" />
+                    <span class="font-display text-lg font-black leading-none">
+                        <span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span>
+                    </span>
+                </a>
+                <div class="mt-3 flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1 bg-gold-100 text-gold-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        <i class="fa-solid fa-shield-halved text-[8px]"></i>
+                        ADMIN PANEL
+                    </span>
+                </div>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-2">MENU UTAMA</p>
+
+                <a href="admin-order.html" class="sidebar-link">
+                    <i class="fa-solid fa-receipt"></i>
+                    <span>Order</span>
+                    <span id="sidebarOrderCount" class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                </a>
+
+                <a href="admin-naskah.html" class="sidebar-link">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span>Naskah Masuk</span>
+                    <span id="sidebarSubmissionCount" class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                </a>
+
+                <a href="admin-pesan.html" class="sidebar-link">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span>Pesan Kontak</span>
+                    <span id="sidebarContactCount" class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
+                </a>
+
+                <a href="admin-subscriber.html" class="sidebar-link">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Subscriber</span>
+                </a>
+
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">KONTEN</p>
+
+                <a href="admin-buku.html" class="sidebar-link">
+                    <i class="fa-solid fa-book"></i>
+                    <span>Buku / Katalog</span>
+                </a>
+
+                <a href="admin-blog.html" class="sidebar-link active">
+                    <i class="fa-solid fa-newspaper"></i>
+                    <span>Blog</span>
+                </a>
+
+                <a href="admin-mitra.html" class="sidebar-link">
+                    <i class="fa-solid fa-handshake"></i>
+                    <span>Mitra &amp; Komunitas</span>
+                </a>
+
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">LAINNYA</p>
+
+                <a href="../index.html" target="_blank" class="sidebar-link">
+                    <i class="fa-solid fa-external-link-alt"></i>
+                    <span>Lihat Website</span>
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-slate-100">
+                <div class="bg-slate-50 rounded-2xl p-3">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">
+                            A
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-bold text-slate-800 truncate" id="userEmail">admin@...</p>
+                            <p class="text-[10px] text-slate-500">Administrator</p>
+                        </div>
+                    </div>
+                    <button id="logoutBtn" class="w-full btn btn-outline text-xs justify-center">
+                        <i class="fa-solid fa-right-from-bracket text-[10px]"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="flex-1 min-w-0">
+
+            <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-lg border-b border-slate-200">
+                <div class="flex items-center justify-between px-4 md:px-6 h-16">
+                    <div class="flex items-center gap-3">
+                        <button id="sidebarToggle" class="lg:hidden w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+                            <i class="fa-solid fa-bars"></i>
+                        </button>
+                        <div>
+                            <h1 class="font-display text-lg md:text-xl font-black text-slate-800">Blog</h1>
+                            <p class="text-[11px] text-slate-500 hidden md:block">Kelola artikel blog</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <button id="refreshBtn" class="btn btn-outline text-xs">
+                            <i class="fa-solid fa-rotate"></i>
+                            <span class="hidden sm:inline">Refresh</span>
+                        </button>
+                        <button id="addBtn" class="btn btn-gold text-xs">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Tulis Artikel</span>
+                        </button>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">
+                            A
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-4 md:p-6">
+
+                <!-- STATS -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center text-sky-600">
+                                <i class="fa-solid fa-newspaper"></i>
+                            </div>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">TOTAL ARTIKEL</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statTotal">—</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-600">
+                                <i class="fa-solid fa-eye"></i>
+                            </div>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">PUBLISHED</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statPublished">—</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-yellow-100 flex items-center justify-center text-yellow-600">
+                                <i class="fa-solid fa-eye-slash"></i>
+                            </div>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">DRAFT</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statDraft">—</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-gold-100 flex items-center justify-center text-gold-600">
+                                <i class="fa-solid fa-eye-low-vision"></i>
+                            </div>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">TOTAL VIEWS</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statViews">—</p>
+                    </div>
+                </div>
+
+                <!-- TOOLBAR -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 mb-4">
+
+                    <div class="flex flex-col md:flex-row gap-3 mb-4">
+                        <div class="relative flex-1">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                            <input
+                                type="text"
+                                id="searchInput"
+                                class="form-input pl-10"
+                                placeholder="Cari judul atau penulis..."
+                            />
+                        </div>
+                        <select id="categoryFilter" class="form-input md:w-56">
+                            <option value="all">Semua Kategori</option>
+                            <option value="Tips Menulis">Tips Menulis</option>
+                            <option value="Info Penerbitan">Info Penerbitan</option>
+                            <option value="Review Buku">Review Buku</option>
+                            <option value="Cerita Penulis">Cerita Penulis</option>
+                            <option value="Berita Karyakata">Berita Karyakata</option>
+                            <option value="Komunitas">Komunitas</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-2 overflow-x-auto pb-1">
+                        <button class="filter-chip active" data-status="all">
+                            <i class="fa-solid fa-list text-[10px]"></i>
+                            <span>Semua</span>
+                            <span class="bg-white/30 px-1.5 rounded text-[10px]" id="chipCountAll">0</span>
+                        </button>
+                        <button class="filter-chip" data-status="published">
+                            <i class="fa-solid fa-eye text-[10px]"></i>
+                            <span>Published</span>
+                        </button>
+                        <button class="filter-chip" data-status="draft">
+                            <i class="fa-solid fa-eye-slash text-[10px]"></i>
+                            <span>Draft</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- POST GRID -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 md:p-6">
+
+                    <div id="loadingState">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                            <div class="skeleton aspect-video rounded-2xl"></div>
+                            <div class="skeleton aspect-video rounded-2xl"></div>
+                            <div class="skeleton aspect-video rounded-2xl"></div>
+                        </div>
+                    </div>
+
+                    <div id="emptyState" class="hidden py-16 text-center">
+                        <div class="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-newspaper text-slate-400 text-3xl"></i>
+                        </div>
+                        <h3 class="font-display text-lg font-black text-slate-700 mb-1">Belum ada artikel</h3>
+                        <p class="text-slate-500 text-sm mb-4" id="emptyMsg">Klik "Tulis Artikel" untuk memulai.</p>
+                        <button onclick="openForm()" class="btn btn-gold inline-flex">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Tulis Artikel Pertama</span>
+                        </button>
+                    </div>
+
+                    <div id="postGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 hidden"></div>
+                </div>
+
+                <p class="text-[11px] text-slate-500 text-center mt-4">
+                    Menampilkan <span id="shownCount" class="font-bold text-slate-700">0</span> artikel
+                    <span id="totalCountWrap" class="hidden">dari <span id="totalCount" class="font-bold text-slate-700">0</span></span>
+                </p>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- MODAL: FORM POST -->
+    <!-- ======================================== -->
+    <div id="formModal" class="modal-backdrop hidden">
+        <div class="modal-content">
+
+            <div class="sticky top-0 bg-white border-b border-slate-100 p-5 flex items-center justify-between rounded-t-3xl z-20">
+                <div>
+                    <h3 class="font-display text-lg font-black text-slate-800" id="formTitle">Tulis Artikel</h3>
+                    <p class="text-xs text-slate-500" id="formSubtitle">Isi detail artikel</p>
+                </div>
+                <button onclick="closeForm()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="postForm" class="p-5 md:p-6 space-y-5">
+
+                <!-- COVER UPLOAD -->
+                <div>
+                    <label class="form-label">Cover Artikel</label>
+                    <div class="cover-upload" id="coverUpload">
+                        <input type="file" id="coverInput" accept="image/*" class="hidden" />
+                        <div id="coverPreviewPlaceholder" class="upload-placeholder">
+                            <i class="fa-solid fa-cloud-arrow-up text-3xl mb-2"></i>
+                            <p class="text-xs font-bold mb-0.5">Klik untuk upload cover</p>
+                            <p class="text-[10px]">JPG/PNG/WebP, maks 2MB · Rasio 16:9</p>
+                        </div>
+                        <img id="coverPreview" src="" alt="Cover" class="hidden" />
+                    </div>
+                </div>
+
+                <!-- TITLE -->
+                <div>
+                    <label class="form-label">Judul Artikel <span class="req">*</span></label>
+                    <input type="text" id="title" class="form-input" placeholder="Contoh: 5 Tips Menulis Novel untuk Pemula" required />
+                </div>
+
+                <!-- SLUG -->
+                <div>
+                    <label class="form-label">Slug URL <span class="req">*</span></label>
+                    <div class="flex gap-2">
+                        <input type="text" id="slug" class="form-input" placeholder="5-tips-menulis-novel" required />
+                        <button type="button" id="regenSlugBtn" class="btn btn-outline whitespace-nowrap" title="Generate dari judul">
+                            <i class="fa-solid fa-rotate"></i>
+                            <span>Auto</span>
+                        </button>
+                    </div>
+                    <p class="text-[10px] text-slate-500 mt-1">URL: karyakata.id/blog-detail.html?slug=<span id="slugPreview" class="font-bold text-slate-700">...</span></p>
+                </div>
+
+                <!-- AUTHOR + CATEGORY -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="form-label">Penulis <span class="req">*</span></label>
+                        <input type="text" id="authorName" class="form-input" placeholder="Admin Karyakata" required />
+                    </div>
+                    <div>
+                        <label class="form-label">Kategori <span class="req">*</span></label>
+                        <select id="category" class="form-input" required>
+                            <option value="">Pilih kategori...</option>
+                            <option value="Tips Menulis">Tips Menulis</option>
+                            <option value="Info Penerbitan">Info Penerbitan</option>
+                            <option value="Review Buku">Review Buku</option>
+                            <option value="Cerita Penulis">Cerita Penulis</option>
+                            <option value="Berita Karyakata">Berita Karyakata</option>
+                            <option value="Komunitas">Komunitas</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- TAGS -->
+                <div>
+                    <label class="form-label">Tag (opsional)</label>
+                    <div class="tag-input" id="tagInput">
+                        <input type="text" id="tagField" placeholder="Tulis tag, tekan Enter..." />
+                    </div>
+                    <p class="text-[10px] text-slate-500 mt-1">Contoh: menulis, novel, pemula, tips</p>
+                </div>
+
+                <!-- EXCERPT -->
+                <div>
+                    <label class="form-label">Ringkasan / Excerpt <span class="req">*</span></label>
+                    <textarea id="excerpt" class="form-input" rows="3" placeholder="Ringkasan singkat artikel (150-200 karakter)..." required></textarea>
+                    <p class="text-[10px] text-slate-500 mt-1">Muncul di halaman daftar blog.</p>
+                </div>
+
+                <!-- CONTENT — QUILL -->
+                <div>
+                    <label class="form-label">Isi Artikel <span class="req">*</span></label>
+                    <div id="editorContainer">
+                        <div id="quillEditor"></div>
+                    </div>
+                </div>
+
+                <!-- TOGGLES -->
+                <div class="grid grid-cols-2 gap-4">
+                    <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer border-2 border-transparent hover:border-sky-200 transition">
+                        <input type="checkbox" id="isPublished" class="w-5 h-5 accent-sky-500 cursor-pointer" />
+                        <div>
+                            <p class="text-xs font-bold text-slate-800">Publish</p>
+                            <p class="text-[10px] text-slate-500">Tampil di blog publik</p>
+                        </div>
+                    </label>
+
+                    <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer border-2 border-transparent hover:border-gold-200 transition">
+                        <input type="checkbox" id="isFeatured" class="w-5 h-5 accent-gold-500 cursor-pointer" />
+                        <div>
+                            <p class="text-xs font-bold text-slate-800">Featured</p>
+                            <p class="text-[10px] text-slate-500">Pinned di atas</p>
+                        </div>
+                    </label>
+                </div>
+
+            </form>
+
+            <div class="sticky bottom-0 bg-slate-50 border-t border-slate-100 p-4 md:p-5 rounded-b-3xl flex flex-wrap gap-2 justify-end z-10">
+                <button onclick="closeForm()" class="btn btn-outline">
+                    <i class="fa-solid fa-xmark"></i>
+                    <span>Batal</span>
+                </button>
+                <button id="formSaveBtn" class="btn btn-primary">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span>Simpan Artikel</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastWrap" class="fixed top-4 right-4 z-[200] space-y-2"></div>
+
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/supabase-client.js"></script>
+
+    <script>
+    // ========================================
+    // ADMIN BLOG — MAIN SCRIPT
+    // ========================================
+
+    let allPosts = [];
+    let filteredPosts = [];
+    let activeStatus = 'all';
+    let activeCategory = 'all';
+    let searchQuery = '';
+    let currentUser = null;
+    let editingPostId = null;
+    let coverFile = null;
+    let existingCoverUrl = null;
+    let currentTags = [];
+    let quill = null;
+
+    // DOM refs
+    const postGrid = document.getElementById('postGrid');
+    const loadingState = document.getElementById('loadingState');
+    const emptyState = document.getElementById('emptyState');
+    const emptyMsg = document.getElementById('emptyMsg');
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const addBtn = document.getElementById('addBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userEmail = document.getElementById('userEmail');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const toastWrap = document.getElementById('toastWrap');
+
+    const formModal = document.getElementById('formModal');
+    const formTitle = document.getElementById('formTitle');
+    const formSubtitle = document.getElementById('formSubtitle');
+    const postForm = document.getElementById('postForm');
+    const formSaveBtn = document.getElementById('formSaveBtn');
+
+    const coverUpload = document.getElementById('coverUpload');
+    const coverInput = document.getElementById('coverInput');
+    const coverPreview = document.getElementById('coverPreview');
+    const coverPreviewPlaceholder = document.getElementById('coverPreviewPlaceholder');
+
+    const statTotal = document.getElementById('statTotal');
+    const statPublished = document.getElementById('statPublished');
+    const statDraft = document.getElementById('statDraft');
+    const statViews = document.getElementById('statViews');
+
+    const slugInput = document.getElementById('slug');
+    const titleInput = document.getElementById('title');
+    const slugPreview = document.getElementById('slugPreview');
+
+    // ========================================
+    // TOAST
+    // ========================================
+    function showToast(message, type = 'info') {
+        const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-sky-500', warning: 'bg-gold-500' };
+        const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info', warning: 'fa-triangle-exclamation' };
+        const toast = document.createElement('div');
+        toast.className = `${colors[type]} text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-bold animate-fade-up max-w-sm`;
+        toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span class="flex-1">${message}</span>`;
+        toastWrap.appendChild(toast);
+        setTimeout(() => {
+            toast.style.transition = 'all 0.3s ease';
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // ========================================
+    // HELPERS
+    // ========================================
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function generateSlug(text) {
+        return String(text || '')
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-|-$/g, '');
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return '—';
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function getCoverUrl(post) {
+        if (!post.cover_url) return null;
+        if (post.cover_url.startsWith('http')) return post.cover_url;
+        const { data } = supabaseClient.storage.from('blog-covers').getPublicUrl(post.cover_url);
+        return data.publicUrl;
+    }
+
+    function stripHtml(html) {
+        if (!html) return '';
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || '';
+    }
+
+    // ========================================
+    // AUTH
+    // ========================================
+    async function checkAuth() {
+        try {
+            const user = await getCurrentUser();
+            if (!user) {
+                window.location.href = 'admin-login.html';
+                return false;
+            }
+            currentUser = user;
+            userEmail.textContent = user.email;
+            return true;
+        } catch (err) {
+            window.location.href = 'admin-login.html';
+            return false;
+        }
+    }
+
+    // ========================================
+    // QUILL INIT
+    // ========================================
+    function initQuill() {
+        const toolbarOptions = [
+            [{ 'header': [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            [{ 'indent': '-1' }, { 'indent': '+1' }],
+            ['blockquote', 'code-block'],
+            ['link', 'image'],
+            [{ 'align': [] }],
+            ['clean']
+        ];
+
+        quill = new Quill('#quillEditor', {
+            theme: 'snow',
+            placeholder: 'Tulis isi artikel di sini...',
+            modules: {
+                toolbar: toolbarOptions
+            }
+        });
+
+        // Custom image handler → upload ke Supabase
+        quill.getModule('toolbar').addHandler('image', imageHandler);
+    }
+
+    function imageHandler() {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = async () => {
+            const file = input.files[0];
+            if (!file) return;
+
+            if (file.size > 2 * 1024 * 1024) {
+                showToast('Gambar maksimal 2MB', 'error');
+                return;
+            }
+
+            showToast('Upload gambar...', 'info');
+
+            try {
+                const result = await uploadFile('blog-covers', file, 'inline');
+                if (!result.success) throw new Error(result.error);
+
+                const range = quill.getSelection(true);
+                quill.insertEmbed(range.index, 'image', result.url);
+                quill.setSelection(range.index + 1);
+                showToast('Gambar berhasil ditambahkan', 'success');
+            } catch (err) {
+                console.error('Image upload error:', err);
+                showToast('Gagal upload gambar: ' + err.message, 'error');
+            }
+        };
+    }
+
+    // ========================================
+    // LOAD POSTS
+    // ========================================
+    async function loadPosts() {
+        loadingState.classList.remove('hidden');
+        postGrid.classList.add('hidden');
+        emptyState.classList.add('hidden');
+
+        try {
+            const { data, error } = await supabaseClient
+                .from('posts')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            allPosts = data || [];
+            updateStats();
+            applyFilters();
+
+        } catch (err) {
+            console.error('Load posts error:', err);
+            showToast('Gagal memuat: ' + err.message, 'error');
+            loadingState.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            emptyMsg.textContent = 'Gagal memuat data. Coba refresh.';
+        }
+    }
+
+    // ========================================
+    // STATS
+    // ========================================
+    function updateStats() {
+        const total = allPosts.length;
+        const published = allPosts.filter(p => p.is_published).length;
+        const draft = allPosts.filter(p => !p.is_published).length;
+        const views = allPosts.reduce((sum, p) => sum + (p.views_count || 0), 0);
+
+        statTotal.textContent = total;
+        statPublished.textContent = published;
+        statDraft.textContent = draft;
+        statViews.textContent = views.toLocaleString('id-ID');
+
+        document.getElementById('chipCountAll').textContent = total;
+    }
+
+    // ========================================
+    // FILTER
+    // ========================================
+    function applyFilters() {
+        const q = searchQuery.toLowerCase().trim();
+
+        filteredPosts = allPosts.filter(p => {
+            if (activeStatus === 'published' && !p.is_published) return false;
+            if (activeStatus === 'draft' && p.is_published) return false;
+            if (activeCategory !== 'all' && p.category !== activeCategory) return false;
+
+            if (q) {
+                const haystack = [
+                    p.title, p.author_name, p.category,
+                    stripHtml(p.content || '').substring(0, 200)
+                ].filter(Boolean).join(' ').toLowerCase();
+                if (!haystack.includes(q)) return false;
+            }
+            return true;
+        });
+
+        renderGrid();
+    }
+
+    // ========================================
+    // RENDER GRID
+    // ========================================
+    function renderGrid() {
+        loadingState.classList.add('hidden');
+
+        const shownCount = document.getElementById('shownCount');
+        const totalCountWrap = document.getElementById('totalCountWrap');
+        const totalCount = document.getElementById('totalCount');
+
+        shownCount.textContent = filteredPosts.length;
+
+        if (allPosts.length > 0 && filteredPosts.length !== allPosts.length) {
+            totalCountWrap.classList.remove('hidden');
+            totalCount.textContent = allPosts.length;
+        } else {
+            totalCountWrap.classList.add('hidden');
+        }
+
+        if (filteredPosts.length === 0) {
+            postGrid.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            emptyMsg.textContent = allPosts.length === 0
+                ? 'Klik "Tulis Artikel" untuk memulai.'
+                : 'Tidak ada artikel yang cocok dengan filter.';
+            return;
+        }
+
+        emptyState.classList.add('hidden');
+        postGrid.classList.remove('hidden');
+
+        postGrid.innerHTML = filteredPosts.map(post => {
+            const coverUrl = getCoverUrl(post);
+            const badges = [];
+
+            if (post.is_published) {
+                badges.push(`<span class="badge badge-published"><i class="fa-solid fa-eye text-[8px]"></i>Published</span>`);
+            } else {
+                badges.push(`<span class="badge badge-draft"><i class="fa-solid fa-eye-slash text-[8px]"></i>Draft</span>`);
+            }
+
+            if (post.is_featured) {
+                badges.push(`<span class="badge badge-featured"><i class="fa-solid fa-star text-[8px]"></i>Featured</span>`);
+            }
+
+            const coverHtml = coverUrl
+                ? `<img src="${escapeHtml(coverUrl)}" alt="${escapeHtml(post.title)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                   <div class="placeholder" style="display:none;"><i class="fa-solid fa-newspaper"></i></div>`
+                : `<div class="placeholder"><i class="fa-solid fa-newspaper"></i></div>`;
+
+            const excerpt = post.excerpt || stripHtml(post.content || '').substring(0, 120);
+
+            return `
+                <div class="post-card">
+                    <div class="post-cover">
+                        ${coverHtml}
+                        <div class="absolute top-2 left-2 flex flex-wrap gap-1">${badges.join('')}</div>
+                        <div class="absolute top-2 right-2 flex gap-1 opacity-0 hover:opacity-100 transition" style="opacity:1;">
+                            <button onclick="openForm('${post.id}')" class="w-8 h-8 rounded-lg bg-white/95 hover:bg-sky-500 text-sky-600 hover:text-white flex items-center justify-center shadow-lg transition" title="Edit">
+                                <i class="fa-solid fa-pen text-xs"></i>
+                            </button>
+                            <button onclick="deletePost('${post.id}', '${escapeHtml(post.title)}')" class="w-8 h-8 rounded-lg bg-white/95 hover:bg-red-500 text-red-500 hover:text-white flex items-center justify-center shadow-lg transition" title="Hapus">
+                                <i class="fa-solid fa-trash text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="post-body">
+                        <span class="post-category"><i class="fa-solid fa-tag text-[9px]"></i>${escapeHtml(post.category || 'Lainnya')}</span>
+                        <h3 class="post-title">${escapeHtml(post.title)}</h3>
+                        <p class="post-excerpt">${escapeHtml(excerpt)}</p>
+                        <div class="post-meta">
+                            <span><i class="fa-solid fa-user text-[10px]"></i> ${escapeHtml(post.author_name || 'Admin')}</span>
+                            <span><i class="fa-solid fa-eye text-[10px]"></i> ${(post.views_count || 0).toLocaleString('id-ID')}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // ========================================
+    // TAGS INPUT
+    // ========================================
+    const tagInput = document.getElementById('tagInput');
+    const tagField = document.getElementById('tagField');
+
+    function renderTags() {
+        // Clear input (keep last input)
+        tagInput.querySelectorAll('.tag-chip').forEach(el => el.remove());
+
+        currentTags.forEach((tag, i) => {
+            const chip = document.createElement('span');
+            chip.className = 'tag-chip';
+            chip.innerHTML = `#${escapeHtml(tag)} <button type="button" data-index="${i}"><i class="fa-solid fa-xmark"></i></button>`;
+            chip.querySelector('button').addEventListener('click', () => {
+                currentTags.splice(i, 1);
+                renderTags();
+            });
+            tagInput.insertBefore(chip, tagField);
+        });
+    }
+
+    tagField.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            const val = tagField.value.trim().toLowerCase().replace(/^#/, '');
+            if (val && !currentTags.includes(val) && currentTags.length < 10) {
+                currentTags.push(val);
+                tagField.value = '';
+                renderTags();
+            } else if (currentTags.length >= 10) {
+                showToast('Maksimal 10 tag', 'warning');
+            }
+        } else if (e.key === 'Backspace' && tagField.value === '' && currentTags.length > 0) {
+            currentTags.pop();
+            renderTags();
+        }
+    });
+
+    // ========================================
+    // OPEN FORM
+    // ========================================
+    function openForm(postId = null) {
+        editingPostId = postId;
+        coverFile = null;
+        existingCoverUrl = null;
+        currentTags = [];
+
+        postForm.reset();
+        coverInput.value = '';
+        if (quill) quill.setText('');
+
+        if (postId) {
+            const post = allPosts.find(p => String(p.id) === String(postId));
+            if (!post) {
+                showToast('Artikel tidak ditemukan', 'error');
+                return;
+            }
+
+            formTitle.textContent = 'Edit Artikel';
+            formSubtitle.textContent = `Edit: ${post.title}`;
+
+            titleInput.value = post.title || '';
+            slugInput.value = post.slug || '';
+            document.getElementById('authorName').value = post.author_name || 'Admin Karyakata';
+            document.getElementById('category').value = post.category || 'Lainnya';
+            document.getElementById('excerpt').value = post.excerpt || '';
+            document.getElementById('isPublished').checked = !!post.is_published;
+            document.getElementById('isFeatured').checked = !!post.is_featured;
+
+            // Tags
+            currentTags = Array.isArray(post.tags) ? [...post.tags] : [];
+            renderTags();
+
+            // Content
+            if (quill && post.content) {
+                quill.clipboard.dangerouslyPasteHTML(post.content);
+            }
+
+            // Cover
+            if (post.cover_url) {
+                existingCoverUrl = post.cover_url;
+                const url = getCoverUrl(post);
+                coverPreview.src = url;
+                coverPreview.classList.remove('hidden');
+                coverPreviewPlaceholder.classList.add('hidden');
+            } else {
+                coverPreview.classList.add('hidden');
+                coverPreviewPlaceholder.classList.remove('hidden');
+            }
+
+        } else {
+            formTitle.textContent = 'Tulis Artikel';
+            formSubtitle.textContent = 'Isi detail artikel baru';
+
+            coverPreview.classList.add('hidden');
+            coverPreviewPlaceholder.classList.remove('hidden');
+
+            document.getElementById('authorName').value = 'Admin Karyakata';
+            document.getElementById('isPublished').checked = true;
+
+            renderTags();
+        }
+
+        updateSlugPreview();
+        formModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeForm() {
+        formModal.classList.add('hidden');
+        document.body.style.overflow = '';
+        editingPostId = null;
+        coverFile = null;
+        existingCoverUrl = null;
+        currentTags = [];
+        if (quill) quill.setText('');
+    }
+
+    function updateSlugPreview() {
+        slugPreview.textContent = slugInput.value || '...';
+    }
+
+    // ========================================
+    // SLUG AUTO-GENERATE
+    // ========================================
+    titleInput.addEventListener('input', () => {
+        // Auto-generate slug kalau user belum manual edit slug
+        if (!slugInput.dataset.manual) {
+            slugInput.value = generateSlug(titleInput.value);
+            updateSlugPreview();
+        }
+    });
+
+    slugInput.addEventListener('input', () => {
+        slugInput.dataset.manual = 'true';
+        // Clean slug
+        slugInput.value = slugInput.value.toLowerCase().replace(/[^\w-]/g, '-').replace(/-+/g, '-');
+        updateSlugPreview();
+    });
+
+    document.getElementById('regenSlugBtn').addEventListener('click', () => {
+        slugInput.value = generateSlug(titleInput.value);
+        delete slugInput.dataset.manual;
+        updateSlugPreview();
+    });
+
+    // ========================================
+    // COVER UPLOAD
+    // ========================================
+    coverUpload.addEventListener('click', () => coverInput.click());
+
+    coverInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            showToast('File harus gambar', 'error');
+            coverInput.value = '';
+            return;
+        }
+
+        if (file.size > 2 * 1024 * 1024) {
+            showToast('File terlalu besar. Maks 2MB.', 'error');
+            coverInput.value = '';
+            return;
+        }
+
+        coverFile = file;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            coverPreview.src = event.target.result;
+            coverPreview.classList.remove('hidden');
+            coverPreviewPlaceholder.classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // ========================================
+    // SAVE POST
+    // ========================================
+    async function savePost() {
+        const title = titleInput.value.trim();
+        const slug = slugInput.value.trim();
+        const authorName = document.getElementById('authorName').value.trim();
+        const category = document.getElementById('category').value;
+        const excerpt = document.getElementById('excerpt').value.trim();
+        const isPublished = document.getElementById('isPublished').checked;
+        const isFeatured = document.getElementById('isFeatured').checked;
+
+        // Content from Quill
+        const content = quill ? quill.root.innerHTML : '';
+        const contentText = quill ? quill.getText().trim() : '';
+
+        // Validasi
+        if (!title || !slug || !authorName || !category) {
+            showToast('Judul, slug, penulis, dan kategori wajib diisi', 'error');
+            return;
+        }
+
+        if (!excerpt) {
+            showToast('Excerpt wajib diisi', 'error');
+            return;
+        }
+
+        if (contentText.length < 50) {
+            showToast('Isi artikel minimal 50 karakter', 'error');
+            return;
+        }
+
+        const originalHTML = formSaveBtn.innerHTML;
+        formSaveBtn.disabled = true;
+        formSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Menyimpan...</span>';
+
+        try {
+            let coverUrl = existingCoverUrl;
+
+            if (coverFile) {
+                formSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Upload cover...</span>';
+                const uploadResult = await uploadBlogCover(coverFile);
+                if (!uploadResult.success) {
+                    throw new Error('Upload cover gagal: ' + uploadResult.error);
+                }
+                coverUrl = uploadResult.path;
+            }
+
+            const postData = {
+                title,
+                slug,
+                excerpt,
+                content,
+                cover_url: coverUrl,
+                category,
+                tags: currentTags,
+                author_name: authorName,
+                is_published: isPublished,
+                is_featured: isFeatured
+            };
+
+            // Set published_at kalau baru publish
+            if (isPublished && !editingPostId) {
+                postData.published_at = new Date().toISOString();
+            }
+
+            formSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Menyimpan...</span>';
+
+            if (editingPostId) {
+                // Kalau status berubah dari draft → published, set published_at
+                const existing = allPosts.find(p => String(p.id) === String(editingPostId));
+                if (isPublished && existing && !existing.is_published) {
+                    postData.published_at = new Date().toISOString();
+                }
+
+                const { error } = await supabaseClient
+                    .from('posts')
+                    .update(postData)
+                    .eq('id', editingPostId);
+
+                if (error) throw error;
+                showToast('Artikel berhasil diupdate!', 'success');
+            } else {
+                const { error } = await supabaseClient
+                    .from('posts')
+                    .insert([postData]);
+
+                if (error) throw error;
+                showToast('Artikel berhasil dibuat!', 'success');
+            }
+
+            closeForm();
+            await loadPosts();
+
+        } catch (err) {
+            console.error('Save post error:', err);
+
+            // Cek duplicate slug
+            const errMsg = (err.message || '').toLowerCase();
+            if (errMsg.includes('duplicate') || errMsg.includes('unique')) {
+                showToast('Slug sudah dipakai. Coba slug lain.', 'error');
+            } else {
+                showToast('Gagal menyimpan: ' + err.message, 'error');
+            }
+        } finally {
+            formSaveBtn.disabled = false;
+            formSaveBtn.innerHTML = originalHTML;
+        }
+    }
+
+    // ========================================
+    // DELETE POST
+    // ========================================
+    async function deletePost(id, title) {
+        if (!confirm(`Yakin hapus artikel "${title}"?\n\nTindakan ini tidak bisa dibatalkan.`)) return;
+
+        try {
+            const post = allPosts.find(p => String(p.id) === String(id));
+
+            // Hapus cover dari storage
+            if (post && post.cover_url && !post.cover_url.startsWith('http')) {
+                await supabaseClient.storage
+                    .from('blog-covers')
+                    .remove([post.cover_url])
+                    .catch(err => console.warn('Gagal hapus cover:', err));
+            }
+
+            const { error } = await supabaseClient
+                .from('posts')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+
+            allPosts = allPosts.filter(p => String(p.id) !== String(id));
+            updateStats();
+            applyFilters();
+
+            showToast('Artikel berhasil dihapus', 'success');
+
+        } catch (err) {
+            console.error('Delete error:', err);
+            showToast('Gagal hapus: ' + err.message, 'error');
+        }
+    }
+
+    // ========================================
+    // LOGOUT / SIDEBAR
+    // ========================================
+    async function handleLogout() {
+        if (!confirm('Yakin mau logout?')) return;
+        await adminSignOut();
+        window.location.href = 'admin-login.html';
+    }
+
+    function toggleSidebar() {
+        sidebar.classList.toggle('-translate-x-full');
+        sidebarOverlay.classList.toggle('active');
+    }
+
+    // ========================================
+    // EVENTS
+    // ========================================
+    function bindEvents() {
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            applyFilters();
+        });
+
+        categoryFilter.addEventListener('change', (e) => {
+            activeCategory = e.target.value;
+            applyFilters();
+        });
+
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                activeStatus = chip.dataset.status;
+                applyFilters();
+            });
+        });
+
+        refreshBtn.addEventListener('click', () => {
+            refreshBtn.disabled = true;
+            refreshBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span class="hidden sm:inline">Loading...</span>';
+            loadPosts().finally(() => {
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = '<i class="fa-solid fa-rotate"></i><span class="hidden sm:inline">Refresh</span>';
+            });
+        });
+
+        addBtn.addEventListener('click', () => openForm());
+        logoutBtn.addEventListener('click', handleLogout);
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+
+        formModal.addEventListener('click', (e) => {
+            if (e.target === formModal) closeForm();
+        });
+
+        formSaveBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            savePost();
+        });
+
+        postForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            savePost();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !formModal.classList.contains('hidden')) {
+                closeForm();
+            }
+        });
+    }
+
+    // ========================================
+    // INIT
+    // ========================================
+    (async () => {
+        const ok = await checkAuth();
+        if (!ok) return;
+
+        initQuill();
+        bindEvents();
+        await loadPosts();
+
+        console.log('%c📰 Karyakata Admin Blog loaded', 'font-size: 14px; font-weight: bold; color: #0B7BE8;');
+    })();
+
+    // Expose
+    window.openForm = openForm;
+    window.closeForm = closeForm;
+    window.deletePost = deletePost;
+    </script>
+
+</body>
+</html>

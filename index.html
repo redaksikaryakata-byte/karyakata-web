@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Karyakata.id — Penerbit Buku Modern Indonesia</title>
+    <meta name="description" content="Karyakata.id — Penerbit buku profesional Indonesia. Berkarya dengan Kata, Berkata dengan Karya. Layanan penerbitan, editing, layout, cover, cetak, dan distribusi." />
+
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/img/favicon.png" />
+    <link rel="shortcut icon" href="assets/img/favicon.png" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                     sky: {
+    50: '#EFF6FF',
+    100: '#DBEAFE',
+    200: '#BFDBFE',
+    300: '#93C5FD',
+    400: '#4A9EF0',
+    500: '#0B7BE8',
+    600: '#0967C7',
+    700: '#0755A6',
+    800: '#064485',
+    900: '#053364',
+},
+  gold: {
+    100: '#FEF3E2',
+    200: '#FDE0B5',
+    300: '#FBC97D',
+    400: '#F8B84A',
+    500: '#F5A623',
+    600: '#D98B0E',
+    700: '#A86B0A',
+}
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        html { scroll-behavior: smooth; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(3deg); }
+        }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        .animate-float-slow { animation: floatSlow 6s ease-in-out infinite; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.8s ease-out forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 166, 35, 0.7); }
+            50% { box-shadow: 0 0 0 12px rgba(245, 166, 35, 0); }
+        }
+        .pulse-glow { animation: pulseGlow 2s infinite; }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #0B7BE8 0%, #0967C7 40%, #0755A6 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero-gradient::after {
+            content: '';
+            position: absolute;
+            bottom: -50%; left: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(245, 166, 35, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .card-lift { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 24px 48px -16px rgba(11, 123, 232, 0.25);
+        }
+
+        .book-cover {
+            aspect-ratio: 2/3;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px -8px rgba(0,0,0,0.15);
+            transition: all 0.4s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .book-cover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 24px 40px -12px rgba(11, 123, 232, 0.35);
+        }
+        .book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 44px;
+    bottom: -24px;
+    width: 2px;
+    background: linear-gradient(to bottom, #0B7BE8, #DBEAFE);
+}
+        .timeline-item:last-child::before { display: none; }
+
+        .nav-link { color: #334155; font-weight: 500; transition: all .2s ease; }
+.nav-link:hover { color: #0B7BE8; }
+.nav-link.active { color: #0B7BE8; font-weight: 700; }
+
+       .btn-primary {
+    background: #0B7BE8;
+    color: white;
+    font-weight: 700;
+    transition: all .3s ease;
+    box-shadow: 0 8px 20px rgba(11, 123, 232, 0.35);
+}
+.btn-primary:hover {
+    background: #0967C7;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(11, 123, 232, 0.45);
+}
+        .btn-gold {
+            background: #F5A623;
+            color: #422006;
+            font-weight: 700;
+            transition: all .3s ease;
+            box-shadow: 0 8px 20px rgba(245, 166, 35, 0.35);
+        }
+        .btn-gold:hover {
+            background: #D98B0E;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(245, 166, 35, 0.45);
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #e0f2fe 25%, #f0f9ff 50%, #e0f2fe 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        /* Validasi ISBN/QRCBN */
+        .validate-tab {
+            transition: all .2s ease;
+            cursor: pointer;
+            border: none;
+        }
+        .validate-tab.active {
+            background: linear-gradient(135deg, #0B7BE8, #0967C7);
+            color: white;
+            box-shadow: 0 8px 20px rgba(11, 123, 232, 0.35);
+        }
+        .validate-tab:not(.active) {
+            background: #EFF6FF;
+            color: #0B7BE8;
+        }
+        .validate-tab:not(.active):hover {
+            background: #DBEAFE;
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f0f9ff; }
+        ::-webkit-scrollbar-thumb { background: #7dd3fc; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #38bdf8; }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-b border-sky-100" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+
+                <a href="index.html" class="flex items-center gap-2 group">
+                    <img src="assets/img/logo.png" alt="Karyakata.id" class="h-10 md:h-12 w-auto group-hover:scale-105 transition" />
+                    <span class="font-display text-xl md:text-2xl font-black leading-none">
+                        <span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span>
+                    </span>
+                </a>
+
+                <div class="hidden lg:flex items-center gap-8 text-sm">
+                    <a href="index.html" class="nav-link active">Beranda</a>
+                    <a href="layanan.html" class="nav-link">Layanan</a>
+                    <a href="katalog.html" class="nav-link">Katalog</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="tentang.html" class="nav-link">Tentang</a>
+                    <a href="kontak.html" class="nav-link">Kontak</a>
+                </div>
+
+                <div class="hidden md:flex items-center gap-3">
+                    <!-- TOMBOL LOGIN PENULIS BARU -->
+                    <a href="author/author-login.html" class="text-sky-700 bg-sky-50 hover:bg-sky-100 px-5 py-2.5 rounded-full text-sm font-bold transition flex items-center gap-2">
+                        <i class="fa-solid fa-user-pen"></i>
+                        <span>Login Penulis</span>
+                    </a>
+                    
+                    <a href="kirim-naskah.html" class="btn-gold px-5 py-2.5 rounded-full text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Kirim Naskah</span>
+                    </a>
+                </div>
+
+                <button id="menuBtn" class="lg:hidden w-10 h-10 rounded-lg bg-sky-50 flex items-center justify-center text-sky-700">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobileMenu" class="hidden lg:hidden bg-white border-t border-sky-100 px-4 py-4 space-y-1">
+            <a href="index.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Beranda</a>
+            <a href="layanan.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Layanan</a>
+            <a href="katalog.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Katalog</a>
+            <a href="blog.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Blog</a>
+            <a href="tentang.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Tentang</a>
+            <a href="kontak.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Kontak</a>
+            <!-- TOMBOL LOGIN MOBILE BARU -->
+            <a href="author/author-login.html" class="block text-center bg-sky-50 text-sky-700 px-5 py-3 rounded-xl text-sm font-bold mt-2">
+                <i class="fa-solid fa-user-pen mr-1"></i> Login Penulis
+            </a>
+
+            <a href="kirim-naskah.html" class="block text-center btn-gold px-5 py-3 rounded-xl text-sm font-bold mt-2">
+                <i class="fa-solid fa-paper-plane mr-1"></i> Kirim Naskah
+            </a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero-gradient pt-28 md:pt-36 pb-20 md:pb-28 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-12 gap-10 items-center">
+
+                <div class="lg:col-span-7 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-1.5 mb-6 animate-fade-up">
+                        <span class="w-2 h-2 rounded-full bg-gold-400 pulse-glow"></span>
+                        <span class="text-white/90 text-xs md:text-sm font-semibold tracking-wide">Penerbit Buku Modern Indonesia</span>
+                    </div>
+
+                    <h1 class="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.05] animate-fade-up delay-1">
+                        Berkarya dengan Kata,
+                        <br>
+                        <span class="text-gold-300">Berkata dengan Karya</span>
+                    </h1>
+
+                    <p class="text-sky-100 text-base md:text-lg max-w-2xl mx-auto lg:mx-0 mt-6 leading-relaxed animate-fade-up delay-2">
+                        Karyakata.id adalah penerbit buku profesional yang membantu penulis Indonesia menerbitkan karya terbaiknya.
+                        Dari editing naskah hingga distribusi — semua kami tangani dengan sepenuh hati.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mt-8 animate-fade-up delay-3">
+                        <a href="kirim-naskah.html" class="btn-gold px-7 py-4 rounded-full text-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Kirim Naskah Sekarang</span>
+                        </a>
+                        <a href="layanan.html" class="bg-white/10 backdrop-blur-md hover:bg-white/20 border border-white/30 text-white font-bold px-7 py-4 rounded-full text-sm flex items-center justify-center gap-2 transition">
+                            <i class="fa-solid fa-book-open"></i>
+                            <span>Lihat Paket Penerbitan</span>
+                        </a>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-6 mt-10 animate-fade-up delay-4">
+                        <div class="flex items-center gap-2">
+                            <div class="flex text-gold-400 text-sm">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                            </div>
+                            <span class="text-white text-sm font-semibold">4.9/5</span>
+                        </div>
+                        <div class="hidden sm:block w-px h-6 bg-white/20"></div>
+                        <div class="flex items-center gap-2 text-white/90 text-sm">
+                            <i class="fa-solid fa-check-circle text-gold-400"></i>
+                            <span>Berizin resmi &amp; bersertifikat</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 hidden lg:block">
+                    <div class="relative animate-float-slow">
+                        <div class="absolute inset-0 bg-gold-400/30 rounded-3xl blur-3xl"></div>
+
+                        <div class="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 shadow-2xl">
+                            <div class="flex justify-center mb-6">
+                                <div class="relative">
+                                    <div class="absolute -top-4 -left-4 w-32 h-44 bg-gradient-to-br from-gold-300 to-gold-500 rounded-lg shadow-xl transform -rotate-12"></div>
+                                    <div class="absolute -top-2 -right-2 w-32 h-44 bg-gradient-to-br from-sky-300 to-sky-500 rounded-lg shadow-xl transform rotate-6"></div>
+                                    <div class="relative w-32 h-44 bg-gradient-to-br from-white to-sky-50 rounded-lg shadow-2xl flex flex-col items-center justify-center border-2 border-white">
+                                        <div class="text-3xl mb-2">📖</div>
+                                        <div class="text-xs font-black text-slate-700">BUKU</div>
+                                        <div class="text-[10px] text-slate-400">KARYAKATA</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center text-white">
+                                <p class="text-xs font-bold tracking-widest text-gold-300 mb-1">SEJAK 2024</p>
+                                <p class="font-display text-lg font-black">Menerbitkan Karya, Menginspirasi Bangsa</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+                <path d="M0 80L60 74.7C120 69.3 240 58.7 360 58.7C480 58.7 600 69.3 720 69.3C840 69.3 960 58.7 1080 53.3C1200 48 1320 48 1380 48L1440 48V80H0Z" fill="white"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="py-12 md:py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+                <div class="text-center">
+                    <div class="font-display text-4xl md:text-5xl font-black text-sky-600 mb-2">100<span class="text-gold-500">+</span></div>
+                    <p class="text-sm md:text-base text-slate-600 font-semibold">Buku Terbit</p>
+                </div>
+                <div class="text-center">
+                    <div class="font-display text-4xl md:text-5xl font-black text-sky-600 mb-2">500<span class="text-gold-500">+</span></div>
+                    <p class="text-sm md:text-base text-slate-600 font-semibold">Penulis Aktif</p>
+                </div>
+                <div class="text-center">
+                    <div class="font-display text-4xl md:text-5xl font-black text-sky-600 mb-2">10<span class="text-gold-500">+</span></div>
+                    <p class="text-sm md:text-base text-slate-600 font-semibold">Kota Jangkauan</p>
+                </div>
+                <div class="text-center">
+                    <div class="font-display text-4xl md:text-5xl font-black text-sky-600 mb-2">4.9<span class="text-gold-500">★</span></div>
+                    <p class="text-sm md:text-base text-slate-600 font-semibold">Rating Penulis</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LAYANAN -->
+    <section class="py-16 md:py-24 bg-sky-50" id="layanan">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+                <div class="inline-flex items-center gap-2 bg-sky-100 border border-sky-200 rounded-full px-4 py-1.5 mb-4">
+                    <i class="fa-solid fa-layer-group text-sky-600 text-xs"></i>
+                    <span class="text-sky-700 text-xs md:text-sm font-bold tracking-wide">LAYANAN KAMI</span>
+                </div>
+                <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight">
+                    Semua yang Kamu Butuhkan untuk <span class="text-sky-600">Menerbitkan Buku</span>
+                </h2>
+                <p class="text-slate-600 text-base md:text-lg mt-4 leading-relaxed">
+                    Dari naskah mentah sampai buku siap jual — kami urus semuanya. Kamu fokus menulis, kami fokus menerbitkan.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+
+                <div class="card-lift bg-white rounded-3xl p-8 border-2 border-sky-100 hover:border-sky-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-sky-50 rounded-full -mr-16 -mt-16 group-hover:bg-sky-100 transition"></div>
+                    <div class="relative">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-700 flex items-center justify-center text-white text-xl shadow-lg shadow-sky-500/30 mb-6">
+                            <i class="fa-solid fa-book-open-reader"></i>
+                        </div>
+                        <h3 class="font-display text-xl md:text-2xl font-black text-slate-800 mb-3">Paket Penerbitan</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                            Paket lengkap dari editing, layout, desain cover, ISBN/QRCBN, cetak, hingga distribusi. Pilih paket sesuai kebutuhanmu.
+                        </p>
+                        <ul class="space-y-2.5 mb-6">
+                            <li class="flex items-start gap-2 text-sm text-slate-700">
+                                <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                                <span>Editing &amp; proofreading profesional</span>
+                            </li>
+                            <li class="flex items-start gap-2 text-sm text-slate-700">
+                                <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                                <span>Layout &amp; desain cover eksklusif</span>
+                            </li>
+                            <li class="flex items-start gap-2 text-sm text-slate-700">
+                                <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                                <span>ISBN / QRCBN resmi</span>
+                            </li>
+                            <li class="flex items-start gap-2 text-sm text-slate-700">
+                                <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                                <span>Cetak &amp; distribusi nasional</span>
+                            </li>
+                        </ul>
+                        <a href="layanan.html" class="inline-flex items-center gap-2 text-sky-600 font-bold text-sm hover:gap-3 transition-all">
+                            <span>Lihat Paket</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-lift bg-white rounded-3xl p-8 border-2 border-sky-100 hover:border-sky-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gold-100 rounded-full -mr-16 -mt-16 group-hover:bg-gold-200 transition"></div>
+                    <div class="relative">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-white text-xl shadow-lg shadow-gold-500/30 mb-6">
+                            <i class="fa-solid fa-pen-nib"></i>
+                        </div>
+                        <h3 class="font-display text-xl md:text-2xl font-black text-slate-800 mb-3">Editing &amp; Layout</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                            Naskah sudah jadi tapi masih berantakan? Serahkan pada editor dan desainer kami untuk hasil yang rapi dan profesional.
+                        </p>
+                        <ul class="space-y-2.5 mb-6">
+                            <li class="flex items-start gap-2 text-sm text-slate-700">
+                                <i class="fa-solid fa-circle-check text-gold-500 mt-0.5"></i>
+                                <span>Editing bahasa &amp; struktur</span>
+                            </li>
+                            <li class="flex items-start gap-2 text-sm text-slate-700">
+                                <i class="fa-solid fa-circle-check text-gold-500 mt-0.5"></i>
+                                <span>Proofreading teliti</span>
+                            </li>
+                            <li class="flex items-start gap-2 text-sm text-slate-700">
+                                <i class="fa-solid fa-circle-check text-gold-500 mt-0.5"></i>
+                                <span>Layout isi buku profesional</span>
+                            </li>
+                            <li class="flex items-start gap-2 text-sm text-slate-700">
+                                <i class="fa-solid fa-circle-check text-gold-500 mt-0.5"></i>
+                                <span>Desain cover custom</span>
+                            </li>
+                        </ul>
+                        <a href="layanan.html" class="inline-flex items-center gap-2 text-gold-600 font-bold text-sm hover:gap-3 transition-all">
+                            <span>Lihat Layanan</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-lift bg-white rounded-3xl p-8 border-2 border-sky-100 hover:border-sky-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-sky-50 rounded-full -mr-16 -mt-16 group-hover:bg-sky-100 transition"></div>
+                    <div class="relative">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-700 flex items-center justify-center text-white text-xl shadow-lg shadow-sky-500/30 mb-6">
+                            <i class="fa-solid fa-truck-fast"></i>
+                        </div>
+                        <h3 class="font-display text-xl md:text-2xl font-black text-slate-800 mb-3">Cetak &amp; Distribusi</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                            Buku siap cetak? Kami cetak dengan kualitas terbaik dan distribusikan ke seluruh Indonesia, termasuk versi ebook.
+                        </p>
+                        <ul class="space-y-2.5 mb-6">
+                            <li class="flex items-start gap-2 text-sm text-slate-700">
+                                <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                                <span>Cetak POD &amp; offset</span>
+                            </li>
+                            <li class="flex items-start gap-2 text-sm text-slate-700">
+                                <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                                <span>Ebook (PDF/EPUB)</span>
+                            </li>
+                            <li class="flex items-start gap-2 text-sm text-slate-700">
+                                <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                                <span>Distribusi ke toko online</span>
+                            </li>
+                            <li class="flex items-start gap-2 text-sm text-slate-700">
+                                <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                                <span>Jual via Lynk.id &amp; marketplace</span>
+                            </li>
+                        </ul>
+                        <a href="layanan.html" class="inline-flex items-center gap-2 text-sky-600 font-bold text-sm hover:gap-3 transition-all">
+                            <span>Lihat Detail</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- KEUNGGULAN -->
+    <section class="py-16 md:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+                <div class="inline-flex items-center gap-2 bg-gold-100 border border-gold-200 rounded-full px-4 py-1.5 mb-4">
+                    <i class="fa-solid fa-award text-gold-600 text-xs"></i>
+                    <span class="text-gold-700 text-xs md:text-sm font-bold tracking-wide">KENAPA KARYAKATA</span>
+                </div>
+                <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight">
+                    Alasan Penulis <span class="text-sky-600">Memilih Kami</span>
+                </h2>
+                <p class="text-slate-600 text-base md:text-lg mt-4">
+                    Kami bukan sekadar penerbit. Kami partner perjalanan karyamu.
+                </p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <div class="p-6 rounded-2xl bg-slate-50 hover:bg-sky-50 transition-colors duration-300 group">
+                    <div class="w-12 h-12 rounded-xl bg-sky-500 text-white flex items-center justify-center text-lg mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-black text-slate-800 mb-2">Legal &amp; Berizin Resmi</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Semua buku terbit dengan ISBN/QRCBN resmi. Legal, aman, dan diakui secara nasional.</p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-slate-50 hover:bg-sky-50 transition-colors duration-300 group">
+                    <div class="w-12 h-12 rounded-xl bg-gold-500 text-white flex items-center justify-center text-lg mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-black text-slate-800 mb-2">Tim Editor Berpengalaman</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Editor dan desainer kami sudah menangani ratusan naskah dari berbagai genre.</p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-slate-50 hover:bg-sky-50 transition-colors duration-300 group">
+                    <div class="w-12 h-12 rounded-xl bg-sky-500 text-white flex items-center justify-center text-lg mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-gauge-high"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-black text-slate-800 mb-2">Proses Cepat &amp; Transparan</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Tracking progress real-time. Kamu tahu buku kamu sedang di tahap mana.</p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-slate-50 hover:bg-sky-50 transition-colors duration-300 group">
+                    <div class="w-12 h-12 rounded-xl bg-gold-500 text-white flex items-center justify-center text-lg mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-black text-slate-800 mb-2">Royalti Adil &amp; Jelas</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Sistem royalti transparan. Kamu tahu persis berapa yang kamu dapat dari setiap penjualan.</p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-slate-50 hover:bg-sky-50 transition-colors duration-300 group">
+                    <div class="w-12 h-12 rounded-xl bg-sky-500 text-white flex items-center justify-center text-lg mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-black text-slate-800 mb-2">Jaringan Komunitas Luas</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Terhubung dengan Yatta.id dan komunitas penulis lain. Networking yang menguntungkan.</p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-slate-50 hover:bg-sky-50 transition-colors duration-300 group">
+                    <div class="w-12 h-12 rounded-xl bg-gold-500 text-white flex items-center justify-center text-lg mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-black text-slate-800 mb-2">Support Sepenuh Hati</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Tim support kami siap membantu dari awal hingga buku kamu terbit dan terjual.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PORTOFOLIO -->
+    <section class="py-16 md:py-24 bg-sky-50" id="portofolio">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-10 md:mb-14 gap-4">
+                <div class="max-w-2xl">
+                    <div class="inline-flex items-center gap-2 bg-sky-100 border border-sky-200 rounded-full px-4 py-1.5 mb-4">
+                        <i class="fa-solid fa-book text-sky-600 text-xs"></i>
+                        <span class="text-sky-700 text-xs md:text-sm font-bold tracking-wide">BUKU TERBIT</span>
+                    </div>
+                    <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight">
+                        Karya yang Sudah <span class="text-sky-600">Kami Terbitkan</span>
+                    </h2>
+                    <p class="text-slate-600 text-base md:text-lg mt-3">
+                        Sebagian buku dari penulis-penulis hebat yang sudah mempercayakan karyanya pada Karyakata.
+                    </p>
+                </div>
+                <a href="katalog.html" class="hidden md:inline-flex items-center gap-2 bg-white border-2 border-sky-200 hover:border-sky-400 text-sky-700 font-bold px-5 py-3 rounded-full text-sm transition">
+                    <span>Lihat Semua Buku</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Grid Buku Dinamis dari Supabase -->
+            <div id="booksGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6">
+                <!-- Loading skeleton -->
+                <div>
+                    <div class="skeleton aspect-[2/3] rounded-xl"></div>
+                    <div class="skeleton h-4 w-3/4 mt-3"></div>
+                    <div class="skeleton h-3 w-1/2 mt-2"></div>
+                </div>
+                <div>
+                    <div class="skeleton aspect-[2/3] rounded-xl"></div>
+                    <div class="skeleton h-4 w-3/4 mt-3"></div>
+                    <div class="skeleton h-3 w-1/2 mt-2"></div>
+                </div>
+                <div>
+                    <div class="skeleton aspect-[2/3] rounded-xl"></div>
+                    <div class="skeleton h-4 w-3/4 mt-3"></div>
+                    <div class="skeleton h-3 w-1/2 mt-2"></div>
+                </div>
+                <div>
+                    <div class="skeleton aspect-[2/3] rounded-xl"></div>
+                    <div class="skeleton h-4 w-3/4 mt-3"></div>
+                    <div class="skeleton h-3 w-1/2 mt-2"></div>
+                </div>
+            </div>
+
+            <div class="text-center mt-10 md:hidden">
+                <a href="katalog.html" class="inline-flex items-center gap-2 btn-primary px-6 py-3 rounded-full text-sm">
+                    <span>Lihat Semua Buku</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- VALIDASI ISBN / QRCBN -->
+    <section class="py-16 md:py-20 bg-white" id="cek-isbn">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center max-w-3xl mx-auto mb-10 md:mb-12">
+                <div class="inline-flex items-center gap-2 bg-sky-100 border border-sky-200 rounded-full px-4 py-1.5 mb-4">
+                    <i class="fa-solid fa-shield-halved text-sky-600 text-xs"></i>
+                    <span class="text-sky-700 text-xs md:text-sm font-bold tracking-wide">VALIDASI KODE BUKU</span>
+                </div>
+                <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight">
+                    Cek Keaslian <span class="text-sky-600">ISBN / QRCBN</span>
+                </h2>
+                <p class="text-slate-600 text-base md:text-lg mt-4">
+                    Pastikan buku yang kamu pegang asli dan terdaftar di platform resmi. Masukkan kode ISBN atau QRCBN untuk memverifikasi.
+                </p>
+            </div>
+
+            <div class="bg-gradient-to-br from-sky-50 to-white rounded-3xl p-6 md:p-10 border-2 border-sky-100 shadow-xl shadow-sky-500/5">
+
+                <!-- Tabs -->
+                <div class="flex gap-2 justify-center mb-6">
+                    <button id="tabIsbn" onclick="switchValidateTab('isbn')" class="validate-tab active px-6 py-2.5 rounded-full text-sm font-bold">
+                        <i class="fa-solid fa-book mr-1.5"></i> ISBN
+                    </button>
+                    <button id="tabQrcbn" onclick="switchValidateTab('qrcbn')" class="validate-tab px-6 py-2.5 rounded-full text-sm font-bold">
+                        <i class="fa-solid fa-qrcode mr-1.5"></i> QRCBN
+                    </button>
+                </div>
+
+                <!-- Input + Button -->
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <input
+                        type="text"
+                        id="validateInput"
+                        placeholder="Masukkan nomor ISBN..."
+                        class="flex-1 px-5 py-4 rounded-2xl border-2 border-sky-100 focus:outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-100 text-sm transition"
+                    />
+                    <button onclick="validateCode()" class="btn-primary px-8 py-4 rounded-2xl text-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span>Cek Sekarang</span>
+                    </button>
+                </div>
+
+                <!-- Hint -->
+                <p id="validateHint" class="text-xs text-slate-500 mt-4 text-center">
+                    💡 Contoh ISBN: <code class="bg-sky-100 px-2 py-0.5 rounded text-sky-700 font-mono">978-602-1234-56-7</code>
+                </p>
+
+                <!-- Info tambahan -->
+                <div class="mt-6 pt-6 border-t border-sky-100 grid sm:grid-cols-2 gap-4 text-xs">
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-circle-info text-sky-500 mt-0.5"></i>
+                        <p class="text-slate-600 leading-relaxed">
+                            <strong class="text-slate-800">ISBN</strong> — International Standard Book Number, untuk buku yang dijual umum & terdaftar di Perpusnas.
+                        </p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-circle-info text-gold-500 mt-0.5"></i>
+                        <p class="text-slate-600 leading-relaxed">
+                            <strong class="text-slate-800">QRCBN</strong> — Quick Response Code Book Number, untuk buku komunitas/antologi/modul.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Error/Result area -->
+                <div id="validateResult" class="hidden mt-6"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ALUR PENERBITAN -->
+    <section class="py-16 md:py-24 bg-white" id="alur">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+                <div class="inline-flex items-center gap-2 bg-sky-100 border border-sky-200 rounded-full px-4 py-1.5 mb-4">
+                    <i class="fa-solid fa-route text-sky-600 text-xs"></i>
+                    <span class="text-sky-700 text-xs md:text-sm font-bold tracking-wide">ALUR PENERBITAN</span>
+                </div>
+                <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight">
+                    Dari Naskah ke <span class="text-sky-600">Buku Terbit</span>
+                </h2>
+                <p class="text-slate-600 text-base md:text-lg mt-4">
+                    Prosesnya simpel dan transparan. Ini 8 langkah yang akan kamu lalui.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-x-12 gap-y-8 max-w-5xl mx-auto">
+                <div class="flex gap-5 timeline-item relative">
+                    <div class="flex-shrink-0 w-11 h-11 rounded-full bg-sky-500 text-white flex items-center justify-center font-black text-lg shadow-lg shadow-sky-500/30 z-10">1</div>
+                    <div class="pb-2">
+                        <h3 class="font-display font-black text-slate-800 text-lg mb-1">Kirim Naskah</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Kirim naskahmu melalui form di website atau WhatsApp. Format bebas, kami terima semua genre.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-5 timeline-item relative">
+                    <div class="flex-shrink-0 w-11 h-11 rounded-full bg-sky-500 text-white flex items-center justify-center font-black text-lg shadow-lg shadow-sky-500/30 z-10">2</div>
+                    <div class="pb-2">
+                        <h3 class="font-display font-black text-slate-800 text-lg mb-1">Review &amp; Penilaian</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Tim editor kami mereview naskahmu dalam 1-3 hari kerja. Kami beri masukan dan rekomendasi paket.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-5 timeline-item relative">
+                    <div class="flex-shrink-0 w-11 h-11 rounded-full bg-gold-500 text-white flex items-center justify-center font-black text-lg shadow-lg shadow-gold-500/30 z-10">3</div>
+                    <div class="pb-2">
+                        <h3 class="font-display font-black text-slate-800 text-lg mb-1">Pilih Paket</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Pilih paket penerbitan yang sesuai budget dan kebutuhanmu. Ada beberapa opsi dari basic sampai premium.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-5 timeline-item relative">
+                    <div class="flex-shrink-0 w-11 h-11 rounded-full bg-gold-500 text-white flex items-center justify-center font-black text-lg shadow-lg shadow-gold-500/30 z-10">4</div>
+                    <div class="pb-2">
+                        <h3 class="font-display font-black text-slate-800 text-lg mb-1">Pembayaran</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Bayar DP atau lunas sesuai kesepakatan. Kami terima transfer bank dan QRIS.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-5 timeline-item relative">
+                    <div class="flex-shrink-0 w-11 h-11 rounded-full bg-sky-500 text-white flex items-center justify-center font-black text-lg shadow-lg shadow-sky-500/30 z-10">5</div>
+                    <div class="pb-2">
+                        <h3 class="font-display font-black text-slate-800 text-lg mb-1">Editing Naskah</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Editor profesional kami mengedit naskahmu: struktur, bahasa, ejaan, dan konsistensi.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-5 timeline-item relative">
+                    <div class="flex-shrink-0 w-11 h-11 rounded-full bg-sky-500 text-white flex items-center justify-center font-black text-lg shadow-lg shadow-sky-500/30 z-10">6</div>
+                    <div class="pb-2">
+                        <h3 class="font-display font-black text-slate-800 text-lg mb-1">Layout &amp; Desain Cover</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Naskah ditata jadi buku yang rapi, cover didesain eksklusif sesuai genre dan kepribadianmu.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-5 timeline-item relative">
+                    <div class="flex-shrink-0 w-11 h-11 rounded-full bg-gold-500 text-white flex items-center justify-center font-black text-lg shadow-lg shadow-gold-500/30 z-10">7</div>
+                    <div class="pb-2">
+                        <h3 class="font-display font-black text-slate-800 text-lg mb-1">Cetak Buku</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Buku dicetak dengan kualitas terbaik. Kamu dapat preview digital sebelum masuk produksi.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-5 timeline-item relative">
+                    <div class="flex-shrink-0 w-11 h-11 rounded-full bg-gold-500 text-white flex items-center justify-center font-black text-lg shadow-lg shadow-gold-500/30 z-10">8</div>
+                    <div class="pb-2">
+                        <h3 class="font-display font-black text-slate-800 text-lg mb-1">Distribusi &amp; Jual</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Buku didistribusikan ke Lynk.id, marketplace, dan toko buku. Kamu dapat royalti dari setiap penjualan.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-12">
+                <a href="kirim-naskah.html" class="inline-flex items-center gap-2 btn-gold px-7 py-4 rounded-full text-sm">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Mulai Kirim Naskah</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONI -->
+    <section class="py-16 md:py-24 bg-sky-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+                <div class="inline-flex items-center gap-2 bg-gold-100 border border-gold-200 rounded-full px-4 py-1.5 mb-4">
+                    <i class="fa-solid fa-quote-left text-gold-600 text-xs"></i>
+                    <span class="text-gold-700 text-xs md:text-sm font-bold tracking-wide">TESTIMONI</span>
+                </div>
+                <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight">
+                    Kata Mereka yang <span class="text-sky-600">Sudah Terbit</span>
+                </h2>
+                <p class="text-slate-600 text-base md:text-lg mt-4">
+                    Pengalaman nyata dari penulis yang mempercayakan karyanya pada Karyakata.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <div class="card-lift bg-white rounded-3xl p-7 border border-sky-100 relative">
+                    <i class="fa-solid fa-quote-right absolute top-6 right-6 text-sky-100 text-4xl"></i>
+                    <div class="flex text-gold-500 text-sm mb-4">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-slate-700 text-sm leading-relaxed mb-6 relative z-10">
+                        "Prosesnya cepat dan profesional. Naskah saya yang awalnya berantakan jadi rapi banget setelah diedit tim Karyakata. Recommended!"
+                    </p>
+                    <div class="flex items-center gap-3 pt-4 border-t border-sky-50">
+                        <div class="w-11 h-11 rounded-full bg-gradient-to-br from-sky-400 to-sky-700 flex items-center justify-center text-white font-black">A</div>
+                        <div>
+                            <p class="font-display font-bold text-slate-800 text-sm">Andini Rahmawati</p>
+                            <p class="text-slate-500 text-xs">Penulis Novel</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-lift bg-white rounded-3xl p-7 border border-sky-100 relative">
+                    <i class="fa-solid fa-quote-right absolute top-6 right-6 text-gold-100 text-4xl"></i>
+                    <div class="flex text-gold-500 text-sm mb-4">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-slate-700 text-sm leading-relaxed mb-6 relative z-10">
+                        "Sebagai penulis pemula, saya bingung harus mulai dari mana. Tim Karyakata sabar banget memandu dari nol sampai buku saya terbit."
+                    </p>
+                    <div class="flex items-center gap-3 pt-4 border-t border-sky-50">
+                        <div class="w-11 h-11 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-white font-black">B</div>
+                        <div>
+                            <p class="font-display font-bold text-slate-800 text-sm">Bagas Prasetyo</p>
+                            <p class="text-slate-500 text-xs">Penulis Antologi</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-lift bg-white rounded-3xl p-7 border border-sky-100 relative">
+                    <i class="fa-solid fa-quote-right absolute top-6 right-6 text-sky-100 text-4xl"></i>
+                    <div class="flex text-gold-500 text-sm mb-4">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-slate-700 text-sm leading-relaxed mb-6 relative z-10">
+                        "Cover buku saya didesain ulang dan hasilnya jauh lebih menarik. Penjualan di Lynk.id langsung naik drastis. Terima kasih Karyakata!"
+                    </p>
+                    <div class="flex items-center gap-3 pt-4 border-t border-sky-50">
+                        <div class="w-11 h-11 rounded-full bg-gradient-to-br from-sky-400 to-sky-700 flex items-center justify-center text-white font-black">C</div>
+                        <div>
+                            <p class="font-display font-bold text-slate-800 text-sm">Citra Lestari</p>
+                            <p class="text-slate-500 text-xs">Penulis Non-Fiksi</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MITRA -->
+    <section class="py-16 md:py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <div class="inline-flex items-center gap-2 bg-sky-100 border border-sky-200 rounded-full px-4 py-1.5 mb-4">
+                    <i class="fa-solid fa-handshake text-sky-600 text-xs"></i>
+                    <span class="text-sky-700 text-xs md:text-sm font-bold tracking-wide">KOLABORASI</span>
+                </div>
+                <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight">
+                    Partner &amp; <span class="text-sky-600">Komunitas</span>
+                </h2>
+                <p class="text-slate-600 text-base md:text-lg mt-4">
+                    Karyakata.id berkolaborasi dengan komunitas dan lembaga untuk memajukan literasi Indonesia.
+                </p>
+            </div>
+
+            <div class="bg-gradient-to-br from-sky-50 to-sky-100 rounded-3xl p-8 md:p-12 border border-sky-200 mb-10">
+                <div class="grid md:grid-cols-12 gap-8 items-center">
+                    <div class="md:col-span-4 flex justify-center">
+                        <div class="w-32 h-32 rounded-3xl bg-gradient-to-br from-sky-500 to-sky-700 flex items-center justify-center text-white font-display font-black text-4xl shadow-2xl shadow-sky-500/40">Y</div>
+                    </div>
+                    <div class="md:col-span-8 text-center md:text-left">
+                        <div class="inline-flex items-center gap-2 bg-gold-500 text-white rounded-full px-3 py-1 mb-3">
+                            <i class="fa-solid fa-star text-[10px]"></i>
+                            <span class="text-[10px] font-bold tracking-widest">MITRA UTAMA</span>
+                        </div>
+                        <h3 class="font-display text-2xl md:text-3xl font-black text-slate-800 mb-3">Yatta.id — Komunitas Penulis</h3>
+                        <p class="text-slate-600 text-sm md:text-base leading-relaxed mb-5">
+                            Yatta.id adalah komunitas penulis yang menjadi partner utama Karyakata. Di sini penulis bisa belajar, berbagi, dan tumbuh bersama sebelum menerbitkan karya.
+                        </p>
+                        <a href="https://yatta.id" target="_blank" rel="noopener" class="inline-flex items-center gap-2 btn-primary px-6 py-3 rounded-full text-sm">
+                            <i class="fa-solid fa-users"></i>
+                            <span>Gabung Komunitas Yatta</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid Mitra Dinamis (dari tabel `partners`) -->
+            <div id="partnersGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                <!-- Loading skeleton -->
+                <div class="skeleton h-24 rounded-2xl"></div>
+                <div class="skeleton h-24 rounded-2xl"></div>
+                <div class="skeleton h-24 rounded-2xl"></div>
+                <div class="skeleton h-24 rounded-2xl"></div>
+                <div class="skeleton h-24 rounded-2xl"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="py-16 md:py-24 relative overflow-hidden">
+        <div class="hero-gradient absolute inset-0"></div>
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-1.5 mb-6">
+                <span class="w-2 h-2 rounded-full bg-gold-400 pulse-glow"></span>
+                <span class="text-white/90 text-xs md:text-sm font-semibold tracking-wide">SIAP MEMULAI?</span>
+            </div>
+
+            <h2 class="font-display text-4xl sm:text-5xl md:text-6xl font-black text-white leading-tight mb-6">
+                Siap Terbitkan <span class="text-gold-300">Bukumu?</span>
+            </h2>
+
+            <p class="text-sky-100 text-base md:text-lg leading-relaxed mb-10 max-w-2xl mx-auto">
+                Jangan tunda lagi. Naskahmu layak dibaca dunia. Kirim sekarang dan mulai perjalananmu menjadi penulis terbit bersama Karyakata.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="btn-gold px-8 py-4 rounded-full text-sm flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span>Chat via WhatsApp</span>
+                </a>
+                <a href="kirim-naskah.html" class="bg-white/10 backdrop-blur-md hover:bg-white/20 border border-white/30 text-white font-bold px-8 py-4 rounded-full text-sm flex items-center justify-center gap-2 transition">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Kirim Naskah Online</span>
+                </a>
+            </div>
+
+            <p class="text-sky-200/80 text-xs mt-8">
+                <i class="fa-solid fa-clock mr-1"></i>
+                Respon cepat dalam 1×24 jam kerja
+            </p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-300 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-12 gap-10 mb-12">
+
+                <div class="md:col-span-4">
+                    <div class="mb-5 flex items-center gap-3">
+                        <img src="assets/img/logo-footer.png" alt="Karyakata.id" class="h-16 w-auto" />
+                        <span class="font-display text-2xl font-black leading-none">
+                            <span class="text-white">Karyakata</span><span class="text-gold-400">.id</span>
+                        </span>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                        Penerbit buku modern Indonesia. Mitra komunitas Yatta.id. <br>
+                        <span class="text-gold-400 font-semibold">Berkarya dengan Kata, Berkata dengan Karya.</span>
+                    </p>
+                    <div class="flex items-center gap-3 mb-6">
+                        <a href="https://www.instagram.com/karyakata.publishing" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-gradient-to-br hover:from-pink-500 hover:to-purple-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-black flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </a>
+                        <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-green-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="#" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-red-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </div>
+
+                    <!-- Newsletter Form -->
+                    <div class="bg-slate-800/50 rounded-2xl p-4 border border-slate-700">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fa-solid fa-envelope-open-text text-gold-400"></i>
+                            <p class="font-display font-black text-white text-sm tracking-wide">NEWSLETTER</p>
+                        </div>
+                        <p class="text-slate-400 text-xs leading-relaxed mb-3">
+                            Dapatkan info buku baru, promo, dan tips menulis langsung di inbox-mu.
+                        </p>
+                        <form id="formSubscriber" class="flex flex-col sm:flex-row gap-2">
+                            <input
+                                type="email"
+                                id="subEmail"
+                                class="flex-1 px-4 py-2.5 rounded-full bg-slate-900 border border-slate-700 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-sky-400 transition"
+                                placeholder="email@anda.com"
+                                required
+                            />
+                            <button
+                                type="submit"
+                                id="subBtn"
+                                class="px-5 py-2.5 rounded-full btn-gold text-xs flex items-center justify-center gap-1.5 whitespace-nowrap"
+                            >
+                                <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                                <span>Langganan</span>
+                            </button>
+                        </form>
+                        <p id="subMsg" class="text-xs mt-2 hidden"></p>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">MENU</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="index.html" class="text-slate-400 hover:text-sky-400 transition">Beranda</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Layanan</a></li>
+                        <li><a href="katalog.html" class="text-slate-400 hover:text-sky-400 transition">Katalog</a></li>
+                        <li><a href="blog.html" class="text-slate-400 hover:text-sky-400 transition">Blog</a></li>
+                        <li><a href="tentang.html" class="text-slate-400 hover:text-sky-400 transition">Tentang</a></li>
+                        <li><a href="kontak.html" class="text-slate-400 hover:text-sky-400 transition">Kontak</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">LAYANAN</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Paket Penerbitan</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Editing &amp; Proofreading</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Layout &amp; Desain Cover</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Cetak &amp; Distribusi</a></li>
+                        <li><a href="order.html" class="text-slate-400 hover:text-sky-400 transition">Order &amp; Pembayaran</a></li>
+                        <li><a href="kirim-naskah.html" class="text-slate-400 hover:text-sky-400 transition">Kirim Naskah</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">KONTAK</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-envelope text-sky-400 mt-0.5"></i>
+                            <span class="text-slate-400">redaksikaryakata@gmail.com</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-brands fa-whatsapp text-sky-400 mt-0.5"></i>
+                            <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="text-slate-400 hover:text-sky-400 transition">+62 895-6200-00033</a>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot text-sky-400 mt-0.5"></i>
+                            <span class="text-slate-400">Yogyakarta-Gorontalo/Indonesia</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-users text-sky-400 mt-0.5"></i>
+                            <a href="https://www.yatta.id" target="_blank" rel="noopener" class="text-slate-400 hover:text-sky-400 transition">Komunitas Kami — www.yatta.id</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-slate-500 text-xs text-center md:text-left">
+                    &copy; <span id="year"></span> Karyakata.id — Karyakata Publishing. All rights reserved.
+                </p>
+                <div class="flex items-center gap-6 text-xs">
+                    <a href="syarat.html" class="text-slate-500 hover:text-sky-400 transition">Syarat &amp; Ketentuan</a>
+                    <a href="privacy.html" class="text-slate-500 hover:text-sky-400 transition">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                const icon = menuBtn.querySelector('i');
+                if (mobileMenu.classList.contains('hidden')) {
+                    icon.classList.remove('fa-xmark');
+                    icon.classList.add('fa-bars');
+                } else {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-xmark');
+                }
+            });
+
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    const icon = menuBtn.querySelector('i');
+                    icon.classList.remove('fa-xmark');
+                    icon.classList.add('fa-bars');
+                });
+            });
+        }
+
+        const navbar = document.getElementById('navbar');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 50) {
+                navbar.classList.add('shadow-lg', 'shadow-sky-500/5');
+            } else {
+                navbar.classList.remove('shadow-lg', 'shadow-sky-500/5');
+            }
+        });
+
+        const yearEl = document.getElementById('year');
+        if (yearEl) {
+            yearEl.textContent = new Date().getFullYear();
+        }
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-up');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        console.log('%c📚 Karyakata.id', 'font-size: 20px; font-weight: bold; color: #0EA5E9;');
+        console.log('%cBerkarya dengan Kata, Berkata dengan Karya', 'font-size: 12px; color: #EAB308;');
+    </script>
+
+    <!-- Supabase Scripts -->
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/supabase-client.js"></script>
+
+    <script>
+        // ========================================
+        // NEWSLETTER SUBSCRIBER → SUPABASE
+        // ========================================
+        const formSubscriber = document.getElementById('formSubscriber');
+        const subEmail = document.getElementById('subEmail');
+        const subBtn = document.getElementById('subBtn');
+        const subMsg = document.getElementById('subMsg');
+
+        function showSubMsg(text, type) {
+            if (!subMsg) return;
+            subMsg.textContent = text;
+            subMsg.classList.remove('hidden', 'text-green-400', 'text-red-400');
+
+            if (type === 'success') {
+                subMsg.classList.add('text-green-400');
+            } else {
+                subMsg.classList.add('text-red-400');
+            }
+        }
+
+        if (formSubscriber) {
+            formSubscriber.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const email = subEmail.value.trim().toLowerCase();
+
+                if (!email) return;
+
+                // Simple email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showSubMsg('Format email tidak valid.', 'error');
+                    return;
+                }
+
+                const originalHTML = subBtn.innerHTML;
+                subBtn.disabled = true;
+                subBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[10px]"></i><span>Loading...</span>';
+
+                try {
+                    const result = await insertSubscriber(email);
+
+                    if (result.success) {
+                        if (result.message === 'Email sudah terdaftar') {
+                            showSubMsg('Email ini sudah berlangganan.', 'error');
+                        } else {
+                            showSubMsg('✅ Berhasil! Cek inbox kamu untuk info terbaru.', 'success');
+                            subEmail.value = '';
+                        }
+                    } else {
+                        showSubMsg('Gagal mendaftar. Coba lagi nanti.', 'error');
+                        console.warn('Insert subscriber gagal:', result.error);
+                    }
+                } catch (err) {
+                    console.error('Error subscriber:', err);
+                    showSubMsg('Terjadi kesalahan. Coba lagi.', 'error');
+                }
+
+                subBtn.disabled = false;
+                subBtn.innerHTML = originalHTML;
+
+                // Auto-hide message after 5 seconds
+                setTimeout(() => {
+                    subMsg.classList.add('hidden');
+                }, 5000);
+            });
+        }
+
+        console.log('%c✉️ Newsletter subscriber ready', 'color: #F5A623; font-weight: bold;');
+    </script>
+
+    <script>
+        // ========================================
+        // LOAD PARTNERS (Grid Dinamis)
+        // ========================================
+        async function loadPartners() {
+            const grid = document.getElementById('partnersGrid');
+            if (!grid) return;
+
+            try {
+                const result = await getPartners();
+
+                if (!result.success || result.data.length === 0) {
+                    // Kalau kosong, sembunyikan grid
+                    grid.innerHTML = '';
+                    grid.style.display = 'none';
+                    return;
+                }
+
+                const partners = result.data;
+
+                grid.innerHTML = partners.map(partner => {
+                    const logoUrl = partner.logo_url
+                        ? (partner.logo_url.startsWith('http')
+                            ? partner.logo_url
+                            : supabaseClient.storage.from('partners-logo').getPublicUrl(partner.logo_url).data.publicUrl)
+                        : null;
+
+                    const nama = partner.nama || 'Mitra';
+                    const linkUrl = partner.link_url || null;
+                    const deskripsi = partner.deskripsi || '';
+
+                    const content = logoUrl
+                        ? `<img src="${logoUrl}" alt="${nama}" class="max-h-12 max-w-full object-contain mx-auto" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                           <span class="font-display font-black text-slate-500 text-sm text-center" style="display:none;">${nama}</span>`
+                        : `<span class="font-display font-black text-slate-500 text-sm text-center">${nama}</span>`;
+
+                    const descHtml = deskripsi
+                        ? `<p class="text-[10px] text-slate-500 mt-2 text-center line-clamp-1">${deskripsi}</p>`
+                        : '';
+
+                    const inner = `
+                        <div class="flex flex-col items-center justify-center w-full">
+                            ${content}
+                            ${descHtml}
+                        </div>
+                    `;
+
+                    if (linkUrl) {
+                        return `<a href="${linkUrl}" target="_blank" rel="noopener" title="${nama}" class="bg-slate-50 hover:bg-sky-50 border border-slate-100 hover:border-sky-200 rounded-2xl p-4 md:p-5 flex items-center justify-center transition min-h-[100px] group">${inner}</a>`;
+                    }
+                    return `<div title="${nama}" class="bg-slate-50 hover:bg-sky-50 border border-slate-100 hover:border-sky-200 rounded-2xl p-4 md:p-5 flex items-center justify-center transition min-h-[100px]">${inner}</div>`;
+                }).join('');
+
+                grid.style.display = 'grid';
+
+            } catch (err) {
+                console.error('Load partners error:', err);
+                grid.innerHTML = '';
+                grid.style.display = 'none';
+            }
+        }
+
+        // Panggil setelah halaman load
+        loadPartners();
+    </script>
+
+    <script>
+
+        // ========================================
+        // LOAD BOOKS (Portofolio Dinamis)
+        // ========================================
+        async function loadBooks() {
+            const grid = document.getElementById('booksGrid');
+            if (!grid) return;
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('books')
+                    .select('*')
+                    .eq('is_published', true)
+                    .order('created_at', { ascending: false })
+                    .limit(8);
+
+                if (error) throw error;
+
+                const books = data || [];
+
+                if (books.length === 0) {
+                    const portofolioSection = grid.closest('section');
+                    if (portofolioSection) portofolioSection.style.display = 'none';
+                    return;
+                }
+
+                grid.innerHTML = books.map(book => {
+                    const coverUrl = book.cover_url
+                        ? (book.cover_url.startsWith('http')
+                            ? book.cover_url
+                            : supabaseClient.storage.from('covers').getPublicUrl(book.cover_url).data.publicUrl)
+                        : null;
+
+                    const judul = book.judul || 'Tanpa Judul';
+                    const penulis = book.penulis || 'Anonim';
+
+                    const tipeArr = Array.isArray(book.tipe_buku) ? book.tipe_buku : ['fisik'];
+                    const isFisik = tipeArr.includes('fisik');
+                    const isEbook = tipeArr.includes('ebook');
+
+                    const hargaFisik = book.harga || 0;
+                    const hargaEbook = book.harga_ebook || 0;
+                    const linkFisik = book.link_beli || 'https://lynk.id/karyakata';
+                    const linkEbook = book.link_beli_ebook || 'https://lynk.id/karyakata';
+
+                    // Badge genre — warna berbeda per genre
+                    const genreLabel = book.genre ? book.genre.charAt(0).toUpperCase() + book.genre.slice(1) : 'Lainnya';
+                    const genreColors = {
+                        fiksi: 'bg-sky-100 text-sky-700 border-sky-200',
+                        nonfiksi: 'bg-indigo-100 text-indigo-700 border-indigo-200',
+                        puisi: 'bg-rose-100 text-rose-700 border-rose-200',
+                        anak: 'bg-amber-100 text-amber-700 border-amber-200',
+                        akademik: 'bg-violet-100 text-violet-700 border-violet-200',
+                        modul: 'bg-emerald-100 text-emerald-700 border-emerald-200'
+                    };
+                    const genreClass = genreColors[book.genre] || 'bg-slate-100 text-slate-700 border-slate-200';
+
+                    const genreBadge = `<span class="absolute top-2 left-2 inline-flex items-center ${genreClass} border text-[9px] font-bold px-2 py-0.5 rounded-full z-10 uppercase tracking-wide">${genreLabel}</span>`;
+
+                    // Badge tipe di kanan atas
+                    let tipeBadge = '';
+                    if (isFisik && isEbook) {
+                        tipeBadge = `<span class="absolute top-2 right-2 inline-flex items-center gap-0.5 bg-sky-500 text-white text-[8px] font-bold px-1.5 py-1 rounded-full z-10" title="Fisik & E-Book"><i class="fa-solid fa-book text-[6px]"></i><i class="fa-solid fa-tablet-screen-button text-[6px]"></i></span>`;
+                    } else if (isEbook) {
+                        tipeBadge = `<span class="absolute top-2 right-2 inline-flex items-center gap-0.5 bg-gold-500 text-white text-[8px] font-bold px-1.5 py-1 rounded-full z-10" title="E-Book"><i class="fa-solid fa-tablet-screen-button text-[6px]"></i></span>`;
+                    } else {
+                        tipeBadge = `<span class="absolute top-2 right-2 inline-flex items-center gap-0.5 bg-sky-500 text-white text-[8px] font-bold px-1.5 py-1 rounded-full z-10" title="Buku Fisik"><i class="fa-solid fa-book text-[6px]"></i></span>`;
+                    }
+
+                    // Featured badge di bawah genre
+                    const featuredBadge = book.is_featured
+                        ? `<span class="absolute top-9 left-2 inline-flex items-center gap-1 bg-gold-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full z-10"><i class="fa-solid fa-star text-[6px]"></i>PILIHAN</span>`
+                        : '';
+
+                    const coverHtml = coverUrl
+                        ? `<img src="${coverUrl}" alt="${judul}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                           <div class="text-center text-white p-4" style="display:none;">
+                               <i class="fa-solid fa-book-open text-3xl mb-2 opacity-80"></i>
+                               <p class="font-display font-black text-sm leading-tight">${judul}</p>
+                           </div>`
+                        : `<div class="text-center text-white p-4">
+                               <i class="fa-solid fa-book-open text-3xl mb-2 opacity-80"></i>
+                               <p class="font-display font-black text-sm leading-tight">${judul}</p>
+                           </div>`;
+
+                    const bgStyle = coverUrl ? '' : 'background: linear-gradient(135deg, #0B7BE8, #0755A6);';
+
+                    // Harga — 1 baris
+                    let hargaHtml = '';
+                    if (isFisik && isEbook) {
+                        if (hargaFisik === hargaEbook) {
+                            hargaHtml = `<p class="text-gold-600 font-bold text-xs mb-2">${rp(hargaFisik)} <span class="text-slate-400 font-normal text-[9px]">Fisik &amp; E-Book</span></p>`;
+                        } else {
+                            hargaHtml = `<p class="text-gold-600 font-bold text-xs mb-2">${rp(hargaFisik)} <span class="text-slate-400 font-normal text-[9px]">Fisik</span> <span class="text-slate-300">·</span> ${rp(hargaEbook)} <span class="text-slate-400 font-normal text-[9px]">E-Book</span></p>`;
+                        }
+                    } else if (isEbook) {
+                        hargaHtml = `<p class="text-gold-600 font-bold text-xs mb-2">${rp(hargaEbook)}</p>`;
+                    } else {
+                        hargaHtml = `<p class="text-gold-600 font-bold text-xs mb-2">${rp(hargaFisik)}</p>`;
+                    }
+
+                    let beliHtml = '';
+                    if (isFisik && isEbook) {
+                        beliHtml = `
+                            <div class="flex flex-wrap gap-1.5">
+                                <a href="${linkFisik}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 bg-sky-500 hover:bg-sky-600 text-white font-bold text-[10px] px-2 py-1 rounded-full transition">
+                                    <i class="fa-solid fa-book text-[8px]"></i><span>Beli Fisik</span>
+                                </a>
+                                <a href="${linkEbook}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 bg-gold-500 hover:bg-gold-600 text-white font-bold text-[10px] px-2 py-1 rounded-full transition">
+                                    <i class="fa-solid fa-tablet-screen-button text-[8px]"></i><span>Beli E-Book</span>
+                                </a>
+                            </div>
+                        `;
+                    } else if (isEbook) {
+                        beliHtml = `
+                            <a href="${linkEbook}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 bg-gold-500 hover:bg-gold-600 text-white font-bold text-xs px-3 py-1.5 rounded-full transition">
+                                <i class="fa-solid fa-tablet-screen-button"></i><span>Beli E-Book</span>
+                            </a>
+                        `;
+                    } else {
+                        beliHtml = `
+                            <a href="${linkFisik}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 bg-gold-500 hover:bg-gold-600 text-white font-bold text-xs px-3 py-1.5 rounded-full transition">
+                                <i class="fa-solid fa-cart-shopping"></i><span>Beli</span>
+                            </a>
+                        `;
+                    }
+
+                    return `
+                        <div class="group">
+                            <a href="buku-detail.html?id=${book.id}" class="block">
+                                <div class="book-cover" style="${bgStyle}">
+                                    ${genreBadge}
+                                    ${tipeBadge}
+                                    ${featuredBadge}
+                                    ${coverHtml}
+                                </div>
+                            </a>
+                            <div class="mt-3">
+                                <a href="buku-detail.html?id=${book.id}" class="block">
+                                    <h3 class="font-display font-bold text-slate-800 text-sm line-clamp-1 hover:text-sky-600 transition">${judul}</h3>
+                                </a>
+                                <p class="text-slate-500 text-xs mb-1">oleh ${penulis}</p>
+                                ${hargaHtml}
+                                ${beliHtml}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error('Load books error:', err);
+                const portofolioSection = grid.closest('section');
+                if (portofolioSection) portofolioSection.style.display = 'none';
+            }
+        }
+
+        // Panggil setelah halaman load
+        loadBooks();
+    </script>
+
+    <!-- VALIDASI ISBN / QRCBN -->
+    <script>
+        let currentValidateTab = 'isbn';
+
+        function switchValidateTab(tab) {
+            currentValidateTab = tab;
+
+            const tabIsbn = document.getElementById('tabIsbn');
+            const tabQrcbn = document.getElementById('tabQrcbn');
+            const input = document.getElementById('validateInput');
+            const hint = document.getElementById('validateHint');
+            const result = document.getElementById('validateResult');
+
+            result.classList.add('hidden');
+
+            if (tab === 'isbn') {
+                tabIsbn.classList.add('active');
+                tabQrcbn.classList.remove('active');
+                input.placeholder = 'Masukkan nomor ISBN...';
+                input.value = '';
+                hint.innerHTML = '💡 Contoh ISBN: <code class="bg-sky-100 px-2 py-0.5 rounded text-sky-700 font-mono">978-602-1234-56-7</code>';
+            } else {
+                tabQrcbn.classList.add('active');
+                tabIsbn.classList.remove('active');
+                input.placeholder = 'Masukkan kode QRCBN...';
+                input.value = '';
+                hint.innerHTML = '💡 Contoh QRCBN: <code class="bg-sky-100 px-2 py-0.5 rounded text-sky-700 font-mono">62-2745-3542-654</code> (wajib pakai tanda hubung)';
+            }
+        }
+
+        function validateCode() {
+            const input = document.getElementById('validateInput').value.trim();
+            const result = document.getElementById('validateResult');
+
+            if (!input) {
+                showValidateResult('Silakan masukkan kode terlebih dahulu.', 'error');
+                return;
+            }
+
+            if (currentValidateTab === 'isbn') {
+                // ISBN → buka Google Search
+                const cleanIsbn = input.replace(/\s/g, '');
+                const url = 'https://www.google.com/search?q=ISBN+' + encodeURIComponent(cleanIsbn);
+                window.open(url, '_blank');
+
+                showValidateResult('🔍 Membuka pencarian ISBN di Google...', 'info');
+
+            } else {
+                // QRCBN → validasi format, lalu buka qrcbn.com
+                const cleanQrcbn = input.trim();
+                const qrcbnRegex = /^\d{2}-\d{4}-\d{4}-\d{3}$/;
+
+                if (!qrcbnRegex.test(cleanQrcbn)) {
+                    showValidateResult(
+                        '❌ Format QRCBN tidak valid.<br>Contoh: <code class="bg-white px-1.5 py-0.5 rounded">62-2745-3542-654</code><br>Wajib pakai tanda hubung (-)',
+                        'error'
+                    );
+                    return;
+                }
+
+                const url = 'https://www.qrcbn.com/check/' + cleanQrcbn;
+                window.open(url, '_blank');
+
+                showValidateResult('🔍 Membuka halaman verifikasi QRCBN...', 'info');
+            }
+        }
+
+        function showValidateResult(message, type) {
+            const result = document.getElementById('validateResult');
+            result.classList.remove('hidden');
+
+            if (type === 'error') {
+                result.innerHTML = `
+                    <div class="bg-red-50 border-2 border-red-200 rounded-2xl p-4 text-sm text-red-700">
+                        <div class="flex items-start gap-3">
+                            <i class="fa-solid fa-circle-exclamation text-red-500 mt-0.5"></i>
+                            <div class="leading-relaxed">${message}</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                result.innerHTML = `
+                    <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-4 text-sm text-sky-700">
+                        <div class="flex items-start gap-3">
+                            <i class="fa-solid fa-circle-info text-sky-500 mt-0.5"></i>
+                            <div class="leading-relaxed">${message}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Auto-hide after 5s
+            setTimeout(() => {
+                result.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Enter key handler
+        document.getElementById('validateInput')?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                validateCode();
+            }
+        });
+
+        console.log('%c🔍 Validasi ISBN/QRCBN ready', 'color: #0B7BE8; font-weight: bold;');
+    </script>
+
+</body>
+</html>

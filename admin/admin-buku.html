@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin — Buku / Katalog — Karyakata.id</title>
+    <meta name="robots" content="noindex, nofollow" />
+
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/img/favicon.png" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: {
+                            50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD',
+                            400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6',
+                            800: '#064485', 900: '#053364',
+                        },
+                        gold: {
+                            100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A',
+                            500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #F8FAFC; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.4s ease-out forwards; opacity: 0; }
+
+        .sidebar-link {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px; font-weight: 600;
+            color: #475569;
+            transition: all .2s ease;
+            text-decoration: none;
+        }
+        .sidebar-link:hover { background: #EFF6FF; color: #0B7BE8; }
+        .sidebar-link.active {
+            background: linear-gradient(135deg, #0B7BE8, #0967C7);
+            color: white;
+            box-shadow: 0 6px 16px rgba(11, 123, 232, 0.3);
+        }
+        .sidebar-link.active i { color: white; }
+        .sidebar-link i { width: 20px; text-align: center; font-size: 15px; }
+
+        .badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 11px; font-weight: 700;
+            white-space: nowrap;
+        }
+        .badge-published { background: #D1FAE5; color: #065F46; }
+        .badge-draft { background: #FEF3C7; color: #92400E; }
+        .badge-featured { background: #FCE7F3; color: #9F1239; }
+
+        .filter-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 14px;
+            border: 2px solid #E2E8F0;
+            border-radius: 9999px;
+            font-size: 12px; font-weight: 700;
+            color: #475569; background: white;
+            cursor: pointer;
+            transition: all .2s ease;
+            white-space: nowrap;
+        }
+        .filter-chip:hover { border-color: #93C5FD; color: #0B7BE8; }
+        .filter-chip.active { background: #0B7BE8; border-color: #0B7BE8; color: white; }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 9px 16px;
+            border-radius: 10px;
+            font-size: 12px; font-weight: 700;
+            cursor: pointer;
+            transition: all .2s ease;
+            border: none;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .btn-primary { background: #0B7BE8; color: white; }
+        .btn-primary:hover { background: #0967C7; transform: translateY(-1px); }
+        .btn-outline { background: white; color: #475569; border: 2px solid #E2E8F0; }
+        .btn-outline:hover { border-color: #0B7BE8; color: #0B7BE8; }
+        .btn-gold { background: #F5A623; color: white; }
+        .btn-gold:hover { background: #D98B0E; transform: translateY(-1px); }
+        .btn-danger { background: #EF4444; color: white; }
+        .btn-danger:hover { background: #DC2626; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .form-input {
+            width: 100%; padding: 12px 14px;
+            border: 2px solid #E2E8F0; border-radius: 12px;
+            font-size: 14px; outline: none;
+            transition: all .2s ease; background: white;
+        }
+        .form-input:focus { border-color: #0B7BE8; box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1); }
+        .form-label {
+            display: block; font-size: 12px; font-weight: 700;
+            color: #334155; margin-bottom: 6px;
+        }
+        .form-label .req { color: #EF4444; }
+
+        .modal-backdrop {
+            position: fixed; inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: flex; align-items: center; justify-content: center;
+            padding: 16px;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            max-width: 720px;
+            width: 100%;
+            max-height: 92vh;
+            overflow-y: auto;
+            animation: fadeUp 0.3s ease-out;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #F1F5F9; }
+        ::-webkit-scrollbar-thumb { background: #94A3B8; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748B; }
+
+        #sidebarOverlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            z-index: 40;
+        }
+        #sidebarOverlay.active { display: block; }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .book-card {
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all .3s ease;
+            position: relative;
+        }
+        .book-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -12px rgba(11, 123, 232, 0.2);
+            border-color: #93C5FD;
+        }
+
+        .book-cover {
+            aspect-ratio: 2/3;
+            background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .book-cover .placeholder {
+            color: #94A3B8;
+            font-size: 32px;
+        }
+
+        .book-badges {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .book-actions {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity .2s ease;
+        }
+        .book-card:hover .book-actions { opacity: 1; }
+
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all .2s ease;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .icon-btn-edit { background: white; color: #0B7BE8; }
+        .icon-btn-edit:hover { background: #0B7BE8; color: white; }
+        .icon-btn-delete { background: white; color: #EF4444; }
+        .icon-btn-delete:hover { background: #EF4444; color: white; }
+
+        .book-info { padding: 12px; }
+        .book-title {
+            font-weight: 800; font-size: 13px; color: #1E293B;
+            line-height: 1.3; margin-bottom: 4px;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .book-author { font-size: 11px; color: #64748B; margin-bottom: 6px; }
+        .book-price { font-size: 14px; font-weight: 900; color: #0B7BE8; }
+
+        .cover-upload {
+            aspect-ratio: 2/3;
+            border: 2px dashed #CBD5E1;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all .2s ease;
+            overflow: hidden;
+            position: relative;
+            background: #F8FAFC;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+        .cover-upload:hover {
+            border-color: #0B7BE8;
+            background: #EFF6FF;
+        }
+        .cover-upload img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .cover-upload .upload-placeholder {
+            text-align: center; color: #94A3B8; padding: 16px;
+        }
+
+        .ebook-fields { transition: all .3s ease; overflow: hidden; }
+        .ebook-fields.hidden-fields { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="sidebarOverlay"></div>
+
+    <div class="flex min-h-screen">
+
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50 -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
+            <div class="p-5 border-b border-slate-100">
+                <a href="admin-order.html" class="flex items-center gap-3 group">
+                    <img src="../assets/img/logo.png" alt="Karyakata" class="h-10 w-auto" onerror="this.style.display='none'" />
+                    <span class="font-display text-lg font-black leading-none">
+                        <span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span>
+                    </span>
+                </a>
+                <div class="mt-3 flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1 bg-gold-100 text-gold-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        <i class="fa-solid fa-shield-halved text-[8px]"></i> ADMIN PANEL
+                    </span>
+                </div>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-2">MENU UTAMA</p>
+                <a href="admin-order.html" class="sidebar-link"><i class="fa-solid fa-receipt"></i> <span>Order</span></a>
+                <a href="admin-konfirmasi.html" class="sidebar-link"><i class="fa-solid fa-money-check-dollar"></i> <span>Konfirmasi & Akses</span></a>
+                <a href="admin-penjualan.html" class="sidebar-link"><i class="fa-solid fa-chart-line"></i> <span>Input Penjualan</span></a>
+                <a href="admin-naskah.html" class="sidebar-link"><i class="fa-solid fa-file-lines"></i> <span>Naskah Masuk</span></a>
+                <a href="admin-pesan.html" class="sidebar-link"><i class="fa-solid fa-envelope"></i> <span>Pesan Kontak</span></a>
+                <a href="admin-subscriber.html" class="sidebar-link"><i class="fa-solid fa-users"></i> <span>Subscriber</span></a>
+
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">KONTEN</p>
+                <a href="admin-buku.html" class="sidebar-link active"><i class="fa-solid fa-book"></i> <span>Buku / Katalog</span></a>
+                <a href="admin-blog.html" class="sidebar-link"><i class="fa-solid fa-newspaper"></i> <span>Blog</span></a>
+                <a href="admin-mitra.html" class="sidebar-link"><i class="fa-solid fa-handshake"></i> <span>Mitra &amp; Komunitas</span></a>
+
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">LAINNYA</p>
+                <a href="../index.html" target="_blank" class="sidebar-link"><i class="fa-solid fa-external-link-alt"></i> <span>Lihat Website</span></a>
+            </nav>
+
+            <div class="p-4 border-t border-slate-100">
+                <div class="bg-slate-50 rounded-2xl p-3">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">A</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-bold text-slate-800 truncate" id="userEmail">admin@...</p>
+                            <p class="text-[10px] text-slate-500">Administrator</p>
+                        </div>
+                    </div>
+                    <button id="logoutBtn" class="w-full btn btn-outline text-xs justify-center">
+                        <i class="fa-solid fa-right-from-bracket text-[10px]"></i> <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="flex-1 min-w-0">
+            <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-lg border-b border-slate-200">
+                <div class="flex items-center justify-between px-4 md:px-6 h-16">
+                    <div class="flex items-center gap-3">
+                        <button id="sidebarToggle" class="lg:hidden w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600"><i class="fa-solid fa-bars"></i></button>
+                        <div>
+                            <h1 class="font-display text-lg md:text-xl font-black text-slate-800">Buku / Katalog</h1>
+                            <p class="text-[11px] text-slate-500 hidden md:block">Kelola katalog buku</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button id="refreshBtn" class="btn btn-outline text-xs"><i class="fa-solid fa-rotate"></i> <span class="hidden sm:inline">Refresh</span></button>
+                        <button id="addBtn" class="btn btn-gold text-xs"><i class="fa-solid fa-plus"></i> <span>Tambah Buku</span></button>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">A</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-4 md:p-6">
+                <!-- STATS -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center justify-between mb-3"><div class="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center text-sky-600"><i class="fa-solid fa-book"></i></div></div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">TOTAL BUKU</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statTotal">—</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center justify-between mb-3"><div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-600"><i class="fa-solid fa-eye"></i></div></div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">PUBLISHED</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statPublished">—</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center justify-between mb-3"><div class="w-10 h-10 rounded-xl bg-yellow-100 flex items-center justify-center text-yellow-600"><i class="fa-solid fa-eye-slash"></i></div></div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">DRAFT</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statDraft">—</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center justify-between mb-3"><div class="w-10 h-10 rounded-xl bg-pink-100 flex items-center justify-center text-pink-600"><i class="fa-solid fa-star"></i></div></div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">FEATURED</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statFeatured">—</p>
+                    </div>
+                </div>
+
+                <!-- TOOLBAR -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 mb-4">
+                    <div class="flex flex-col md:flex-row gap-3 mb-4">
+                        <div class="relative flex-1">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                            <input type="text" id="searchInput" class="form-input pl-10" placeholder="Cari judul atau penulis..." />
+                        </div>
+                        <select id="genreFilter" class="form-input md:w-48">
+                            <option value="all">Semua Genre</option>
+                            <option value="fiksi">Fiksi</option>
+                            <option value="nonfiksi">Non-Fiksi</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-2 overflow-x-auto pb-1">
+                        <button class="filter-chip active" data-status="all"><i class="fa-solid fa-list text-[10px]"></i><span>Semua</span><span class="bg-white/30 px-1.5 rounded text-[10px]" id="chipCountAll">0</span></button>
+                        <button class="filter-chip" data-status="published"><i class="fa-solid fa-eye text-[10px]"></i><span>Published</span></button>
+                        <button class="filter-chip" data-status="draft"><i class="fa-solid fa-eye-slash text-[10px]"></i><span>Draft</span></button>
+                        <button class="filter-chip" data-status="featured"><i class="fa-solid fa-star text-[10px]"></i><span>Featured</span></button>
+                    </div>
+                </div>
+
+                <!-- BOOK GRID -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 md:p-6">
+                    <div id="loadingState">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+                            <div class="skeleton aspect-[2/3]"></div>
+                            <div class="skeleton aspect-[2/3]"></div>
+                            <div class="skeleton aspect-[2/3]"></div>
+                            <div class="skeleton aspect-[2/3]"></div>
+                        </div>
+                    </div>
+                    <div id="emptyState" class="hidden py-16 text-center">
+                        <div class="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-book text-slate-400 text-3xl"></i></div>
+                        <h3 class="font-display text-lg font-black text-slate-700 mb-1">Belum ada buku</h3>
+                        <p class="text-slate-500 text-sm mb-4" id="emptyMsg">Klik "Tambah Buku" untuk menambah katalog.</p>
+                        <button onclick="openForm()" class="btn btn-gold inline-flex"><i class="fa-solid fa-plus"></i><span>Tambah Buku Pertama</span></button>
+                    </div>
+                    <div id="bookGrid" class="book-grid hidden"></div>
+                </div>
+                <p class="text-[11px] text-slate-500 text-center mt-4">
+                    Menampilkan <span id="shownCount" class="font-bold text-slate-700">0</span> buku
+                    <span id="totalCountWrap" class="hidden">dari <span id="totalCount" class="font-bold text-slate-700">0</span></span>
+                </p>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL FORM -->
+    <div id="formModal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <div class="sticky top-0 bg-white border-b border-slate-100 p-5 flex items-center justify-between rounded-t-3xl z-10">
+                <div>
+                    <h3 class="font-display text-lg font-black text-slate-800" id="formTitle">Tambah Buku</h3>
+                    <p class="text-xs text-slate-500" id="formSubtitle">Isi detail buku</p>
+                </div>
+                <button onclick="closeForm()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="bookForm" class="p-5 md:p-6 space-y-5">
+                <div>
+                    <label class="form-label">Cover Buku</label>
+                    <div class="cover-upload" id="coverUpload">
+                        <input type="file" id="coverInput" accept="image/*" class="hidden" />
+                        <div id="coverPreviewPlaceholder" class="upload-placeholder">
+                            <i class="fa-solid fa-cloud-arrow-up text-3xl mb-2"></i>
+                            <p class="text-xs font-bold mb-0.5">Klik untuk upload</p>
+                            <p class="text-[10px]">JPG/PNG, maks 2MB</p>
+                        </div>
+                        <img id="coverPreview" src="" alt="Cover" class="hidden" />
+                    </div>
+                    <p class="text-[10px] text-slate-500 text-center mt-2">Rasio 2:3 (contoh: 600×900px)</p>
+                </div>
+
+                <div>
+                    <label class="form-label">Judul Buku <span class="req">*</span></label>
+                    <input type="text" id="judul" class="form-input" placeholder="Contoh: Langit di Ujung Senja" required />
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="form-label">Penulis <span class="req">*</span></label>
+                        <input type="text" id="penulis" class="form-input" placeholder="Nama penulis" required />
+                    </div>
+                    <div>
+                        <label class="form-label">Genre Utama <span class="req">*</span></label>
+                        <select id="genre" class="form-input" required onchange="updateSubGenreAdmin()">
+                            <option value="">Pilih genre...</option>
+                            <option value="fiksi">Fiksi</option>
+                            <option value="nonfiksi">Non-Fiksi</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Sub-Genre <span class="req">*</span></label>
+                        <select id="sub_genre" class="form-input" required>
+                            <option value="">Pilih genre utama dulu...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="fisikFields" class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="form-label">Harga Fisik (Rp) <span class="req">*</span></label>
+                        <input type="number" id="harga" class="form-input" placeholder="65000" min="0" />
+                    </div>
+                    <div>
+                        <label class="form-label">Link Beli Fisik (Lynk.id)</label>
+                        <input type="url" id="linkBeli" class="form-input" placeholder="https://lynk.id/karyakata" />
+                    </div>
+                </div>
+
+                <div class="p-4 bg-sky-50 border-2 border-sky-100 rounded-2xl space-y-4">
+                    <div class="flex items-center gap-2 text-sky-700 font-bold text-sm mb-2">
+                        <i class="fa-solid fa-user-pen"></i> Dashboard Penulis & Royalti
+                    </div>
+                    <div>
+                        <label class="form-label">Email Penulis (Pilih dari daftar)</label>
+                        <select id="author_email" class="form-input">
+                            <option value="">-- Pilih Penulis --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Persentase Royalti (%)</label>
+                        <input type="number" id="persen_royalti" class="form-input" value="15" min="0" max="100" />
+                    </div>
+                </div>
+
+                <div id="ebookFields" class="ebook-fields hidden-fields grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="form-label">Harga E-Book (Rp)</label>
+                        <input type="number" id="hargaEbook" class="form-input" placeholder="45000" min="0" />
+                    </div>
+                    <div>
+                        <label class="form-label">Link Beli E-Book (Lynk.id)</label>
+                        <input type="url" id="linkBeliEbook" class="form-input" placeholder="https://lynk.id/karyakata/ebook..." />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label">Deskripsi Singkat</label>
+                    <textarea id="deskripsi" class="form-input" rows="3" placeholder="Sinopsis atau deskripsi singkat buku..."></textarea>
+                </div>
+
+                <div>
+                    <label class="form-label">Tipe Buku (opsional)</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer border-2 border-transparent hover:border-sky-200 transition">
+                            <input type="checkbox" id="tipeFisik" class="w-5 h-5 accent-sky-500 cursor-pointer" checked />
+                            <div>
+                                <p class="text-xs font-bold text-slate-800 flex items-center gap-1.5"><i class="fa-solid fa-book text-sky-500"></i> Buku Fisik</p>
+                                <p class="text-[10px] text-slate-500">Cetak &amp; kirim</p>
+                            </div>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer border-2 border-transparent hover:border-gold-200 transition">
+                            <input type="checkbox" id="tipeEbook" class="w-5 h-5 accent-gold-500 cursor-pointer" />
+                            <div>
+                                <p class="text-xs font-bold text-slate-800 flex items-center gap-1.5"><i class="fa-solid fa-tablet-screen-button text-gold-500"></i> E-Book</p>
+                                <p class="text-[10px] text-slate-500">PDF / EPUB</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer border-2 border-transparent hover:border-sky-200 transition">
+                        <input type="checkbox" id="isPublished" class="w-5 h-5 accent-sky-500 cursor-pointer" />
+                        <div>
+                            <p class="text-xs font-bold text-slate-800">Published</p>
+                            <p class="text-[10px] text-slate-500">Tampil di katalog</p>
+                        </div>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer border-2 border-transparent hover:border-gold-200 transition">
+                        <input type="checkbox" id="isFeatured" class="w-5 h-5 accent-gold-500 cursor-pointer" />
+                        <div>
+                            <p class="text-xs font-bold text-slate-800">Featured</p>
+                            <p class="text-[10px] text-slate-500">Tampil di beranda</p>
+                        </div>
+                    </label>
+                </div>
+            </form>
+
+            <div class="sticky bottom-0 bg-slate-50 border-t border-slate-100 p-4 md:p-5 rounded-b-3xl flex flex-wrap gap-2 justify-end">
+                <button onclick="closeForm()" class="btn btn-outline"><i class="fa-solid fa-xmark"></i><span>Batal</span></button>
+                <button id="formSaveBtn" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i><span>Simpan Buku</span></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastWrap" class="fixed top-4 right-4 z-[200] space-y-2"></div>
+
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/supabase-client.js"></script>
+
+    <script>
+    // ========================================
+    // ADMIN BUKU — MAIN SCRIPT
+    // ========================================
+
+    let allBooks = [];
+    let allAuthorsList = []; 
+    let filteredBooks = [];
+    let activeStatus = 'all';
+    let activeGenre = 'all';
+    let searchQuery = '';
+    let currentUser = null;
+    let editingBookId = null;
+    let coverFile = null;       
+    let existingCoverUrl = null; 
+    let coverRemoved = false;   
+
+    // Data Sub-Genre
+    const SUB_GENRE = {
+        fiksi:    ['Novel', 'Cerpen', 'Puisi', 'Fantasi', 'Dongeng', 'Komik', 'Antologi', 'Drama', 'Lainnya'],
+        nonfiksi: ['Edukasi', 'Modul', 'Filsafat', 'Biografi', 'Sejarah', 'Sains', 'Bisnis', 'Agama', 'Panduan', 'Lainnya']
+    };
+
+    // Fungsi untuk mengisi dropdown Sub-Genre
+    window.updateSubGenreAdmin = function(selectedValue = '') {
+        const genre = document.getElementById('genre').value;
+        const subGenreSelect = document.getElementById('sub_genre');
+        
+        subGenreSelect.innerHTML = '<option value="">Pilih sub-genre...</option>';
+        
+        if (genre && SUB_GENRE[genre]) {
+            SUB_GENRE[genre].forEach(sub => {
+                const opt = document.createElement('option');
+                opt.value = sub;
+                opt.textContent = sub;
+                if (sub === selectedValue) opt.selected = true;
+                subGenreSelect.appendChild(opt);
+            });
+        }
+    };
+
+    // DOM refs
+    const bookGrid = document.getElementById('bookGrid');
+    const loadingState = document.getElementById('loadingState');
+    const emptyState = document.getElementById('emptyState');
+    const emptyMsg = document.getElementById('emptyMsg');
+    const searchInput = document.getElementById('searchInput');
+    const genreFilter = document.getElementById('genreFilter');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const addBtn = document.getElementById('addBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userEmail = document.getElementById('userEmail');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const toastWrap = document.getElementById('toastWrap');
+
+    const formModal = document.getElementById('formModal');
+    const formTitle = document.getElementById('formTitle');
+    const formSubtitle = document.getElementById('formSubtitle');
+    const bookForm = document.getElementById('bookForm');
+    const formSaveBtn = document.getElementById('formSaveBtn');
+
+    const coverUpload = document.getElementById('coverUpload');
+    const coverInput = document.getElementById('coverInput');
+    const coverPreview = document.getElementById('coverPreview');
+    const coverPreviewPlaceholder = document.getElementById('coverPreviewPlaceholder');
+
+    const statTotal = document.getElementById('statTotal');
+    const statPublished = document.getElementById('statPublished');
+    const statDraft = document.getElementById('statDraft');
+    const statFeatured = document.getElementById('statFeatured');
+
+    // ========================================
+    // TOAST
+    // ========================================
+    function showToast(message, type = 'info') {
+        const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-sky-500', warning: 'bg-gold-500' };
+        const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info', warning: 'fa-triangle-exclamation' };
+        const toast = document.createElement('div');
+        toast.className = `${colors[type]} text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-bold animate-fade-up max-w-sm`;
+        toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span class="flex-1">${message}</span>`;
+        toastWrap.appendChild(toast);
+        setTimeout(() => {
+            toast.style.transition = 'all 0.3s ease';
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // ========================================
+    // HELPERS
+    // ========================================
+    function rp(n) { return 'Rp ' + Math.round(n || 0).toLocaleString('id-ID'); }
+
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function getCoverUrl(book) {
+        if (!book.cover_url) return null;
+        if (book.cover_url.startsWith('http')) return book.cover_url;
+        const { data } = supabaseClient.storage.from('covers').getPublicUrl(book.cover_url);
+        return data.publicUrl;
+    }
+
+    // ========================================
+    // AUTH
+    // ========================================
+    async function checkAuth() {
+        try {
+            const user = await getCurrentUser();
+            if (!user) { window.location.href = 'admin-login.html'; return false; }
+            currentUser = user;
+            userEmail.textContent = user.email;
+            return true;
+        } catch (err) {
+            window.location.href = 'admin-login.html';
+            return false;
+        }
+    }
+
+    // ========================================
+    // LOAD AUTHORS (DIPANGGIL SAAT MODAL DIBUKA)
+    // ========================================
+    async function loadAuthorsDropdown() {
+        const select = document.getElementById('author_email');
+        select.innerHTML = '<option value="">Memuat penulis...</option>';
+        
+        try {
+            const { data, error } = await supabaseClient
+                .from('authors')
+                .select('email, nama_penulis')
+                .order('nama_penulis', { ascending: true });
+
+            if (error) throw error;
+
+            allAuthorsList = data || [];
+            select.innerHTML = '<option value="">-- Pilih Penulis --</option>';
+            
+            if (allAuthorsList.length === 0) {
+                const opt = document.createElement('option');
+                opt.textContent = 'Belum ada penulis terdaftar';
+                opt.disabled = true;
+                select.appendChild(opt);
+                return;
+            }
+
+            allAuthorsList.forEach(a => {
+                const opt = document.createElement('option');
+                opt.value = a.email;
+                opt.textContent = `${a.nama_penulis} (${a.email})`;
+                select.appendChild(opt);
+            });
+        } catch (err) {
+            console.error('Error load authors:', err);
+            select.innerHTML = '<option value="">Gagal memuat penulis</option>';
+        }
+    }
+
+    // ========================================
+    // LOAD BOOKS
+    // ========================================
+    async function loadBooks() {
+        loadingState.classList.remove('hidden');
+        bookGrid.classList.add('hidden');
+        emptyState.classList.add('hidden');
+
+        try {
+            const { data, error } = await supabaseClient
+                .from('books')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            allBooks = data || [];
+            updateStats();
+            applyFilters();
+
+        } catch (err) {
+            console.error('Load books error:', err);
+            showToast('Gagal memuat: ' + err.message, 'error');
+            loadingState.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            emptyMsg.textContent = 'Gagal memuat data. Coba refresh.';
+        }
+    }
+
+    // ========================================
+    // STATS & FILTER
+    // ========================================
+    function updateStats() {
+        const total = allBooks.length;
+        const published = allBooks.filter(b => b.is_published).length;
+        const draft = allBooks.filter(b => !b.is_published).length;
+        const featured = allBooks.filter(b => b.is_featured).length;
+
+        statTotal.textContent = total;
+        statPublished.textContent = published;
+        statDraft.textContent = draft;
+        statFeatured.textContent = featured;
+
+        document.getElementById('chipCountAll').textContent = total;
+    }
+
+    function applyFilters() {
+        const q = searchQuery.toLowerCase().trim();
+        filteredBooks = allBooks.filter(b => {
+            if (activeStatus === 'published' && !b.is_published) return false;
+            if (activeStatus === 'draft' && b.is_published) return false;
+            if (activeStatus === 'featured' && !b.is_featured) return false;
+            if (activeGenre !== 'all' && b.genre !== activeGenre) return false;
+            if (q) {
+                const haystack = [b.judul, b.penulis, b.genre, b.deskripsi].filter(Boolean).join(' ').toLowerCase();
+                if (!haystack.includes(q)) return false;
+            }
+            return true;
+        });
+        renderGrid();
+    }
+
+    function renderGrid() {
+        loadingState.classList.add('hidden');
+        const shownCount = document.getElementById('shownCount');
+        const totalCountWrap = document.getElementById('totalCountWrap');
+        const totalCount = document.getElementById('totalCount');
+
+        shownCount.textContent = filteredBooks.length;
+        if (allBooks.length > 0 && filteredBooks.length !== allBooks.length) {
+            totalCountWrap.classList.remove('hidden');
+            totalCount.textContent = allBooks.length;
+        } else {
+            totalCountWrap.classList.add('hidden');
+        }
+
+        if (filteredBooks.length === 0) {
+            bookGrid.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            emptyMsg.textContent = allBooks.length === 0 ? 'Klik "Tambah Buku" untuk menambah katalog.' : 'Tidak ada buku yang cocok dengan filter.';
+            return;
+        }
+
+        emptyState.classList.add('hidden');
+        bookGrid.classList.remove('hidden');
+
+        bookGrid.innerHTML = filteredBooks.map(book => {
+            const coverUrl = getCoverUrl(book);
+            const badges = [];
+            if (book.is_published) badges.push(`<span class="badge badge-published"><i class="fa-solid fa-eye text-[8px]"></i>Published</span>`);
+            else badges.push(`<span class="badge badge-draft"><i class="fa-solid fa-eye-slash text-[8px]"></i>Draft</span>`);
+            if (book.is_featured) badges.push(`<span class="badge badge-featured"><i class="fa-solid fa-star text-[8px]"></i>Featured</span>`);
+
+            const tipeArr = Array.isArray(book.tipe_buku) ? book.tipe_buku : ['fisik'];
+            if (tipeArr.includes('fisik') && tipeArr.includes('ebook')) badges.push(`<span class="badge bg-sky-100 text-sky-700"><i class="fa-solid fa-book text-[8px]"></i>+<i class="fa-solid fa-tablet-screen-button text-[8px]"></i></span>`);
+            else if (tipeArr.includes('ebook')) badges.push(`<span class="badge bg-gold-100 text-gold-700"><i class="fa-solid fa-tablet-screen-button text-[8px]"></i>E-Book</span>`);
+            else badges.push(`<span class="badge bg-sky-100 text-sky-700"><i class="fa-solid fa-book text-[8px]"></i>Fisik</span>`);
+
+            const coverHtml = coverUrl
+                ? `<img src="${escapeHtml(coverUrl)}" alt="${escapeHtml(book.judul)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="placeholder" style="display:none;"><i class="fa-solid fa-book"></i></div>`
+                : `<div class="placeholder"><i class="fa-solid fa-book"></i></div>`;
+
+            return `
+                <div class="book-card">
+                    <div class="book-cover">
+                        ${coverHtml}
+                        <div class="book-badges">${badges.join('')}</div>
+                        <div class="book-actions">
+                            <button onclick="openForm('${book.id}')" class="icon-btn icon-btn-edit" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteBook('${book.id}', '${escapeHtml(book.judul)}')" class="icon-btn icon-btn-delete" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="book-info">
+                        <p class="book-title">${escapeHtml(book.judul)}</p>
+                        <p class="book-author">${escapeHtml(book.penulis || '—')} · ${escapeHtml(book.sub_genre || book.genre || '')}</p>
+                        <div class="flex items-center justify-between mt-2">
+                            <p class="book-price">${rp(book.harga)}</p>
+                            <span class="text-[9px] font-bold uppercase px-1.5 py-0.5 bg-sky-50 text-sky-600 rounded border border-sky-200" title="Tahap Penerbitan">
+                                ${(book.tahap || 'terbit').replace(/_/g, ' ')}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // ========================================
+    // TOGGLE FIELD TIPE
+    // ========================================
+    function toggleTipeFields() {
+        const isFisik = document.getElementById('tipeFisik').checked;
+        const isEbook = document.getElementById('tipeEbook').checked;
+        const fisikFields = document.getElementById('fisikFields');
+        const ebookFields = document.getElementById('ebookFields');
+
+        if (isFisik) fisikFields.classList.remove('hidden-fields');
+        else fisikFields.classList.add('hidden-fields');
+        
+        if (isEbook) ebookFields.classList.remove('hidden-fields');
+        else ebookFields.classList.add('hidden-fields');
+
+        if (!isFisik && !isEbook) {
+            document.getElementById('tipeFisik').checked = true;
+            fisikFields.classList.remove('hidden-fields');
+        }
+    }
+
+    // ========================================
+    // OPEN FORM (Add / Edit)
+    // ========================================
+    async function openForm(bookId = null) {
+        editingBookId = bookId;
+        coverFile = null;
+        existingCoverUrl = null;
+        coverRemoved = false;
+        bookForm.reset();
+        coverInput.value = '';
+
+        // 🟢 PANGGIL FUNGSI LOAD PENULIS DI SINI AGAR SELALU TERBARU
+        await loadAuthorsDropdown();
+
+        if (bookId) {
+            const book = allBooks.find(b => String(b.id) === String(bookId));
+            if (!book) { showToast('Buku tidak ditemukan', 'error'); return; }
+
+            formTitle.textContent = 'Edit Buku';
+            formSubtitle.textContent = `Edit: ${book.judul}`;
+
+            document.getElementById('judul').value = book.judul || '';
+            document.getElementById('penulis').value = book.penulis || '';
+            document.getElementById('genre').value = book.genre || '';
+            
+            // Trigger isi sub-genre, lalu set value-nya jika ada
+            updateSubGenreAdmin(book.sub_genre || ''); 
+            
+            document.getElementById('harga').value = book.harga || 0;
+            document.getElementById('linkBeli').value = book.link_beli || '';
+            document.getElementById('hargaEbook').value = book.harga_ebook || '';
+            document.getElementById('linkBeliEbook').value = book.link_beli_ebook || '';
+            document.getElementById('deskripsi').value = book.deskripsi || '';
+            document.getElementById('isPublished').checked = !!book.is_published;
+            document.getElementById('isFeatured').checked = !!book.is_featured;
+            
+            const authorEmailSelect = document.getElementById('author_email');
+            if (book.author_email) {
+                const exists = allAuthorsList.some(a => a.email.toLowerCase() === book.author_email.toLowerCase());
+                if (!exists) {
+                    const opt = document.createElement('option');
+                    opt.value = book.author_email;
+                    opt.textContent = `${book.penulis} (${book.author_email}) - Belum terdaftar`;
+                    authorEmailSelect.appendChild(opt);
+                }
+                authorEmailSelect.value = book.author_email;
+            } else {
+                authorEmailSelect.value = '';
+            }
+            document.getElementById('persen_royalti').value = book.persen_royalti || 15;
+
+            const tipeArr = Array.isArray(book.tipe_buku) ? book.tipe_buku : ['fisik'];
+            document.getElementById('tipeFisik').checked = tipeArr.includes('fisik');
+            document.getElementById('tipeEbook').checked = tipeArr.includes('ebook');
+            toggleTipeFields();
+
+            if (book.cover_url) {
+                existingCoverUrl = book.cover_url;
+                coverPreview.src = getCoverUrl(book);
+                coverPreview.classList.remove('hidden');
+                coverPreviewPlaceholder.classList.add('hidden');
+            } else {
+                coverPreview.classList.add('hidden');
+                coverPreviewPlaceholder.classList.remove('hidden');
+            }
+        } else {
+            formTitle.textContent = 'Tambah Buku';
+            formSubtitle.textContent = 'Isi detail buku baru';
+            coverPreview.classList.add('hidden');
+            coverPreviewPlaceholder.classList.remove('hidden');
+            document.getElementById('isPublished').checked = true;
+            document.getElementById('linkBeli').value = 'https://lynk.id/karyakata';
+            document.getElementById('tipeFisik').checked = true;
+            document.getElementById('tipeEbook').checked = false;
+            document.getElementById('hargaEbook').value = '';
+            document.getElementById('linkBeliEbook').value = '';
+            document.getElementById('author_email').value = '';
+            document.getElementById('persen_royalti').value = '15';
+            toggleTipeFields();
+        }
+        formModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeForm() {
+        formModal.classList.add('hidden');
+        document.body.style.overflow = '';
+        editingBookId = null; coverFile = null; existingCoverUrl = null; coverRemoved = false;
+        document.getElementById('hargaEbook').value = '';
+        document.getElementById('linkBeliEbook').value = '';
+    }
+
+    // ========================================
+    // COVER UPLOAD & SAVE BOOK
+    // ========================================
+    coverUpload.addEventListener('click', () => coverInput.click());
+    coverInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (!file.type.startsWith('image/')) { showToast('File harus gambar', 'error'); coverInput.value = ''; return; }
+        if (file.size > 2 * 1024 * 1024) { showToast('File maks 2MB', 'error'); coverInput.value = ''; return; }
+        coverFile = file; coverRemoved = false;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            coverPreview.src = event.target.result;
+            coverPreview.classList.remove('hidden');
+            coverPreviewPlaceholder.classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+    });
+
+    async function saveBook() {
+        const judul = document.getElementById('judul').value.trim();
+        const penulis = document.getElementById('penulis').value.trim();
+        const genre = document.getElementById('genre').value;
+        const subGenre = document.getElementById('sub_genre').value;
+        const harga = parseInt(document.getElementById('harga').value) || 0;
+        const linkBeli = document.getElementById('linkBeli').value.trim();
+        const deskripsi = document.getElementById('deskripsi').value.trim();
+        const isPublished = document.getElementById('isPublished').checked;
+        const isFeatured = document.getElementById('isFeatured').checked;
+
+        const tipeBuku = [];
+        if (document.getElementById('tipeFisik').checked) tipeBuku.push('fisik');
+        if (document.getElementById('tipeEbook').checked) tipeBuku.push('ebook');
+
+        const hargaEbook = parseInt(document.getElementById('hargaEbook').value) || null;
+        const linkBeliEbook = document.getElementById('linkBeliEbook').value.trim() || null;
+
+        if (!judul || !penulis || !genre || !subGenre) { showToast('Judul, penulis, genre, dan sub-genre wajib diisi', 'error'); return; }
+        const isFisik = tipeBuku.includes('fisik');
+        const isEbook = tipeBuku.includes('ebook');
+        if (isFisik && harga <= 0) { showToast('Harga fisik wajib', 'error'); return; }
+        if (isEbook && (!hargaEbook || hargaEbook <= 0)) { showToast('Harga e-book wajib', 'error'); return; }
+
+        const originalHTML = formSaveBtn.innerHTML;
+        formSaveBtn.disabled = true;
+        formSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Menyimpan...</span>';
+
+        try {
+            let coverUrl = existingCoverUrl;
+            if (coverFile) {
+                formSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Upload cover...</span>';
+                const uploadResult = await uploadBookCover(coverFile);
+                if (!uploadResult.success) throw new Error('Upload cover gagal: ' + uploadResult.error);
+                coverUrl = uploadResult.path;
+            }
+            if (coverRemoved && !coverFile) coverUrl = null;
+
+            const bookData = {
+                judul, penulis, genre, sub_genre: subGenre,
+                harga: isFisik ? harga : 0,
+                link_beli: isFisik ? (linkBeli || null) : null,
+                harga_ebook: isEbook ? hargaEbook : null,
+                link_beli_ebook: isEbook ? linkBeliEbook : null,
+                deskripsi: deskripsi || null,
+                is_published: isPublished, is_featured: isFeatured,
+                cover_url: coverUrl,
+                tipe_buku: tipeBuku.length > 0 ? tipeBuku : ['fisik'],
+                author_email: document.getElementById('author_email').value.trim().toLowerCase() || null,
+                tahap: 'terbit', // Otomatis terbit karena masuk katalog
+                persen_royalti: parseInt(document.getElementById('persen_royalti').value) || 15
+            };
+
+            formSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Menyimpan...</span>';
+
+            if (editingBookId) {
+                const { error } = await supabaseClient.from('books').update(bookData).eq('id', editingBookId);
+                if (error) throw error;
+                showToast('Buku diupdate!', 'success');
+            } else {
+                const { error } = await supabaseClient.from('books').insert([bookData]);
+                if (error) throw error;
+                showToast('Buku ditambahkan!', 'success');
+            }
+            closeForm();
+            await loadBooks();
+        } catch (err) {
+            console.error('Save error:', err);
+            showToast('Gagal simpan: ' + err.message, 'error');
+        } finally {
+            formSaveBtn.disabled = false;
+            formSaveBtn.innerHTML = originalHTML;
+        }
+    }
+
+    // ========================================
+    // DELETE, LOGOUT, EVENTS & INIT
+    // ========================================
+    async function deleteBook(id, judul) {
+        if (!confirm(`Yakin hapus buku "${judul}"?`)) return;
+        try {
+            const book = allBooks.find(b => String(b.id) === String(id));
+            if (book && book.cover_url && !book.cover_url.startsWith('http')) {
+                await supabaseClient.storage.from('covers').remove([book.cover_url]).catch(e => console.warn(e));
+            }
+            const { error } = await supabaseClient.from('books').delete().eq('id', id);
+            if (error) throw error;
+            allBooks = allBooks.filter(b => String(b.id) !== String(id));
+            updateStats(); applyFilters();
+            showToast('Buku dihapus', 'success');
+        } catch (err) {
+            showToast('Gagal hapus: ' + err.message, 'error');
+        }
+    }
+
+    async function handleLogout() {
+        if (!confirm('Yakin mau logout?')) return;
+        await adminSignOut();
+        window.location.href = 'admin-login.html';
+    }
+
+    function toggleSidebar() {
+        sidebar.classList.toggle('-translate-x-full');
+        sidebarOverlay.classList.toggle('active');
+    }
+
+    function bindEvents() {
+        document.getElementById('tipeFisik').addEventListener('change', toggleTipeFields);
+        document.getElementById('tipeEbook').addEventListener('change', toggleTipeFields);
+        searchInput.addEventListener('input', (e) => { searchQuery = e.target.value; applyFilters(); });
+        genreFilter.addEventListener('change', (e) => { activeGenre = e.target.value; applyFilters(); });
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                activeStatus = chip.dataset.status; applyFilters();
+            });
+        });
+        refreshBtn.addEventListener('click', () => {
+            refreshBtn.disabled = true;
+            refreshBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Loading...</span>';
+            loadBooks().finally(() => {
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = '<i class="fa-solid fa-rotate"></i><span>Refresh</span>';
+            });
+        });
+        addBtn.addEventListener('click', () => openForm());
+        logoutBtn.addEventListener('click', handleLogout);
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+        formModal.addEventListener('click', (e) => { if (e.target === formModal) closeForm(); });
+        formSaveBtn.addEventListener('click', (e) => { e.preventDefault(); saveBook(); });
+        bookForm.addEventListener('submit', (e) => { e.preventDefault(); saveBook(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !formModal.classList.contains('hidden')) closeForm(); });
+    }
+
+    (async () => {
+        const ok = await checkAuth();
+        if (!ok) return;
+        bindEvents();
+        await loadBooks(); // Muat buku dulu
+        console.log('%c📚 Karyakata Admin Buku loaded', 'font-size: 14px; font-weight: bold; color: #0B7BE8;');
+    })();
+
+    window.openForm = openForm;
+    window.closeForm = closeForm;
+    window.deleteBook = deleteBook;
+    </script>
+
+</body>
+</html>

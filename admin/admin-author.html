@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin — Data Penulis & Rekening — Karyakata.id</title>
+    <meta name="robots" content="noindex, nofollow" />
+
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: {
+                sky: { 50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD', 400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6', 800: '#064485', 900: '#053364' },
+                gold: { 100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A', 500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A' }
+            }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['"Plus Jakarta Sans"', 'sans-serif'] } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #F8FAFC; }
+        .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #475569; transition: all .2s ease; text-decoration: none; }
+        .sidebar-link:hover { background: #EFF6FF; color: #0B7BE8; }
+        .sidebar-link.active { background: linear-gradient(135deg, #0B7BE8, #0967C7); color: white; box-shadow: 0 6px 16px rgba(11, 123, 232, 0.3); }
+        .sidebar-link i { width: 20px; text-align: center; font-size: 15px; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 16px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all .2s ease; border: none; text-decoration: none; white-space: nowrap; }
+        .btn-outline { background: white; color: #475569; border: 2px solid #E2E8F0; }
+        .btn-outline:hover { border-color: #0B7BE8; color: #0B7BE8; }
+        .form-input { width: 100%; padding: 12px 14px; border: 2px solid #E2E8F0; border-radius: 12px; font-size: 14px; outline: none; transition: all .2s ease; background: white; }
+        .form-input:focus { border-color: #0B7BE8; box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1); }
+        #sidebarOverlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 40; }
+        #sidebarOverlay.active { display: block; }
+        .table-data th { text-align: left; padding: 14px 16px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748B; background: #F1F5F9; white-space: nowrap; }
+        .table-data td { padding: 16px; font-size: 13px; color: #334155; border-top: 1px solid #F1F5F9; vertical-align: middle; }
+        .table-data tbody tr { transition: background .15s ease; }
+        .table-data tbody tr:hover { background: #F8FAFC; }
+    </style>
+</head>
+<body>
+
+    <div id="sidebarOverlay"></div>
+
+    <div class="flex min-h-screen">
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50 -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
+            <div class="p-5 border-b border-slate-100">
+                <a href="admin-order.html" class="flex items-center gap-3 group">
+                    <img src="../assets/img/logo.png" alt="Karyakata" class="h-10 w-auto" onerror="this.style.display='none'" />
+                    <span class="font-display text-lg font-black leading-none"><span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span></span>
+                </a>
+                <div class="mt-3 flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1 bg-gold-100 text-gold-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        <i class="fa-solid fa-shield-halved text-[8px]"></i> ADMIN PANEL
+                    </span>
+                </div>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-2">MENU UTAMA</p>
+                <a href="admin-order.html" class="sidebar-link"><i class="fa-solid fa-receipt"></i> <span>Order</span></a>
+                <a href="admin-konfirmasi.html" class="sidebar-link"><i class="fa-solid fa-money-check-dollar"></i> <span>Konfirmasi & Akses</span></a>
+                <a href="admin-penjualan.html" class="sidebar-link"><i class="fa-solid fa-chart-line"></i> <span>Input Penjualan</span></a>
+                <a href="admin-author.html" class="sidebar-link active"><i class="fa-solid fa-users"></i> <span>Data Penulis</span></a>
+                <a href="admin-naskah.html" class="sidebar-link"><i class="fa-solid fa-file-lines"></i> <span>Naskah Masuk</span></a>
+                <a href="admin-pesan.html" class="sidebar-link"><i class="fa-solid fa-envelope"></i> <span>Pesan Kontak</span></a>
+                <a href="admin-subscriber.html" class="sidebar-link"><i class="fa-solid fa-envelope-open-text"></i> <span>Subscriber</span></a>
+
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">KONTEN</p>
+                <a href="admin-buku.html" class="sidebar-link"><i class="fa-solid fa-book"></i> <span>Buku / Katalog</span></a>
+                <a href="admin-blog.html" class="sidebar-link"><i class="fa-solid fa-newspaper"></i> <span>Blog</span></a>
+                <a href="admin-mitra.html" class="sidebar-link"><i class="fa-solid fa-handshake"></i> <span>Mitra &amp; Komunitas</span></a>
+
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">LAINNYA</p>
+                <a href="../index.html" target="_blank" class="sidebar-link"><i class="fa-solid fa-external-link-alt"></i> <span>Lihat Website</span></a>
+            </nav>
+
+            <div class="p-4 border-t border-slate-100">
+                <div class="bg-slate-50 rounded-2xl p-3">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">A</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-bold text-slate-800 truncate" id="userEmail">admin@...</p>
+                            <p class="text-[10px] text-slate-500">Administrator</p>
+                        </div>
+                    </div>
+                    <button id="logoutBtn" class="w-full btn btn-outline text-xs justify-center">
+                        <i class="fa-solid fa-right-from-bracket text-[10px]"></i> <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 min-w-0">
+            <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-lg border-b border-slate-200">
+                <div class="flex items-center justify-between px-4 md:px-6 h-16">
+                    <div class="flex items-center gap-3">
+                        <button id="sidebarToggle" class="lg:hidden w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600"><i class="fa-solid fa-bars"></i></button>
+                        <div>
+                            <h1 class="font-display text-lg md:text-xl font-black text-slate-800">Data Penulis</h1>
+                            <p class="text-[11px] text-slate-500 hidden md:block">Kelola profil dan rekening penulis</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button id="refreshBtn" class="btn btn-outline text-xs"><i class="fa-solid fa-rotate"></i> <span class="hidden sm:inline">Refresh</span></button>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">A</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-4 md:p-6">
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                    <div class="p-4 border-b border-slate-200">
+                        <div class="relative max-w-md">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                            <input type="text" id="searchInput" class="form-input pl-10" placeholder="Cari nama penulis atau email..." />
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="table-data w-full min-w-[800px]">
+                            <thead>
+                                <tr>
+                                    <th>Nama Penulis</th>
+                                    <th>Email</th>
+                                    <th>Bank / E-Wallet</th>
+                                    <th>Nomor Rekening</th>
+                                    <th>Nama Pemilik</th>
+                                    <th class="text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="authorsTbody">
+                                <tr><td colspan="6" class="p-8 text-center text-slate-400">Memuat data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="toastWrap" class="fixed top-4 right-4 z-[200] space-y-2"></div>
+
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/supabase-client.js"></script>
+
+    <script>
+    let allAuthors = [];
+
+    function showToast(message, type = 'info') {
+        const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-sky-500' };
+        const toast = document.createElement('div');
+        toast.className = `${colors[type]} text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-bold animate-fade-up max-w-sm`;
+        toast.innerHTML = `<span class="flex-1">${message}</span>`;
+        document.getElementById('toastWrap').appendChild(toast);
+        setTimeout(() => { toast.remove(); }, 3000);
+    }
+
+    async function loadAuthors() {
+        const tbody = document.getElementById('authorsTbody');
+        tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400"><i class="fa-solid fa-spinner fa-spin"></i> Memuat data...</td></tr>`;
+
+        // Ambil data dari tabel authors
+        const { data, error } = await supabaseClient
+            .from('authors')
+            .select('*')
+            .order('nama_penulis', { ascending: true });
+
+        if (error) {
+            tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-red-500">Gagal memuat data.</td></tr>`;
+            console.error(error);
+            return;
+        }
+
+        allAuthors = data || [];
+        renderTable(allAuthors);
+    }
+
+    function renderTable(authors) {
+        const tbody = document.getElementById('authorsTbody');
+        if (authors.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400">Belum ada data penulis.</td></tr>`;
+            return;
+        }
+
+        let html = '';
+        authors.forEach(a => {
+            const bank = a.rekening_bank || '<span class="text-slate-400 italic">Belum diisi</span>';
+            const nomor = a.rekening_nomor || '<span class="text-slate-400 italic">Belum diisi</span>';
+            const pemilik = a.rekening_nama || '<span class="text-slate-400 italic">Belum diisi</span>';
+
+            html += `
+                <tr>
+                    <td>
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center font-bold text-xs">
+                                ${(a.nama_penulis || 'P').charAt(0).toUpperCase()}
+                            </div>
+                            <div class="font-bold text-slate-800">${a.nama_penulis || 'Tanpa Nama'}</div>
+                        </div>
+                    </td>
+                    <td class="text-slate-600">${a.email}</td>
+                    <td>${bank}</td>
+                    <td>
+                        ${a.rekening_nomor ? `
+                            <div class="flex items-center gap-2">
+                                <span class="font-mono font-bold text-sky-700">${a.rekening_nomor}</span>
+                                <button onclick="copyText('${a.rekening_nomor}')" class="text-slate-400 hover:text-sky-600 transition" title="Copy"><i class="fa-solid fa-copy"></i></button>
+                            </div>
+                        ` : nomor}
+                    </td>
+                    <td>${pemilik}</td>
+                    <td class="text-right">
+                        <a href="https://wa.me/${a.wa || ''}" target="_blank" class="btn btn-outline !px-2.5 !py-2 text-green-600 border-green-200 hover:bg-green-50" title="Chat WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                    </td>
+                </tr>
+            `;
+        });
+        tbody.innerHTML = html;
+    }
+
+    // Fungsi copy nomor rekening
+    window.copyText = function(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('Nomor rekening disalin!', 'success');
+        });
+    };
+
+    // Search filter
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase();
+        const filtered = allAuthors.filter(a => 
+            (a.nama_penulis || '').toLowerCase().includes(q) || 
+            (a.email || '').toLowerCase().includes(q)
+        );
+        renderTable(filtered);
+    });
+
+    // Init
+    (async () => {
+        const user = await getCurrentUser();
+        if (!user) { window.location.href = 'admin-login.html'; return; }
+        document.getElementById('userEmail').textContent = user.email;
+        
+        loadAuthors();
+    })();
+
+    // Sidebar & Logout Event Listeners
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        document.getElementById('sidebarOverlay').classList.toggle('active');
+    });
+    document.getElementById('sidebarOverlay').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.add('-translate-x-full');
+        document.getElementById('sidebarOverlay').classList.remove('active');
+    });
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+        if(confirm('Logout dari admin panel?')) {
+            await adminSignOut();
+            window.location.href = 'admin-login.html';
+        }
+    });
+    document.getElementById('refreshBtn').addEventListener('click', loadAuthors);
+    </script>
+</body>
+</html>

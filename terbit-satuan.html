@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Terbit &amp; Cetak Satuan — Karyakata.id</title>
+    <meta name="description" content="Terbitkan naskahmu secara satuan di Karyakata.id. Minimal order 30 eksemplar. Bisa tambah layanan cover, layout, editing, dan lainnya." />
+
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/img/favicon.png" />
+    <link rel="shortcut icon" href="assets/img/favicon.png" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: {
+                            50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD',
+                            400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6',
+                            800: '#064485', 900: '#053364',
+                        },
+                        gold: {
+                            100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A',
+                            500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        html { scroll-behavior: smooth; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.8s ease-out forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 166, 35, 0.7); }
+            50% { box-shadow: 0 0 0 12px rgba(245, 166, 35, 0); }
+        }
+        .pulse-glow { animation: pulseGlow 2s infinite; }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #0B7BE8 0%, #0967C7 40%, #0755A6 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero-gradient::after {
+            content: '';
+            position: absolute;
+            bottom: -50%; left: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(245, 166, 35, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .nav-link { color: #334155; font-weight: 500; transition: all .2s ease; }
+        .nav-link:hover { color: #0B7BE8; }
+        .nav-link.active { color: #0B7BE8; font-weight: 700; }
+
+        .btn-primary {
+            background: #0B7BE8; color: white; font-weight: 700;
+            transition: all .3s ease;
+            box-shadow: 0 8px 20px rgba(11, 123, 232, 0.35);
+        }
+        .btn-primary:hover {
+            background: #0967C7; transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(11, 123, 232, 0.45);
+        }
+        .btn-gold {
+            background: #F5A623; color: #422006; font-weight: 700;
+            transition: all .3s ease;
+            box-shadow: 0 8px 20px rgba(245, 166, 35, 0.35);
+        }
+        .btn-gold:hover {
+            background: #D98B0E; color: white; transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(245, 166, 35, 0.45);
+        }
+
+        .form-input {
+            width: 100%; padding: 12px 16px;
+            border: 2px solid #DBEAFE; border-radius: 12px;
+            font-size: 14px; outline: none;
+            transition: all .2s ease; background: white;
+        }
+        .form-input:focus { border-color: #0B7BE8; box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1); }
+        .form-label {
+            display: block; font-size: 13px; font-weight: 700;
+            color: #334155; margin-bottom: 6px;
+        }
+
+        .addon-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 16px;
+            border: 2px solid #DBEAFE; border-radius: 12px;
+            cursor: pointer; transition: all .2s ease; background: white;
+        }
+        .addon-item:hover { border-color: #93C5FD; background: #EFF6FF; }
+        .addon-item.checked { border-color: #0B7BE8; background: #EFF6FF; }
+        .addon-item input[type="checkbox"] {
+            width: 20px; height: 20px;
+            accent-color: #0B7BE8; cursor: pointer; flex-shrink: 0;
+        }
+
+        .pay-option {
+            display: flex; align-items: center; gap: 12px;
+            padding: 16px;
+            border: 2px solid #DBEAFE; border-radius: 12px;
+            cursor: pointer; transition: all .2s ease; background: white;
+        }
+        .pay-option:hover { border-color: #93C5FD; }
+        .pay-option.checked { border-color: #0B7BE8; background: #EFF6FF; }
+        .pay-option input[type="radio"] {
+            width: 20px; height: 20px;
+            accent-color: #0B7BE8; cursor: pointer;
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #eff6ff; }
+        ::-webkit-scrollbar-thumb { background: #4A9EF0; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0B7BE8; }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-b border-sky-100" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+
+                <a href="index.html" class="flex items-center gap-2 group">
+                    <img src="assets/img/logo.png" alt="Karyakata.id" class="h-10 md:h-12 w-auto group-hover:scale-105 transition" />
+                    <span class="font-display text-xl md:text-2xl font-black leading-none">
+                        <span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span>
+                    </span>
+                </a>
+
+                <div class="hidden lg:flex items-center gap-8 text-sm">
+                    <a href="index.html" class="nav-link">Beranda</a>
+                    <a href="layanan.html" class="nav-link active">Layanan</a>
+                    <a href="katalog.html" class="nav-link">Katalog</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="tentang.html" class="nav-link">Tentang</a>
+                    <a href="kontak.html" class="nav-link">Kontak</a>
+                </div>
+
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="kirim-naskah.html" class="btn-gold px-5 py-2.5 rounded-full text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Kirim Naskah</span>
+                    </a>
+                </div>
+
+                <button id="menuBtn" class="lg:hidden w-10 h-10 rounded-lg bg-sky-50 flex items-center justify-center text-sky-700">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobileMenu" class="hidden lg:hidden bg-white border-t border-sky-100 px-4 py-4 space-y-1">
+            <a href="index.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Beranda</a>
+            <a href="layanan.html" class="block px-4 py-2.5 bg-sky-50 text-sky-700 rounded-xl font-bold">Layanan</a>
+            <a href="katalog.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Katalog</a>
+            <a href="blog.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Blog</a>
+            <a href="tentang.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Tentang</a>
+            <a href="kontak.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Kontak</a>
+            <a href="kirim-naskah.html" class="block text-center btn-gold px-5 py-3 rounded-xl text-sm font-bold mt-2">
+                <i class="fa-solid fa-paper-plane mr-1"></i> Kirim Naskah
+            </a>
+        </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <section class="hero-gradient pt-32 md:pt-40 pb-16 md:pb-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <nav class="flex items-center justify-center lg:justify-start gap-2 text-sky-200 text-xs md:text-sm mb-6 animate-fade-up">
+                <a href="index.html" class="hover:text-white transition">Beranda</a>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                <a href="layanan.html" class="hover:text-white transition">Layanan</a>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                <span class="text-white font-bold">Terbit Satuan</span>
+            </nav>
+
+            <div class="text-center lg:text-left max-w-3xl">
+                <h1 class="font-display text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.1] animate-fade-up delay-1">
+                    Terbit &amp; Cetak <span class="text-gold-300">Satuan</span>
+                </h1>
+                <p class="text-sky-100 text-base md:text-lg mt-6 leading-relaxed animate-fade-up delay-2">
+                    Untuk naskah yang sudah siap terbit. Minimal order <b>30 eksemplar</b>. Bisa tambah layanan cover, layout, editing, dan lainnya.
+                </p>
+            </div>
+        </div>
+
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+                <path d="M0 80L60 74.7C120 69.3 240 58.7 360 58.7C480 58.7 600 69.3 720 69.3C840 69.3 960 58.7 1080 53.3C1200 48 1320 48 1380 48L1440 48V80H0Z" fill="white"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- INFO MINIMAL ORDER -->
+    <section class="pt-12 bg-white">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-start gap-3 bg-gold-50 border-2 border-gold-200 rounded-2xl p-4 md:p-5">
+                <i class="fa-solid fa-circle-info text-gold-500 text-lg mt-0.5"></i>
+                <div class="text-sm text-slate-700 leading-relaxed">
+                    <b class="text-gold-700">Minimal order 30 eksemplar.</b>
+                    Kalau naskahmu belum punya cover, kamu bisa tambahkan jasa <b>Desain Cover Custom</b> di form di bawah.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FORM -->
+    <section class="py-12 md:py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-3xl border-2 border-sky-100 p-6 md:p-10">
+                <form id="formSatuan">
+
+                    <!-- STEP 1 -->
+                    <div class="mb-8">
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="w-9 h-9 rounded-full bg-sky-500 text-white flex items-center justify-center font-black text-sm shadow-lg shadow-sky-500/30">1</div>
+                            <h3 class="font-display text-lg md:text-xl font-black text-slate-800">Info Naskah</h3>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-5">
+                            <div>
+                                <label class="form-label">Judul Buku <span class="text-red-500">*</span></label>
+                                <input type="text" id="judul" class="form-input" placeholder="Contoh: Langit di Ujung Senja" required />
+                            </div>
+                            <div>
+                                <label class="form-label">Nama Penulis <span class="text-red-500">*</span></label>
+                                <input type="text" id="penulis" class="form-input" placeholder="Nama pena / nama asli" required />
+                            </div>
+                            <div>
+                                <label class="form-label">Genre Buku <span class="text-red-500">*</span></label>
+                                <select id="genreTipe" class="form-input" required>
+                                    <option value="">Pilih tipe...</option>
+                                    <option value="fiksi">Fiksi</option>
+                                    <option value="nonfiksi">Non-Fiksi</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label">Sub-Genre <span class="text-red-500">*</span></label>
+                                <select id="subGenre" class="form-input" required disabled>
+                                    <option value="">Pilih tipe dulu...</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label">Jumlah Halaman <span class="text-red-500">*</span></label>
+                                <input type="number" id="halaman" class="form-input" placeholder="Min. 100" min="100" required />
+                                <p class="text-slate-500 text-xs mt-1">Minimal 100 halaman.</p>
+                            </div>
+                            <div>
+                                <label class="form-label">Jumlah Eksemplar <span class="text-red-500">*</span></label>
+                                <input type="number" id="eksemplar" class="form-input" placeholder="Min. 30" min="30" value="30" required />
+                                <p class="text-slate-500 text-xs mt-1">Minimal 30 eksemplar.</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="form-label">Ukuran Buku <span class="text-red-500">*</span></label>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                                    <label class="addon-item justify-center text-sm font-bold">
+                                        <input type="radio" name="ukuran" value="A5" checked required />
+                                        <span>A5</span>
+                                    </label>
+                                    <label class="addon-item justify-center text-sm font-bold">
+                                        <input type="radio" name="ukuran" value="UNESCO" />
+                                        <span>UNESCO</span>
+                                    </label>
+                                    <label class="addon-item justify-center text-sm font-bold">
+                                        <input type="radio" name="ukuran" value="B5" />
+                                        <span>B5</span>
+                                    </label>
+                                    <label class="addon-item justify-center text-sm font-bold">
+                                        <input type="radio" name="ukuran" value="A4" />
+                                        <span>A4</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2 -->
+                    <div class="mb-8 pt-8 border-t border-sky-100">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-9 h-9 rounded-full bg-gold-500 text-white flex items-center justify-center font-black text-sm shadow-lg shadow-gold-500/30">2</div>
+                            <h3 class="font-display text-lg md:text-xl font-black text-slate-800">Layanan Tambahan <span class="text-slate-400 text-sm font-normal">(opsional)</span></h3>
+                        </div>
+                        <p class="text-slate-500 text-sm mb-5 ml-12">Pilih layanan tambahan yang kamu butuhkan.</p>
+
+                        <div class="grid md:grid-cols-2 gap-3">
+
+                            <label class="addon-item">
+                                <input type="checkbox" class="addon-check" data-nama="Desain Cover Custom" data-harga="75000" />
+                                <div class="flex-1">
+                                    <div class="font-bold text-slate-800 text-sm">Desain Cover Custom</div>
+                                    <div class="text-slate-500 text-xs">Rp 75.000</div>
+                                </div>
+                            </label>
+
+                            <label class="addon-item">
+                                <input type="checkbox" class="addon-check" data-nama="Layout Isi Buku" data-harga="75000" />
+                                <div class="flex-1">
+                                    <div class="font-bold text-slate-800 text-sm">Layout Isi Buku</div>
+                                    <div class="text-slate-500 text-xs">Rp 75.000</div>
+                                </div>
+                            </label>
+
+                            <label class="addon-item">
+                                <input type="checkbox" class="addon-check" data-nama="Sunting/Editing" data-harga="75000" />
+                                <div class="flex-1">
+                                    <div class="font-bold text-slate-800 text-sm">Sunting/Editing</div>
+                                    <div class="text-slate-500 text-xs">Rp 75.000</div>
+                                </div>
+                            </label>
+
+                            <label class="addon-item">
+                                <input type="checkbox" class="addon-check" data-nama="HAKI (Hak Cipta)" data-harga="500000" />
+                                <div class="flex-1">
+                                    <div class="font-bold text-slate-800 text-sm">HAKI (Hak Cipta)</div>
+                                    <div class="text-slate-500 text-xs">Rp 500.000</div>
+                                </div>
+                            </label>
+
+                            <label class="addon-item">
+                                <input type="checkbox" class="addon-check" data-nama="Bookmark Custom" data-harga="35000" />
+                                <div class="flex-1">
+                                    <div class="font-bold text-slate-800 text-sm">Bookmark Custom</div>
+                                    <div class="text-slate-500 text-xs">Rp 35.000</div>
+                                </div>
+                            </label>
+
+                            <label class="addon-item">
+                                <input type="checkbox" class="addon-check" data-nama="Ilustrasi" data-harga="100000" />
+                                <div class="flex-1">
+                                    <div class="font-bold text-slate-800 text-sm">Ilustrasi</div>
+                                    <div class="text-slate-500 text-xs">Rp 100.000</div>
+                                </div>
+                            </label>
+
+                            <label class="addon-item">
+                                <input type="checkbox" class="addon-check" data-nama="Flyer Promosi" data-harga="75000" />
+                                <div class="flex-1">
+                                    <div class="font-bold text-slate-800 text-sm">Flyer Promosi</div>
+                                    <div class="text-slate-500 text-xs">Rp 75.000</div>
+                                </div>
+                            </label>
+
+                            <label class="addon-item">
+                                <input type="checkbox" class="addon-check" data-nama="E-Book" data-harga="35000" />
+                                <div class="flex-1">
+                                    <div class="font-bold text-slate-800 text-sm">E-Book</div>
+                                    <div class="text-slate-500 text-xs">Rp 35.000</div>
+                                </div>
+                            </label>
+
+                            <label class="addon-item md:col-span-2">
+                                <input type="checkbox" class="addon-check" data-nama="Sertifikat Penulis" data-harga="15000" />
+                                <div class="flex-1">
+                                    <div class="font-bold text-slate-800 text-sm">Sertifikat Penulis</div>
+                                    <div class="text-slate-500 text-xs">Rp 15.000</div>
+                                </div>
+                            </label>
+
+                        </div>
+                    </div>
+
+                    <!-- STEP 3 -->
+                    <div class="mb-8 pt-8 border-t border-sky-100">
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="w-9 h-9 rounded-full bg-sky-500 text-white flex items-center justify-center font-black text-sm shadow-lg shadow-sky-500/30">3</div>
+                            <h3 class="font-display text-lg md:text-xl font-black text-slate-800">Ringkasan Biaya</h3>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-sky-50 to-sky-100 rounded-2xl p-6 border border-sky-200">
+                            <div class="space-y-3 text-sm">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-600">Harga buku / eksemplar</span>
+                                    <span class="font-bold text-slate-800" id="r-harga-per-buku">Rp 0</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-600">× <span id="r-eks">30</span> eksemplar</span>
+                                    <span class="font-bold text-slate-800" id="r-harga-buku">Rp 0</span>
+                                </div>
+                                <div class="flex justify-between items-center" id="r-addon-row" style="display:none;">
+                                    <span class="text-slate-600">Layanan tambahan</span>
+                                    <span class="font-bold text-slate-800" id="r-addon">Rp 0</span>
+                                </div>
+                            </div>
+
+                            <div class="border-t-2 border-sky-300 mt-4 pt-4 flex justify-between items-center">
+                                <span class="font-display font-black text-slate-800 text-lg">SUBTOTAL</span>
+                                <span class="font-display font-black text-sky-600 text-2xl" id="r-subtotal">Rp 0</span>
+                            </div>
+
+                            <p class="text-slate-500 text-xs mt-4 leading-relaxed">
+                                <i class="fa-solid fa-info-circle text-sky-500"></i>
+                                Harga sudah termasuk layanan penerbitan lengkap. Royalti 15% dari setiap penjualan akan kamu terima setelah buku terbit di katalog Karyakata. Dibayarkan per 3 bulan.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4 -->
+                    <div class="mb-8 pt-8 border-t border-sky-100">
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="w-9 h-9 rounded-full bg-gold-500 text-white flex items-center justify-center font-black text-sm shadow-lg shadow-gold-500/30">4</div>
+                            <h3 class="font-display text-lg md:text-xl font-black text-slate-800">Ongkos Kirim</h3>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-gold-50 to-gold-100 border border-gold-200 rounded-2xl p-5 md:p-6 mb-5">
+                            <div class="flex items-start gap-3 md:gap-4">
+                                <div class="w-11 h-11 rounded-xl bg-gold-500 text-white flex items-center justify-center text-lg flex-shrink-0">
+                                    <i class="fa-solid fa-truck-fast"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-display font-black text-slate-800 text-base mb-1">Belum Tahu Ongkir ke Kotamu?</h4>
+                                    <p class="text-slate-600 text-xs md:text-sm leading-relaxed mb-4">
+                                        Cek gratis di Berdu.id. Isi data berikut:
+                                    </p>
+
+                                    <div class="bg-white rounded-xl p-4 mb-4 border border-gold-100">
+                                        <ul class="space-y-2 text-xs md:text-sm text-slate-700">
+                                            <li class="flex items-start gap-2">
+                                                <i class="fa-solid fa-location-dot text-gold-500 mt-0.5"></i>
+                                                <span><b>Kota Asal:</b> Jakarta Pusat</span>
+                                            </li>
+                                            <li class="flex items-start gap-2">
+                                                <i class="fa-solid fa-flag-checkered text-gold-500 mt-0.5"></i>
+                                                <span><b>Kota Tujuan:</b> kota kamu</span>
+                                            </li>
+                                            <li class="flex items-start gap-2">
+                                                <i class="fa-solid fa-weight-hanging text-gold-500 mt-0.5"></i>
+                                                <span><b>Berat:</b> <span id="panduan-berat" class="font-bold">5.1</span> kg <span class="text-slate-400">(otomatis dari eksemplar)</span></span>
+                                            </li>
+                                            <li class="flex items-start gap-2">
+                                                <i class="fa-solid fa-box text-gold-500 mt-0.5"></i>
+                                                <span><b>Jenis:</b> Paket reguler</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <a href="https://berdu.id/cek-ongkir" target="_blank" rel="noopener" class="inline-flex items-center gap-2 btn-primary px-5 py-3 rounded-full text-sm">
+                                        <i class="fa-solid fa-external-link-alt text-xs"></i>
+                                        <span>Buka Cek Ongkir di Berdu.id</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Total Ongkir dari Hasil Cek <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-bold">Rp</span>
+                                <input type="number" id="ongkir" class="form-input" style="padding-left: 48px;" placeholder="0" min="0" required />
+                            </div>
+                            <p class="text-slate-500 text-xs mt-1">Masukkan angka ongkir yang muncul di Berdu.id.</p>
+                        </div>
+                    </div>
+
+                    <!-- STEP 5 -->
+                    <div class="mb-8 pt-8 border-t border-sky-100">
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="w-9 h-9 rounded-full bg-sky-500 text-white flex items-center justify-center font-black text-sm shadow-lg shadow-sky-500/30">5</div>
+                            <h3 class="font-display text-lg md:text-xl font-black text-slate-800">Data Pemesan</h3>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-5">
+                            <div>
+                                <label class="form-label">Nama Lengkap <span class="text-red-500">*</span></label>
+                                <input type="text" id="nama" class="form-input" placeholder="Nama sesuai KTP" required />
+                            </div>
+                            <div>
+                                <label class="form-label">No. WhatsApp <span class="text-red-500">*</span></label>
+                                <input type="tel" id="wa" class="form-input" placeholder="08xxxxxxxxxx" required />
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="form-label">Email <span class="text-red-500">*</span></label>
+                                <input type="email" id="email" class="form-input" placeholder="email@anda.com" required />
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="form-label">Alamat Pengiriman Lengkap <span class="text-red-500">*</span></label>
+                                <textarea id="alamat" class="form-input" rows="3" placeholder="Jalan, No. Rumah, RT/RW, Kelurahan, Kecamatan, Kota, Provinsi, Kode Pos" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 6 -->
+                    <div class="mb-8 pt-8 border-t border-sky-100">
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="w-9 h-9 rounded-full bg-gold-500 text-white flex items-center justify-center font-black text-sm shadow-lg shadow-gold-500/30">6</div>
+                            <h3 class="font-display text-lg md:text-xl font-black text-slate-800">Metode Pembayaran</h3>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="pay-option">
+                                <input type="radio" name="metode" value="Transfer Bank" checked required />
+                                <div>
+                                    <div class="font-bold text-slate-800 text-sm">Transfer Bank</div>
+                                    <div class="text-slate-500 text-xs">BRI</div>
+                                </div>
+                            </label>
+                            <label class="pay-option">
+                                <input type="radio" name="metode" value="QRIS" />
+                                <div>
+                                    <div class="font-bold text-slate-800 text-sm">QRIS</div>
+                                    <div class="text-slate-500 text-xs">Scan &amp; bayar</div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <p class="text-slate-500 text-xs mt-3">
+                            <i class="fa-solid fa-info-circle text-sky-500"></i>
+                            Nomor rekening &amp; QRIS akan dikirim admin via WhatsApp setelah order. Kirim bukti transfer di chat WhatsApp yang sama.
+                        </p>
+                    </div>
+
+                    <!-- TOTAL & SUBMIT -->
+                    <div class="pt-8 border-t-2 border-sky-200">
+                        <div class="bg-slate-900 rounded-2xl p-6 mb-6">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-slate-400 text-sm">Subtotal</span>
+                                <span class="text-white font-bold" id="r-final-subtotal">Rp 0</span>
+                            </div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-slate-400 text-sm">Ongkir</span>
+                                <span class="text-white font-bold" id="r-final-ongkir">Rp 0</span>
+                            </div>
+                            <div class="border-t border-slate-700 pt-3 flex justify-between items-center">
+                                <span class="font-display font-black text-white text-lg">TOTAL BAYAR</span>
+                                <span class="font-display font-black text-gold-400 text-2xl" id="r-final-total">Rp 0</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full btn-gold px-8 py-4 rounded-full text-base flex items-center justify-center gap-2 mb-3">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Kirim Order Sekarang</span>
+                        </button>
+
+                        <a href="https://wa.me/62895620000033?text=Halo%20Karyakata%2C%20saya%20mau%20tanya%20soal%20terbit%20satuan" target="_blank" rel="noopener" class="w-full bg-white border-2 border-sky-500 text-sky-600 font-bold px-8 py-4 rounded-full text-sm flex items-center justify-center gap-2 hover:bg-sky-500 hover:text-white transition">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            <span>Tanya Admin via WhatsApp</span>
+                        </a>
+
+                        <p class="text-slate-500 text-xs text-center mt-4">
+                            <i class="fa-solid fa-lock text-slate-400"></i>
+                            Data kamu aman. Admin akan menghubungi via WhatsApp dalam 1×24 jam kerja.
+                        </p>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- PERHATIAN (mini) -->
+    <section class="py-12 md:py-16 bg-red-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-2xl border-2 border-red-200 p-6 md:p-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <i class="fa-solid fa-triangle-exclamation text-red-600 text-xl"></i>
+                    <h3 class="font-display text-xl font-black text-red-700">Perhatian Soal ISBN &amp; QRCBN</h3>
+                </div>
+                <p class="text-slate-700 text-sm leading-relaxed mb-3">
+                    <b class="text-red-700">Pengajuan ISBN</b> perlu divalidasi kelayakan dan kualitas naskahnya. Jika tidak memenuhi, naskah tetap diterbitkan dengan nomor identitas pengganti ISBN, yakni <b>QRCBN</b>.
+                </p>
+                <p class="text-slate-600 text-xs leading-relaxed">
+                    <a href="layanan.html#perhatian" class="text-sky-600 font-bold hover:underline">Baca ketentuan lengkap →</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-12 md:py-16 bg-white">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="font-display text-2xl md:text-3xl font-black text-slate-800 mb-3">
+                Masih Bingung?
+            </h3>
+            <p class="text-slate-600 text-base mb-6">
+                Ceritakan naskahmu, tim kami akan bantu rekomendasikan layanan yang paling cocok.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                <a href="https://wa.me/62895620000033?text=Halo%20Karyakata%2C%20saya%20mau%20konsultasi%20terbit%20satuan" target="_blank" rel="noopener" class="btn-gold px-7 py-3.5 rounded-full text-sm flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span>Chat via WhatsApp</span>
+                </a>
+                <a href="layanan.html" class="bg-white border-2 border-sky-500 text-sky-600 font-bold px-7 py-3.5 rounded-full text-sm flex items-center justify-center gap-2 hover:bg-sky-500 hover:text-white transition">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Kembali ke Layanan</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-300 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-12 gap-10 mb-12">
+
+                <div class="md:col-span-4">
+                    <div class="mb-5 flex items-center gap-3">
+                        <img src="assets/img/logo-footer.png" alt="Karyakata.id" class="h-16 w-auto" />
+                        <span class="font-display text-2xl font-black leading-none">
+                            <span class="text-white">Karyakata</span><span class="text-gold-400">.id</span>
+                        </span>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                        Penerbit buku modern Indonesia. Mitra komunitas Yatta.id. <br>
+                        <span class="text-gold-400 font-semibold">Berkarya dengan Kata, Berkata dengan Karya.</span>
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <a href="https://www.instagram.com/karyakata.publishing" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-gradient-to-br hover:from-pink-500 hover:to-purple-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-black flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </a>
+                        <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-green-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-red-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">MENU</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="index.html" class="text-slate-400 hover:text-sky-400 transition">Beranda</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Layanan</a></li>
+                        <li><a href="katalog.html" class="text-slate-400 hover:text-sky-400 transition">Katalog</a></li>
+                        <li><a href="blog.html" class="text-slate-400 hover:text-sky-400 transition">Blog</a></li>
+                        <li><a href="tentang.html" class="text-slate-400 hover:text-sky-400 transition">Tentang</a></li>
+                        <li><a href="kontak.html" class="text-slate-400 hover:text-sky-400 transition">Kontak</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">LAYANAN</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="layanan.html#paket" class="text-slate-400 hover:text-sky-400 transition">Paket Penerbitan</a></li>
+                        <li><a href="terbit-satuan.html" class="text-slate-400 hover:text-sky-400 transition">Terbit &amp; Cetak Satuan</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Editing &amp; Proofreading</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Layout &amp; Desain Cover</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Cetak &amp; Distribusi</a></li>
+                        <li><a href="kirim-naskah.html" class="text-slate-400 hover:text-sky-400 transition">Kirim Naskah</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">KONTAK</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-envelope text-sky-400 mt-0.5"></i>
+                            <span class="text-slate-400">redaksikaryakata@gmail.com</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-brands fa-whatsapp text-sky-400 mt-0.5"></i>
+                            <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="text-slate-400 hover:text-sky-400 transition">+62 895-6200-00033</a>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot text-sky-400 mt-0.5"></i>
+                            <span class="text-slate-400">Yogyakarta-Gorontalo/Indonesia</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-users text-sky-400 mt-0.5"></i>
+                            <a href="https://www.yatta.id" target="_blank" rel="noopener" class="text-slate-400 hover:text-sky-400 transition">Komunitas Kami — www.yatta.id</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-slate-500 text-xs text-center md:text-left">
+                    &copy; <span id="year"></span> Karyakata.id — Karyakata Publishing. All rights reserved.
+                </p>
+                <div class="flex items-center gap-6 text-xs">
+                    <a href="syarat.html" class="text-slate-500 hover:text-sky-400 transition">Syarat &amp; Ketentuan</a>
+                    <a href="privacy.html" class="text-slate-500 hover:text-sky-400 transition">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPT -->
+    <!-- Supabase Client Helpers (CDN already loaded in head) -->
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/supabase-client.js"></script>
+
+    <script>
+        const HARGA_ISI = { A5: 80, UNESCO: 80, B5: 160, A4: 160 };
+        const HARGA_COVER = { A5: 9000, UNESCO: 9000, B5: 10000, A4: 10000 };
+        const PROFIT_PER_BUKU = 30000;
+        const ROYALTI_RATE = 0.15;
+        const BERAT_PER_BUKU = 0.17;
+
+        const SUB_GENRE = {
+            fiksi:    ['Novel', 'Cerpen', 'Puisi', 'Fantasi', 'Dongeng', 'Komik', 'Antologi', 'Drama', 'Lainnya'],
+            nonfiksi: ['Edukasi', 'Modul', 'Filsafat', 'Biografi', 'Sejarah', 'Sains', 'Bisnis', 'Agama', 'Panduan', 'Lainnya']
+        };
+
+        // Mobile menu
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                const icon = menuBtn.querySelector('i');
+                if (mobileMenu.classList.contains('hidden')) {
+                    icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars');
+                } else {
+                    icon.classList.remove('fa-bars'); icon.classList.add('fa-xmark');
+                }
+            });
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    const icon = menuBtn.querySelector('i');
+                    icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars');
+                });
+            });
+        }
+
+        // Navbar scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 50) {
+                navbar.classList.add('shadow-lg', 'shadow-sky-500/5');
+            } else {
+                navbar.classList.remove('shadow-lg', 'shadow-sky-500/5');
+            }
+        });
+
+        // Year
+        const yearEl = document.getElementById('year');
+        if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+        // Genre dependent
+        const genreTipe = document.getElementById('genreTipe');
+        const subGenre = document.getElementById('subGenre');
+        genreTipe.addEventListener('change', () => {
+            const tipe = genreTipe.value;
+            subGenre.innerHTML = '<option value="">Pilih sub-genre...</option>';
+            if (tipe && SUB_GENRE[tipe]) {
+                subGenre.disabled = false;
+                SUB_GENRE[tipe].forEach(g => {
+                    const opt = document.createElement('option');
+                    opt.value = g; opt.textContent = g;
+                    subGenre.appendChild(opt);
+                });
+            } else {
+                subGenre.disabled = true;
+            }
+        });
+
+        const inputs = {
+            halaman:   document.getElementById('halaman'),
+            eksemplar: document.getElementById('eksemplar'),
+            ongkir:    document.getElementById('ongkir'),
+        };
+
+        function getUkuran() {
+            const el = document.querySelector('input[name="ukuran"]:checked');
+            return el ? el.value : 'A5';
+        }
+
+        function hitungAddon() {
+            let total = 0;
+            document.querySelectorAll('.addon-check:checked').forEach(cb => {
+                total += parseInt(cb.dataset.harga) || 0;
+            });
+            return total;
+        }
+
+        function hitungTotal() {
+            const halaman  = parseInt(inputs.halaman.value) || 0;
+            const eksemplar = parseInt(inputs.eksemplar.value) || 0;
+            const ukuran = getUkuran();
+
+            // Kalau data belum lengkap → Rp 0
+            if (halaman === 0 || eksemplar === 0) {
+                document.getElementById('r-eks').textContent = eksemplar;
+                document.getElementById('r-harga-per-buku').textContent = rp(0);
+                document.getElementById('r-harga-buku').textContent = rp(0);
+                document.getElementById('r-addon-row').style.display = 'none';
+                document.getElementById('r-subtotal').textContent = rp(0);
+                document.getElementById('r-final-subtotal').textContent = rp(0);
+                document.getElementById('r-final-ongkir').textContent = rp(0);
+                document.getElementById('r-final-total').textContent = rp(0);
+                document.getElementById('panduan-berat').textContent = (eksemplar * BERAT_PER_BUKU).toFixed(1);
+                return;
+            }
+
+            const hargaIsi = HARGA_ISI[ukuran] || 80;
+            const hargaCover = HARGA_COVER[ukuran] || 9000;
+
+            const biayaCetak = hargaIsi * halaman * eksemplar;
+            const biayaCover = hargaCover * eksemplar;
+            const biayaProfit = PROFIT_PER_BUKU * eksemplar;
+            const subtotalSebelumRoyalti = biayaCetak + biayaCover + biayaProfit;
+            const royalti = subtotalSebelumRoyalti * ROYALTI_RATE;
+
+            const hargaBuku = subtotalSebelumRoyalti + royalti;
+            const hargaPerBuku = eksemplar > 0 ? hargaBuku / eksemplar : 0;
+
+            const addon = hitungAddon();
+            const subtotal = hargaBuku + addon;
+            const ongkir = parseInt(inputs.ongkir.value) || 0;
+            const total = subtotal + ongkir;
+
+            document.getElementById('r-eks').textContent = eksemplar;
+            document.getElementById('r-harga-per-buku').textContent = rp(hargaPerBuku);
+            document.getElementById('r-harga-buku').textContent = rp(hargaBuku);
+
+            const addonRow = document.getElementById('r-addon-row');
+            if (addon > 0) {
+                addonRow.style.display = 'flex';
+                document.getElementById('r-addon').textContent = rp(addon);
+            } else {
+                addonRow.style.display = 'none';
+            }
+
+            document.getElementById('r-subtotal').textContent = rp(subtotal);
+            document.getElementById('r-final-subtotal').textContent = rp(subtotal);
+            document.getElementById('r-final-ongkir').textContent = rp(ongkir);
+            document.getElementById('r-final-total').textContent = rp(total);
+
+            const berat = (eksemplar * BERAT_PER_BUKU).toFixed(1);
+            document.getElementById('panduan-berat').textContent = berat;
+        }
+
+        inputs.halaman.addEventListener('input', hitungTotal);
+        inputs.eksemplar.addEventListener('input', hitungTotal);
+        inputs.ongkir.addEventListener('input', hitungTotal);
+
+        document.querySelectorAll('input[name="ukuran"]').forEach(r => {
+            r.addEventListener('change', () => {
+                document.querySelectorAll('input[name="ukuran"]').forEach(x => {
+                    x.closest('label').classList.toggle('checked', x.checked);
+                });
+                hitungTotal();
+            });
+        });
+
+        document.querySelectorAll('.addon-check').forEach(cb => {
+            cb.addEventListener('change', () => {
+                cb.closest('label').classList.toggle('checked', cb.checked);
+                hitungTotal();
+            });
+        });
+
+        document.querySelectorAll('input[name="metode"]').forEach(r => {
+            r.addEventListener('change', () => {
+                document.querySelectorAll('input[name="metode"]').forEach(x => {
+                    x.closest('label').classList.toggle('checked', x.checked);
+                });
+            });
+        });
+
+        document.querySelector('input[name="ukuran"]:checked')?.closest('label')?.classList.add('checked');
+        document.querySelector('input[name="metode"]:checked')?.closest('label')?.classList.add('checked');
+        hitungTotal();
+
+        // SUBMIT
+        document.getElementById('formSatuan').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const halaman = parseInt(inputs.halaman.value) || 0;
+            const eksemplar = parseInt(inputs.eksemplar.value) || 0;
+
+            if (halaman < 100) { alert('Minimal 100 halaman.'); return; }
+            if (eksemplar < 30) { alert('Minimal 30 eksemplar.'); return; }
+            if (!inputs.ongkir.value || parseInt(inputs.ongkir.value) < 0) {
+                alert('Mohon isi total ongkir hasil cek di Berdu.id.'); return;
+            }
+
+            const judul = document.getElementById('judul').value;
+            const penulis = document.getElementById('penulis').value;
+            const genreTipeVal = genreTipe.value;
+            const subG = subGenre.options[subGenre.selectedIndex].text;
+            const ukuran = getUkuran();
+            const nama = document.getElementById('nama').value;
+            const wa = document.getElementById('wa').value;
+            const email = document.getElementById('email').value;
+            const alamat = document.getElementById('alamat').value;
+            const metode = document.querySelector('input[name="metode"]:checked').value;
+
+            const addons = [];
+            document.querySelectorAll('.addon-check:checked').forEach(cb => {
+                addons.push(cb.dataset.nama);
+            });
+
+            const hargaIsi = HARGA_ISI[ukuran];
+            const hargaCover = HARGA_COVER[ukuran];
+            const biayaCetak = hargaIsi * halaman * eksemplar;
+            const biayaCover = hargaCover * eksemplar;
+            const biayaProfit = PROFIT_PER_BUKU * eksemplar;
+            const subtotalSebelumRoyalti = biayaCetak + biayaCover + biayaProfit;
+            const royalti = subtotalSebelumRoyalti * ROYALTI_RATE;
+            const hargaBuku = subtotalSebelumRoyalti + royalti;
+            const hargaPerBuku = eksemplar > 0 ? hargaBuku / eksemplar : 0;
+            const addonTotal = hitungAddon();
+            const subtotal = hargaBuku + addonTotal;
+            const ongkir = parseInt(inputs.ongkir.value);
+            const total = subtotal + ongkir;
+
+            // Disable button sementara
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Memproses...</span>';
+
+            const orderCode = generateOrderCode();
+            const buktiUrl = null; // Bukti bayar akan diupload oleh admin via WA
+
+            // Insert order ke Supabase
+            const orderData = {
+                order_code: orderCode,
+                judul: judul,
+                penulis: penulis,
+                genre: genreTipeVal,
+                sub_genre: subG,
+                halaman: halaman,
+                eksemplar: eksemplar,
+                ukuran: ukuran,
+                addons: addons,
+                addon_total: addonTotal,
+                harga_per_buku: Math.round(hargaPerBuku),
+                harga_buku: Math.round(hargaBuku),
+                subtotal: Math.round(subtotal),
+                ongkir: ongkir,
+                total: Math.round(total),
+                nama_pemesan: nama,
+                wa_pemesan: wa,
+                email_pemesan: email,
+                alamat: alamat,
+                metode: metode,
+                bukti_bayar_url: buktiUrl,
+                status: 'pending'
+            };
+
+            const result = await insertOrder(orderData);
+
+            // Kembalikan tombol
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+
+            // Tetap buka WA (fallback / info ke admin)
+            let msg = `Halo Karyakata, saya mau order *TERBIT & CETAK SATUAN*:\n\n`;
+            msg += `🆔 *Order ID:* ${orderCode}\n\n`;
+            msg += `📖 *INFO NASKAH*\n`;
+            msg += `Judul: ${judul}\n`;
+            msg += `Penulis: ${penulis}\n`;
+            msg += `Genre: ${subG}\n`;
+            msg += `Halaman: ${halaman}\n`;
+            msg += `Eksemplar: ${eksemplar}\n`;
+            msg += `Ukuran: ${ukuran}\n\n`;
+
+            if (addons.length > 0) {
+                msg += `➕ *LAYANAN TAMBAHAN*\n`;
+                addons.forEach(a => msg += `• ${a}\n`);
+                msg += `\n`;
+            }
+
+            msg += `💰 *RINCIAN BIAYA*\n`;
+            msg += `Harga buku/eks: ${rp(hargaPerBuku)}\n`;
+            msg += `× ${eksemplar} eks: ${rp(hargaBuku)}\n`;
+            if (addonTotal > 0) msg += `Layanan tambahan: ${rp(addonTotal)}\n`;
+            msg += `Subtotal: ${rp(subtotal)}\n`;
+            msg += `Ongkir: ${rp(ongkir)}\n`;
+            msg += `*TOTAL BAYAR: ${rp(total)}*\n\n`;
+
+            msg += `👤 *PEMESAN*\n`;
+            msg += `Nama: ${nama}\n`;
+            msg += `WA: ${wa}\n`;
+            msg += `Email: ${email}\n`;
+            msg += `Alamat: ${alamat}\n\n`;
+
+            msg += `💳 *METODE BAYAR:* ${metode}\n\n`;
+            msg += `📎 Mohon info nomor rekening / QRIS untuk pembayaran. Terima kasih!`;
+
+            const url = `https://wa.me/62895620000033?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+
+            // Redirect ke halaman sukses
+            setTimeout(() => {
+                window.location.href = `order-sukses.html?order=${orderCode}`;
+            }, 800);
+        });
+
+        console.log('%c📚 Karyakata.id — Terbit Satuan', 'font-size: 16px; font-weight: bold; color: #0B7BE8;');
+    </script>
+
+</body>
+</html>

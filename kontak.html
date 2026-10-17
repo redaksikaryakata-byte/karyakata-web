@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kontak — Karyakata.id</title>
+    <meta name="description" content="Hubungi Karyakata.id — penerbit buku modern Indonesia. WhatsApp, email, Instagram. Kami siap membantu." />
+
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/img/favicon.png" />
+    <link rel="shortcut icon" href="assets/img/favicon.png" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: {
+                            50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD',
+                            400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6',
+                            800: '#064485', 900: '#053364',
+                        },
+                        gold: {
+                            100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A',
+                            500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        html { scroll-behavior: smooth; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.8s ease-out forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 166, 35, 0.7); }
+            50% { box-shadow: 0 0 0 12px rgba(245, 166, 35, 0); }
+        }
+        .pulse-glow { animation: pulseGlow 2s infinite; }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #0B7BE8 0%, #0967C7 40%, #0755A6 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero-gradient::after {
+            content: '';
+            position: absolute;
+            bottom: -50%; left: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(245, 166, 35, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .card-lift { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 24px 48px -16px rgba(11, 123, 232, 0.25);
+        }
+
+        .nav-link { color: #334155; font-weight: 500; transition: all .2s ease; }
+        .nav-link:hover { color: #0B7BE8; }
+        .nav-link.active { color: #0B7BE8; font-weight: 700; }
+
+        .btn-primary {
+            background: #0B7BE8; color: white; font-weight: 700;
+            transition: all .3s ease;
+            box-shadow: 0 8px 20px rgba(11, 123, 232, 0.35);
+        }
+        .btn-primary:hover {
+            background: #0967C7; transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(11, 123, 232, 0.45);
+        }
+        .btn-gold {
+            background: #F5A623; color: #422006; font-weight: 700;
+            transition: all .3s ease;
+            box-shadow: 0 8px 20px rgba(245, 166, 35, 0.35);
+        }
+        .btn-gold:hover {
+            background: #D98B0E; color: white; transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(245, 166, 35, 0.45);
+        }
+
+        .form-input {
+            width: 100%; padding: 12px 16px;
+            border: 2px solid #DBEAFE; border-radius: 12px;
+            font-size: 14px; outline: none;
+            transition: all .2s ease; background: white;
+        }
+        .form-input:focus { border-color: #0B7BE8; box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1); }
+        .form-label {
+            display: block; font-size: 13px; font-weight: 700;
+            color: #334155; margin-bottom: 6px;
+        }
+
+        .contact-card {
+            background: white;
+            border: 2px solid #DBEAFE;
+            border-radius: 20px;
+            padding: 24px;
+            transition: all .3s ease;
+            display: block;
+            text-decoration: none;
+        }
+        .contact-card:hover {
+            border-color: #0B7BE8;
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -12px rgba(11, 123, 232, 0.25);
+        }
+
+        /* FAQ Accordion */
+        .faq-item summary {
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 0;
+            font-weight: 700;
+            color: #1e293b;
+            transition: color .2s ease;
+        }
+        .faq-item summary::-webkit-details-marker { display: none; }
+        .faq-item summary:hover { color: #0B7BE8; }
+        .faq-item summary i {
+            transition: transform .3s ease;
+            color: #0B7BE8;
+            flex-shrink: 0;
+        }
+        .faq-item[open] summary i { transform: rotate(180deg); }
+        .faq-item[open] summary { color: #0B7BE8; }
+        .faq-item .faq-content {
+            padding-bottom: 20px;
+            color: #475569;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #eff6ff; }
+        ::-webkit-scrollbar-thumb { background: #4A9EF0; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0B7BE8; }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-b border-sky-100" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+
+                <a href="index.html" class="flex items-center gap-2 group">
+                    <img src="assets/img/logo.png" alt="Karyakata.id" class="h-10 md:h-12 w-auto group-hover:scale-105 transition" />
+                    <span class="font-display text-xl md:text-2xl font-black leading-none">
+                        <span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span>
+                    </span>
+                </a>
+
+                <div class="hidden lg:flex items-center gap-8 text-sm">
+                    <a href="index.html" class="nav-link">Beranda</a>
+                    <a href="layanan.html" class="nav-link">Layanan</a>
+                    <a href="katalog.html" class="nav-link">Katalog</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="tentang.html" class="nav-link">Tentang</a>
+                    <a href="kontak.html" class="nav-link active">Kontak</a>
+                </div>
+
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="kirim-naskah.html" class="btn-gold px-5 py-2.5 rounded-full text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Kirim Naskah</span>
+                    </a>
+                </div>
+
+                <button id="menuBtn" class="lg:hidden w-10 h-10 rounded-lg bg-sky-50 flex items-center justify-center text-sky-700">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobileMenu" class="hidden lg:hidden bg-white border-t border-sky-100 px-4 py-4 space-y-1">
+            <a href="index.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Beranda</a>
+            <a href="layanan.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Layanan</a>
+            <a href="katalog.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Katalog</a>
+            <a href="blog.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Blog</a>
+            <a href="tentang.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Tentang</a>
+            <a href="kontak.html" class="block px-4 py-2.5 bg-sky-50 text-sky-700 rounded-xl font-bold">Kontak</a>
+            <a href="kirim-naskah.html" class="block text-center btn-gold px-5 py-3 rounded-xl text-sm font-bold mt-2">
+                <i class="fa-solid fa-paper-plane mr-1"></i> Kirim Naskah
+            </a>
+        </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <section class="hero-gradient pt-32 md:pt-40 pb-16 md:pb-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <nav class="flex items-center justify-center lg:justify-start gap-2 text-sky-200 text-xs md:text-sm mb-6 animate-fade-up">
+                <a href="index.html" class="hover:text-white transition">Beranda</a>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                <span class="text-white font-bold">Kontak</span>
+            </nav>
+
+            <div class="text-center lg:text-left max-w-3xl">
+                <h1 class="font-display text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.1] animate-fade-up delay-1">
+                    Hubungi <span class="text-gold-300">Kami</span>
+                </h1>
+                <p class="text-sky-100 text-base md:text-lg mt-6 leading-relaxed animate-fade-up delay-2">
+                    Ada pertanyaan, ingin konsultasi, atau siap menerbitkan buku? Kami siap membantu. Pilih channel yang paling nyaman untukmu.
+                </p>
+            </div>
+        </div>
+
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+                <path d="M0 80L60 74.7C120 69.3 240 58.7 360 58.7C480 58.7 600 69.3 720 69.3C840 69.3 960 58.7 1080 53.3C1200 48 1320 48 1380 48L1440 48V80H0Z" fill="white"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- KONTAK CHANNELS -->
+    <section class="py-16 md:py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+                <div class="inline-flex items-center gap-2 bg-sky-100 border border-sky-200 rounded-full px-4 py-1.5 mb-4">
+                    <i class="fa-solid fa-comments text-sky-600 text-xs"></i>
+                    <span class="text-sky-700 text-xs md:text-sm font-bold tracking-wide">CHANNEL KONTAK</span>
+                </div>
+                <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight">
+                    Pilih Cara <span class="text-sky-600">Menghubungi</span>
+                </h2>
+                <p class="text-slate-600 text-base md:text-lg mt-4">
+                    Kami online di beberapa channel. Pilih yang paling nyaman untukmu.
+                </p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
+                <a href="https://wa.me/62895620000033?text=Halo%20Karyakata%2C%20saya%20mau%20tanya" target="_blank" rel="noopener" class="contact-card text-center group">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white text-2xl mx-auto mb-4 shadow-lg shadow-green-500/30 group-hover:scale-110 transition">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-black text-slate-800 mb-1">WhatsApp</h3>
+                    <p class="text-slate-500 text-xs mb-3">Respon cepat 1×24 jam</p>
+                    <p class="text-sky-600 font-bold text-sm">+62 895-6200-00033</p>
+                </a>
+
+                <a href="mailto:redaksikaryakata@gmail.com" class="contact-card text-center group">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-700 flex items-center justify-center text-white text-2xl mx-auto mb-4 shadow-lg shadow-sky-500/30 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-black text-slate-800 mb-1">Email</h3>
+                    <p class="text-slate-500 text-xs mb-3">Untuk kerja sama & formal</p>
+                    <p class="text-sky-600 font-bold text-sm">redaksikaryakata@gmail.com</p>
+                </a>
+
+                <a href="https://www.instagram.com/karyakata.publishing" target="_blank" rel="noopener" class="contact-card text-center group">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white text-2xl mx-auto mb-4 shadow-lg shadow-pink-500/30 group-hover:scale-110 transition">
+                        <i class="fa-brands fa-instagram"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-black text-slate-800 mb-1">Instagram</h3>
+                    <p class="text-slate-500 text-xs mb-3">Update & DM</p>
+                    <p class="text-sky-600 font-bold text-sm">@karyakata.publishing</p>
+                </a>
+
+                <a href="https://www.yatta.id" target="_blank" rel="noopener" class="contact-card text-center group">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-white text-2xl mx-auto mb-4 shadow-lg shadow-gold-500/30 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-black text-slate-800 mb-1">Komunitas Kami</h3>
+                    <p class="text-slate-500 text-xs mb-3">Gabung komunitas penulis</p>
+                    <p class="text-sky-600 font-bold text-sm">www.yatta.id</p>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FORM & INFO -->
+    <section class="py-16 md:py-20 bg-sky-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-10">
+
+                <!-- FORM -->
+                <div class="lg:col-span-7">
+                    <div class="bg-white rounded-3xl p-6 md:p-8 border-2 border-sky-100">
+                        <div class="mb-6">
+                            <h2 class="font-display text-2xl font-black text-slate-800 mb-2">Kirim Pesan</h2>
+                            <p class="text-slate-600 text-sm">Isi form di bawah, kami akan balas via WhatsApp atau email.</p>
+                        </div>
+
+                        <form id="formKontak">
+                            <div class="grid md:grid-cols-2 gap-5 mb-5">
+                                <div>
+                                    <label class="form-label">Nama Lengkap <span class="text-red-500">*</span></label>
+                                    <input type="text" id="nama" class="form-input" placeholder="Nama kamu" required />
+                                </div>
+                                <div>
+                                    <label class="form-label">No. WhatsApp <span class="text-red-500">*</span></label>
+                                    <input type="tel" id="wa" class="form-input" placeholder="08xxxxxxxxxx" required />
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="form-label">Email <span class="text-red-500">*</span></label>
+                                    <input type="email" id="email" class="form-input" placeholder="email@anda.com" required />
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="form-label">Topik <span class="text-red-500">*</span></label>
+                                    <select id="topik" class="form-input" required>
+                                        <option value="">Pilih topik...</option>
+                                        <option value="Tanya Paket Penerbitan">Tanya Paket Penerbitan</option>
+                                        <option value="Tanya Terbit & Cetak Satuan">Tanya Terbit & Cetak Satuan</option>
+                                        <option value="Tanya Kirim Naskah">Tanya Kirim Naskah</option>
+                                        <option value="Kerja Sama / Kolaborasi">Kerja Sama / Kolaborasi</option>
+                                        <option value="Kendala Order / Pembayaran">Kendala Order / Pembayaran</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="form-label">Pesan <span class="text-red-500">*</span></label>
+                                    <textarea id="pesan" class="form-input" rows="5" placeholder="Tulis pesanmu di sini..." required></textarea>
+                                </div>
+                            </div>
+
+                            <button type="submit" id="submitBtn" class="w-full btn-gold px-8 py-4 rounded-full text-base flex items-center justify-center gap-2 mb-3">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>Kirim Pesan via WhatsApp</span>
+                            </button>
+
+                            <p class="text-slate-500 text-xs text-center">
+                                <i class="fa-solid fa-lock text-slate-400"></i>
+                                Pesanmu akan langsung terkirim ke WhatsApp admin kami.
+                            </p>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- INFO -->
+                <div class="lg:col-span-5">
+                    <div class="bg-white rounded-3xl p-6 md:p-8 border-2 border-sky-100 mb-5">
+                        <h3 class="font-display text-xl font-black text-slate-800 mb-5">Informasi</h3>
+
+                        <div class="space-y-5">
+                            <div class="flex items-start gap-4">
+                                <div class="w-11 h-11 rounded-xl bg-sky-100 flex items-center justify-center text-sky-600 flex-shrink-0">
+                                    <i class="fa-solid fa-clock"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-slate-800 text-sm mb-1">Jam Operasional</p>
+                                    <p class="text-slate-600 text-xs leading-relaxed">Senin - Sabtu<br>08.00 - 17.00 WIB</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-11 h-11 rounded-xl bg-gold-100 flex items-center justify-center text-gold-600 flex-shrink-0">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-slate-800 text-sm mb-1">Lokasi</p>
+                                    <p class="text-slate-600 text-xs leading-relaxed">Indonesia<br>(online-based)</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-11 h-11 rounded-xl bg-sky-100 flex items-center justify-center text-sky-600 flex-shrink-0">
+                                    <i class="fa-solid fa-handshake"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-slate-800 text-sm mb-1">Mitra Komunitas</p>
+                                    <p class="text-slate-600 text-xs leading-relaxed">Yatta.id — komunitas penulis Indonesia</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA Kecil -->
+                    <div class="bg-gradient-to-br from-sky-500 to-sky-700 rounded-3xl p-6 md:p-8 text-white">
+                        <i class="fa-solid fa-paper-plane text-gold-300 text-2xl mb-3"></i>
+                        <h3 class="font-display text-xl font-black mb-2">Punya Naskah?</h3>
+                        <p class="text-sky-100 text-sm leading-relaxed mb-5">
+                            Langsung kirim naskahmu, tim editor kami akan review dengan serius.
+                        </p>
+                        <a href="kirim-naskah.html" class="inline-flex items-center gap-2 bg-white text-sky-600 font-bold px-5 py-3 rounded-full text-sm hover:bg-gold-100 transition">
+                            <span>Kirim Naskah</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="py-16 md:py-24 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+                <div class="inline-flex items-center gap-2 bg-sky-100 border border-sky-200 rounded-full px-4 py-1.5 mb-4">
+                    <i class="fa-solid fa-circle-question text-sky-600 text-xs"></i>
+                    <span class="text-sky-700 text-xs md:text-sm font-bold tracking-wide">FAQ</span>
+                </div>
+                <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight">
+                    Pertanyaan yang <span class="text-sky-600">Sering Ditanya</span>
+                </h2>
+            </div>
+
+            <div class="bg-sky-50 rounded-3xl p-6 md:p-8 divide-y divide-sky-100">
+
+                <details class="faq-item">
+                    <summary>
+                        <span>Berapa lama respon admin?</span>
+                        <i class="fa-solid fa-chevron-down text-sm"></i>
+                    </summary>
+                    <div class="faq-content">
+                        Kami berkomitmen merespon dalam <b>1×24 jam kerja</b>. Untuk WhatsApp biasanya lebih cepat, rata-rata 1-3 jam di jam operasional (Senin-Sabtu, 08.00-17.00 WIB).
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>
+                        <span>Apakah bisa konsultasi gratis?</span>
+                        <i class="fa-solid fa-chevron-down text-sm"></i>
+                    </summary>
+                    <div class="faq-content">
+                        <b>100% gratis.</b> Ceritakan naskahmu, tim kami akan bantu rekomendasikan paket atau layanan yang paling cocok. Tanpa biaya, tanpa paksaan.
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>
+                        <span>Bisa datang langsung ke kantor?</span>
+                        <i class="fa-solid fa-chevron-down text-sm"></i>
+                    </summary>
+                    <div class="faq-content">
+                        Untuk saat ini Karyakata beroperasi <b>online-based</b>. Semua komunikasi via WhatsApp, email, atau Instagram. Kalau perlu meeting, bisa dijadwalkan online (Zoom/Google Meet).
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>
+                        <span>Menerima kerja sama?</span>
+                        <i class="fa-solid fa-chevron-down text-sm"></i>
+                    </summary>
+                    <div class="faq-content">
+                        <b>Ya, terbuka.</b> Kami menerima kerja sama dengan komunitas penulis, lembaga pendidikan, instansi, atau individu untuk kolaborasi penerbitan, workshop, dan event literasi. Kirim proposal via email <b>redaksikaryakata@gmail.com</b>.
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>
+                        <span>Bagaimana kalau ada kendala order?</span>
+                        <i class="fa-solid fa-chevron-down text-sm"></i>
+                    </summary>
+                    <div class="faq-content">
+                        Hubungi kami via WhatsApp dengan menyertakan <b>nama pemesan</b>, <b>nomor order</b> (kalau ada), dan <b>detail kendala</b>. Kami akan bantu selesaikan secepatnya.
+                    </div>
+                </details>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-300 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-12 gap-10 mb-12">
+
+                <div class="md:col-span-4">
+                    <div class="mb-5 flex items-center gap-3">
+                        <img src="assets/img/logo-footer.png" alt="Karyakata.id" class="h-16 w-auto" />
+                        <span class="font-display text-2xl font-black leading-none">
+                            <span class="text-white">Karyakata</span><span class="text-gold-400">.id</span>
+                        </span>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                        Penerbit buku modern Indonesia. Mitra komunitas Yatta.id. <br>
+                        <span class="text-gold-400 font-semibold">Berkarya dengan Kata, Berkata dengan Karya.</span>
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <a href="https://www.instagram.com/karyakata.publishing" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-gradient-to-br hover:from-pink-500 hover:to-purple-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-black flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </a>
+                        <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-green-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-red-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">MENU</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="index.html" class="text-slate-400 hover:text-sky-400 transition">Beranda</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Layanan</a></li>
+                        <li><a href="katalog.html" class="text-slate-400 hover:text-sky-400 transition">Katalog</a></li>
+                        <li><a href="blog.html" class="text-slate-400 hover:text-sky-400 transition">Blog</a></li>
+                        <li><a href="tentang.html" class="text-slate-400 hover:text-sky-400 transition">Tentang</a></li>
+                        <li><a href="kontak.html" class="text-slate-400 hover:text-sky-400 transition">Kontak</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">LAYANAN</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="layanan.html#paket" class="text-slate-400 hover:text-sky-400 transition">Paket Penerbitan</a></li>
+                        <li><a href="terbit-satuan.html" class="text-slate-400 hover:text-sky-400 transition">Terbit &amp; Cetak Satuan</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Editing &amp; Proofreading</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Layout &amp; Desain Cover</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Cetak &amp; Distribusi</a></li>
+                        <li><a href="kirim-naskah.html" class="text-slate-400 hover:text-sky-400 transition">Kirim Naskah</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">KONTAK</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-envelope text-sky-400 mt-0.5"></i>
+                            <span class="text-slate-400">redaksikaryakata@gmail.com</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-brands fa-whatsapp text-sky-400 mt-0.5"></i>
+                            <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="text-slate-400 hover:text-sky-400 transition">+62 895-6200-00033</a>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot text-sky-400 mt-0.5"></i>
+                            <span class="text-slate-400">Yogyakarta-Gorontalo/Indonesia</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-users text-sky-400 mt-0.5"></i>
+                            <a href="https://www.yatta.id" target="_blank" rel="noopener" class="text-slate-400 hover:text-sky-400 transition">Komunitas Kami — www.yatta.id</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-slate-500 text-xs text-center md:text-left">
+                    &copy; <span id="year"></span> Karyakata.id — Karyakata Publishing. All rights reserved.
+                </p>
+                <div class="flex items-center gap-6 text-xs">
+                    <a href="syarat.html" class="text-slate-500 hover:text-sky-400 transition">Syarat &amp; Ketentuan</a>
+                    <a href="privacy.html" class="text-slate-500 hover:text-sky-400 transition">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/supabase-client.js"></script>
+
+    <script>
+        // Mobile menu
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                const icon = menuBtn.querySelector('i');
+                if (mobileMenu.classList.contains('hidden')) {
+                    icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars');
+                } else {
+                    icon.classList.remove('fa-bars'); icon.classList.add('fa-xmark');
+                }
+            });
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    const icon = menuBtn.querySelector('i');
+                    icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars');
+                });
+            });
+        }
+
+        // Navbar scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 50) {
+                navbar.classList.add('shadow-lg', 'shadow-sky-500/5');
+            } else {
+                navbar.classList.remove('shadow-lg', 'shadow-sky-500/5');
+            }
+        });
+
+        // Year
+        const yearEl = document.getElementById('year');
+        if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+        // ========================================
+        // SUBMIT → SUPABASE + WA
+        // ========================================
+        document.getElementById('formKontak').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const originalBtnHTML = submitBtn.innerHTML;
+
+            const nama = document.getElementById('nama').value;
+            const wa = document.getElementById('wa').value;
+            const email = document.getElementById('email').value;
+            const topik = document.getElementById('topik').value;
+            const pesan = document.getElementById('pesan').value;
+
+            // Loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Mengirim...</span>';
+
+            try {
+                // Insert ke tabel contacts
+                const contactData = {
+                    nama: nama,
+                    email: email,
+                    wa: wa,
+                    topik: topik,
+                    pesan: pesan,
+                    status: 'baru'
+                };
+
+                const result = await insertContact(contactData);
+
+                if (!result.success) {
+                    console.warn('Insert contact gagal:', result.error);
+                    // Tetap lanjut ke WA
+                }
+
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHTML;
+
+                // WA message
+                let msg = `Halo Karyakata, saya mau *KONTAK*:\n\n`;
+                msg += `📋 *TOPIK:* ${topik}\n\n`;
+                msg += `📝 *PESAN:*\n${pesan}\n\n`;
+                msg += `👤 *PENGIRIM*\n`;
+                msg += `Nama: ${nama}\n`;
+                msg += `WA: ${wa}\n`;
+                msg += `Email: ${email}\n\n`;
+                msg += `Mohon dibalas ya. Terima kasih!`;
+
+                const url = `https://wa.me/62895620000033?text=${encodeURIComponent(msg)}`;
+                window.open(url, '_blank');
+
+            } catch (err) {
+                console.error('Error submit:', err);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHTML;
+                alert('Terjadi kesalahan. Silakan coba lagi.');
+            }
+        });
+
+        console.log('%c📚 Karyakata.id — Kontak', 'font-size: 16px; font-weight: bold; color: #0B7BE8;');
+    </script>
+
+</body>
+</html>

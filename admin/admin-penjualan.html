@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin — Input Penjualan — Karyakata.id</title>
+    <meta name="robots" content="noindex, nofollow" />
+
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: { 50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD', 400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6', 800: '#064485', 900: '#053364' },
+                        gold: { 100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A', 500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A' }
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['"Plus Jakarta Sans"', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #F8FAFC; }
+        
+        .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #475569; transition: all .2s ease; text-decoration: none; }
+        .sidebar-link:hover { background: #EFF6FF; color: #0B7BE8; }
+        .sidebar-link.active { background: linear-gradient(135deg, #0B7BE8, #0967C7); color: white; box-shadow: 0 6px 16px rgba(11, 123, 232, 0.3); }
+        .sidebar-link i { width: 20px; text-align: center; font-size: 15px; }
+
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 16px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all .2s ease; border: none; text-decoration: none; white-space: nowrap; }
+        .btn-primary { background: #0B7BE8; color: white; }
+        .btn-primary:hover { background: #0967C7; transform: translateY(-1px); }
+        .btn-outline { background: white; color: #475569; border: 2px solid #E2E8F0; }
+        .btn-outline:hover { border-color: #0B7BE8; color: #0B7BE8; }
+        .btn-gold { background: #F5A623; color: white; }
+        .btn-gold:hover { background: #D98B0E; transform: translateY(-1px); }
+        .btn-danger { background: #EF4444; color: white; }
+        .btn-danger:hover { background: #DC2626; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .form-input { width: 100%; padding: 12px 14px; border: 2px solid #E2E8F0; border-radius: 12px; font-size: 14px; outline: none; transition: all .2s ease; background: white; }
+        .form-input:focus { border-color: #0B7BE8; box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1); }
+        .form-label { display: block; font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 6px; }
+
+        .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; }
+        .modal-content { background: white; border-radius: 24px; max-width: 600px; width: 100%; max-height: 92vh; overflow-y: auto; animation: fadeUp 0.3s ease-out; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .order-table th { text-align: left; padding: 14px 16px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748B; background: #F1F5F9; white-space: nowrap; }
+        .order-table td { padding: 16px; font-size: 13px; color: #334155; border-top: 1px solid #F1F5F9; vertical-align: middle; }
+        .order-table tbody tr { transition: background .15s ease; }
+        .order-table tbody tr:hover { background: #F8FAFC; }
+
+        #sidebarOverlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 40; }
+        #sidebarOverlay.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <div id="sidebarOverlay"></div>
+
+    <div class="flex min-h-screen">
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50 -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
+            <div class="p-5 border-b border-slate-100">
+                <a href="admin-order.html" class="flex items-center gap-3 group">
+                    <img src="../assets/img/logo.png" alt="Karyakata" class="h-10 w-auto" onerror="this.style.display='none'" />
+                    <span class="font-display text-lg font-black leading-none"><span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span></span>
+                </a>
+                <div class="mt-3 flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1 bg-gold-100 text-gold-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        <i class="fa-solid fa-shield-halved text-[8px]"></i> ADMIN PANEL
+                    </span>
+                </div>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-2">MENU UTAMA</p>
+                <a href="admin-order.html" class="sidebar-link"><i class="fa-solid fa-receipt"></i> <span>Order</span></a>
+                <a href="admin-konfirmasi.html" class="sidebar-link"><i class="fa-solid fa-money-check-dollar"></i> <span>Konfirmasi & Akses</span></a>
+                <a href="admin-penjualan.html" class="sidebar-link active"><i class="fa-solid fa-chart-line"></i> <span>Input Penjualan</span></a>
+                <a href="admin-naskah.html" class="sidebar-link"><i class="fa-solid fa-file-lines"></i> <span>Naskah Masuk</span></a>
+                <a href="admin-pesan.html" class="sidebar-link"><i class="fa-solid fa-envelope"></i> <span>Pesan Kontak</span></a>
+                <a href="admin-subscriber.html" class="sidebar-link"><i class="fa-solid fa-users"></i> <span>Subscriber</span></a>
+
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">KONTEN</p>
+                <a href="admin-buku.html" class="sidebar-link"><i class="fa-solid fa-book"></i> <span>Buku / Katalog</span></a>
+                <a href="admin-blog.html" class="sidebar-link"><i class="fa-solid fa-newspaper"></i> <span>Blog</span></a>
+                <a href="admin-mitra.html" class="sidebar-link"><i class="fa-solid fa-handshake"></i> <span>Mitra &amp; Komunitas</span></a>
+
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">LAINNYA</p>
+                <a href="../index.html" target="_blank" class="sidebar-link"><i class="fa-solid fa-external-link-alt"></i> <span>Lihat Website</span></a>
+            </nav>
+
+            <div class="p-4 border-t border-slate-100">
+                <div class="bg-slate-50 rounded-2xl p-3">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">A</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-bold text-slate-800 truncate" id="userEmail">admin@...</p>
+                            <p class="text-[10px] text-slate-500">Administrator</p>
+                        </div>
+                    </div>
+                    <button id="logoutBtn" class="w-full btn btn-outline text-xs justify-center">
+                        <i class="fa-solid fa-right-from-bracket text-[10px]"></i> <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 min-w-0">
+            <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-lg border-b border-slate-200">
+                <div class="flex items-center justify-between px-4 md:px-6 h-16">
+                    <div class="flex items-center gap-3">
+                        <button id="sidebarToggle" class="lg:hidden w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600"><i class="fa-solid fa-bars"></i></button>
+                        <div>
+                            <h1 class="font-display text-lg md:text-xl font-black text-slate-800">Input Penjualan</h1>
+                            <p class="text-[11px] text-slate-500 hidden md:block">Catat buku terjual untuk menghitung royalti</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <button id="refreshBtn" class="btn btn-outline text-xs">
+                            <i class="fa-solid fa-rotate"></i> <span class="hidden sm:inline">Refresh</span>
+                        </button>
+                        <button id="addBtn" class="btn btn-gold text-xs">
+                            <i class="fa-solid fa-plus"></i> <span>Catat Penjualan</span>
+                        </button>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">A</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-4 md:p-6">
+                
+                <!-- TOOLBAR -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 mb-6">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="text" id="searchInput" class="form-input pl-10" placeholder="Cari judul buku atau email penulis..." />
+                    </div>
+                </div>
+
+                <!-- TABEL -->
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                    <div class="overflow-x-auto">
+                        <table class="order-table w-full min-w-[800px]">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Buku</th>
+                                    <th>Penulis</th>
+                                    <th>Qty</th>
+                                    <th>Harga Satuan</th>
+                                    <th>Total</th>
+                                    <th>Kanal</th>
+                                    <th class="text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salesTbody">
+                                <tr><td colspan="8" class="p-8 text-center text-slate-400">Memuat data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL INPUT PENJUALAN -->
+    <div id="formModal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                    <h3 class="font-display text-lg font-black text-slate-800" id="formTitle">Catat Penjualan</h3>
+                    <p class="text-xs text-slate-500">Pilih buku dan masukkan detail penjualan.</p>
+                </div>
+                <button onclick="closeForm()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="saleForm" class="p-5 space-y-4">
+                <div>
+                    <label class="form-label">Pilih Buku <span class="text-red-500">*</span></label>
+                    <select id="bookId" class="form-input" required>
+                        <option value="">-- Memuat daftar buku... --</option>
+                    </select>
+                    <p class="text-[10px] text-slate-500 mt-1">Hanya menampilkan buku yang sudah di-assign ke penulis.</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="form-label">Tanggal <span class="text-red-500">*</span></label>
+                        <input type="date" id="tanggal" class="form-input" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Jumlah (Qty) <span class="text-red-500">*</span></label>
+                        <input type="number" id="qty" class="form-input" value="1" min="1" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Harga Satuan <span class="text-red-500">*</span></label>
+                        <input type="number" id="hargaSatuan" class="form-input" min="0" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Kanal Penjualan</label>
+                        <select id="kanal" class="form-input">
+                            <option value="Lynk.id">Lynk.id</option>
+                            <option value="Manual">Manual / Langsung</option>
+                            <option value="Shopee">Shopee</option>
+                            <option value="Tokopedia">Tokopedia</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label">Catatan (Opsional)</label>
+                    <textarea id="catatan" class="form-input" rows="2" placeholder="Contoh: Pembeli dari IG..."></textarea>
+                </div>
+            </form>
+
+            <div class="p-5 border-t border-slate-100 flex gap-3 justify-end bg-slate-50 rounded-b-3xl">
+                <button onclick="closeForm()" class="btn btn-outline">Batal</button>
+                <button id="btnSave" class="btn btn-primary">Simpan Penjualan</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastWrap" class="fixed top-4 right-4 z-[200] space-y-2"></div>
+
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/supabase-client.js"></script>
+
+    <script>
+    // ========================================
+    // ADMIN PENJUALAN — MAIN SCRIPT
+    // ========================================
+
+    let allSales = [];
+    let allBooks = [];
+    let currentUser = null;
+    let searchQuery = '';
+
+    // DOM Refs
+    const salesTbody = document.getElementById('salesTbody');
+    const searchInput = document.getElementById('searchInput');
+    const formModal = document.getElementById('formModal');
+    const bookIdSelect = document.getElementById('bookId');
+    const toastWrap = document.getElementById('toastWrap');
+    const btnSave = document.getElementById('btnSave');
+
+    // ========================================
+    // TOAST
+    // ========================================
+    function showToast(message, type = 'info') {
+        const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-sky-500', warning: 'bg-gold-500' };
+        const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info', warning: 'fa-triangle-exclamation' };
+        const toast = document.createElement('div');
+        toast.className = `${colors[type]} text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-bold animate-fade-up max-w-sm`;
+        toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span class="flex-1">${message}</span>`;
+        toastWrap.appendChild(toast);
+        setTimeout(() => {
+            toast.style.transition = 'all 0.3s ease';
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // ========================================
+    // AUTH
+    // ========================================
+    async function checkAuth() {
+        const user = await getCurrentUser();
+        if (!user) { window.location.href = 'admin-login.html'; return false; }
+        currentUser = user;
+        document.getElementById('userEmail').textContent = user.email;
+        return true;
+    }
+
+    // ========================================
+    // LOAD DATA
+    // ========================================
+    async function loadData() {
+        // 1. Ambil semua buku yang ada author_email-nya
+        const { data: books } = await supabaseClient
+            .from('books')
+            .select('id, judul, penulis, author_email, harga')
+            .not('author_email', 'is', null)
+            .order('judul');
+        
+        allBooks = books || [];
+
+        // 2. Ambil riwayat penjualan (ambil semua untuk admin)
+        const { data: sales } = await supabaseClient
+            .from('sales')
+            .select('*')
+            .order('tanggal', { ascending: false });
+
+        allSales = sales || [];
+        
+        renderTable();
+    }
+
+    // ========================================
+    // RENDER TABEL
+    // ========================================
+    function renderTable() {
+        const q = searchQuery.toLowerCase().trim();
+        let filtered = allSales;
+
+        if (q) {
+            filtered = allSales.filter(s => {
+                const book = allBooks.find(b => b.id === s.book_id);
+                const judul = book ? book.judul.toLowerCase() : '';
+                const email = s.author_email ? s.author_email.toLowerCase() : '';
+                return judul.includes(q) || email.includes(q);
+            });
+        }
+
+        if (filtered.length === 0) {
+            salesTbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-400">Belum ada data penjualan.</td></tr>`;
+            return;
+        }
+
+        let html = '';
+        filtered.forEach(s => {
+            const book = allBooks.find(b => b.id === s.book_id);
+            const judul = book ? book.judul : 'Buku Dihapus';
+            const penulis = book ? book.penulis : '-';
+            const email = book ? book.author_email : '-';
+            const tgl = new Date(s.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+
+            html += `
+                <tr>
+                    <td class="whitespace-nowrap">${tgl}</td>
+                    <td class="font-bold text-slate-800">${judul}</td>
+                    <td>
+                        <div class="text-sm font-bold text-slate-700">${penulis}</div>
+                        <div class="text-[10px] text-slate-500">${email}</div>
+                    </td>
+                    <td class="font-bold text-sky-600">${s.qty}</td>
+                    <td>${rp(s.harga_satuan)}</td>
+                    <td class="font-bold text-green-600">${rp(s.total)}</td>
+                    <td><span class="px-2 py-1 bg-slate-100 text-slate-600 rounded text-[10px] font-bold uppercase">${s.kanal}</span></td>
+                    <td class="text-right">
+                        <button onclick="deleteSale('${s.id}')" class="btn btn-danger !px-2.5 !py-1.5" title="Hapus">
+                            <i class="fa-solid fa-trash text-[10px]"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+        salesTbody.innerHTML = html;
+    }
+
+    // ========================================
+    // MODAL FORM
+    // ========================================
+    function openForm() {
+        // Isi dropdown buku
+        if (allBooks.length === 0) {
+            alert('Belum ada buku yang di-assign ke penulis. Silakan tambah buku di menu Katalog terlebih dahulu.');
+            return;
+        }
+
+        bookIdSelect.innerHTML = '<option value="">-- Pilih Buku --</option>';
+        allBooks.forEach(b => {
+            const opt = document.createElement('option');
+            opt.value = b.id;
+            opt.textContent = `${b.judul} (${b.penulis})`;
+            bookIdSelect.appendChild(opt);
+        });
+
+        // Reset form
+        document.getElementById('saleForm').reset();
+        document.getElementById('tanggal').valueAsDate = new Date();
+        document.getElementById('hargaSatuan').value = '';
+        
+        formModal.classList.remove('hidden');
+    }
+
+    function closeForm() {
+        formModal.classList.add('hidden');
+    }
+
+    // Saat buku dipilih, otomatis isi harga
+    bookIdSelect.addEventListener('change', (e) => {
+        const id = e.target.value;
+        const book = allBooks.find(b => String(b.id) === String(id));
+        if (book) {
+            document.getElementById('hargaSatuan').value = book.harga;
+        }
+    });
+
+    // ========================================
+    // SIMPAN PENJUALAN
+    // ========================================
+    btnSave.addEventListener('click', async () => {
+        const bookId = bookIdSelect.value;
+        const tanggal = document.getElementById('tanggal').value;
+        const qty = parseInt(document.getElementById('qty').value);
+        const hargaSatuan = parseInt(document.getElementById('hargaSatuan').value);
+        const kanal = document.getElementById('kanal').value;
+        const catatan = document.getElementById('catatan').value;
+
+        if (!bookId || !tanggal || !qty || !hargaSatuan) {
+            showToast('Mohon lengkapi semua data wajib.', 'error');
+            return;
+        }
+
+        const book = allBooks.find(b => b.id === bookId);
+
+        const payload = {
+            book_id: bookId,
+            author_email: book.author_email,
+            tanggal: tanggal,
+            qty: qty,
+            harga_satuan: hargaSatuan,
+            kanal: kanal,
+            catatan: catatan
+        };
+
+        const originalText = btnSave.innerHTML;
+        btnSave.disabled = true;
+        btnSave.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+
+        const { error } = await supabaseClient.from('sales').insert([payload]);
+
+        btnSave.disabled = false;
+        btnSave.innerHTML = originalText;
+
+        if (error) {
+            console.error(error);
+            showToast('Gagal menyimpan: ' + error.message, 'error');
+        } else {
+            showToast('Data penjualan berhasil disimpan!', 'success');
+            closeForm();
+            loadData(); // Refresh tabel
+        }
+    });
+
+    // ========================================
+    // HAPUS PENJUALAN
+    // ========================================
+    async function deleteSale(id) {
+        if (!confirm('Yakin ingin menghapus catatan penjualan ini? Royalti penulis akan berkurang.')) return;
+
+        const { error } = await supabaseClient.from('sales').delete().eq('id', id);
+        
+        if (error) {
+            showToast('Gagal menghapus: ' + error.message, 'error');
+        } else {
+            showToast('Catatan penjualan dihapus.', 'success');
+            loadData();
+        }
+    }
+
+    // ========================================
+    // EVENTS & INIT
+    // ========================================
+    searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value;
+        renderTable();
+    });
+
+    document.getElementById('addBtn').addEventListener('click', openForm);
+    document.getElementById('refreshBtn').addEventListener('click', loadData);
+    formModal.addEventListener('click', (e) => { if (e.target === formModal) closeForm(); });
+    
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        document.getElementById('sidebarOverlay').classList.toggle('active');
+    });
+    document.getElementById('sidebarOverlay').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.add('-translate-x-full');
+        document.getElementById('sidebarOverlay').classList.remove('active');
+    });
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+        if(confirm('Logout dari admin panel?')) {
+            await adminSignOut();
+            window.location.href = 'admin-login.html';
+        }
+    });
+
+    (async () => {
+        if (await checkAuth()) {
+            loadData();
+        }
+    })();
+
+    // Expose
+    window.openForm = openForm;
+    window.closeForm = closeForm;
+    window.deleteSale = deleteSale;
+    </script>
+</body>
+</html>

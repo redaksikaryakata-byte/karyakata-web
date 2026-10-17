@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin — Konfirmasi Pembayaran — Karyakata.id</title>
+    <meta name="robots" content="noindex, nofollow" />
+
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: { 50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD', 400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6', 800: '#064485', 900: '#053364' },
+                        gold: { 100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A', 500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A' }
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['"Plus Jakarta Sans"', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #F8FAFC; }
+        
+        .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #475569; transition: all .2s ease; text-decoration: none; }
+        .sidebar-link:hover { background: #EFF6FF; color: #0B7BE8; }
+        .sidebar-link.active { background: linear-gradient(135deg, #0B7BE8, #0967C7); color: white; box-shadow: 0 6px 16px rgba(11, 123, 232, 0.3); }
+        .sidebar-link i { width: 20px; text-align: center; font-size: 15px; }
+
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 16px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all .2s ease; border: none; text-decoration: none; white-space: nowrap; }
+        .btn-primary { background: #0B7BE8; color: white; }
+        .btn-primary:hover { background: #0967C7; transform: translateY(-1px); }
+        .btn-outline { background: white; color: #475569; border: 2px solid #E2E8F0; }
+        .btn-outline:hover { border-color: #0B7BE8; color: #0B7BE8; }
+        .btn-danger { background: #EF4444; color: white; }
+        .btn-danger:hover { background: #DC2626; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; }
+        .modal-content { background: white; border-radius: 24px; max-width: 500px; width: 100%; max-height: 92vh; overflow-y: auto; animation: fadeUp 0.3s ease-out; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .form-input { width: 100%; padding: 12px 14px; border: 2px solid #E2E8F0; border-radius: 12px; font-size: 14px; outline: none; transition: all .2s ease; background: white; }
+        .form-input:focus { border-color: #0B7BE8; box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1); }
+        .form-label { display: block; font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 6px; }
+        
+        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 9999px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+        
+        #sidebarOverlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 40; }
+        #sidebarOverlay.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <div id="sidebarOverlay"></div>
+
+    <div class="flex min-h-screen">
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50 -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
+            <div class="p-5 border-b border-slate-100">
+                <a href="admin-order.html" class="flex items-center gap-3 group">
+                    <img src="../assets/img/logo.png" alt="Karyakata" class="h-10 w-auto" onerror="this.style.display='none'" />
+                    <span class="font-display text-lg font-black leading-none"><span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span></span>
+                </a>
+                <div class="mt-3 flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1 bg-gold-100 text-gold-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        <i class="fa-solid fa-shield-halved text-[8px]"></i> ADMIN PANEL
+                    </span>
+                </div>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-2">MENU UTAMA</p>
+                <a href="admin-order.html" class="sidebar-link"><i class="fa-solid fa-receipt"></i> <span>Order</span></a>
+                <!-- Konfirmasi ini aktif -->
+                <a href="admin-konfirmasi.html" class="sidebar-link active"><i class="fa-solid fa-money-check-dollar"></i> <span>Konfirmasi & Akses</span></a>
+                <a href="admin-naskah.html" class="sidebar-link"><i class="fa-solid fa-file-lines"></i> <span>Naskah Masuk</span></a>
+                <a href="admin-pesan.html" class="sidebar-link"><i class="fa-solid fa-envelope"></i> <span>Pesan Kontak</span></a>
+                <a href="admin-subscriber.html" class="sidebar-link"><i class="fa-solid fa-users"></i> <span>Subscriber</span></a>
+
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">KONTEN</p>
+                <a href="admin-buku.html" class="sidebar-link"><i class="fa-solid fa-book"></i> <span>Buku / Katalog</span></a>
+                <a href="admin-blog.html" class="sidebar-link"><i class="fa-solid fa-newspaper"></i> <span>Blog</span></a>
+                <a href="admin-mitra.html" class="sidebar-link"><i class="fa-solid fa-handshake"></i> <span>Mitra &amp; Komunitas</span></a>
+
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">LAINNYA</p>
+                <a href="../index.html" target="_blank" class="sidebar-link"><i class="fa-solid fa-external-link-alt"></i> <span>Lihat Website</span></a>
+            </nav>
+
+            <div class="p-4 border-t border-slate-100">
+                <div class="bg-slate-50 rounded-2xl p-3">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">A</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-bold text-slate-800 truncate" id="userEmail">admin@...</p>
+                            <p class="text-[10px] text-slate-500">Administrator</p>
+                        </div>
+                    </div>
+                    <button id="logoutBtn" class="w-full btn btn-outline text-xs justify-center">
+                        <i class="fa-solid fa-right-from-bracket text-[10px]"></i> <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 min-w-0">
+            <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-lg border-b border-slate-200">
+                <div class="flex items-center justify-between px-4 md:px-6 h-16">
+                    <div class="flex items-center gap-3">
+                        <button id="sidebarToggle" class="lg:hidden w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600"><i class="fa-solid fa-bars"></i></button>
+                        <div>
+                            <h1 class="font-display text-lg md:text-xl font-black text-slate-800">Konfirmasi Pembayaran</h1>
+                            <p class="text-[11px] text-slate-500 hidden md:block">Verifikasi DP/Full & Aktifkan Dashboard Penulis</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-4 md:p-6 max-w-7xl mx-auto">
+                
+                <!-- MODAL GENERATE PASSWORD -->
+                <div id="modalPassword" class="modal-backdrop hidden">
+                    <div class="modal-content text-center">
+                        <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+                            <h3 class="font-display text-lg font-black text-slate-800">Akses Dashboard Penulis</h3>
+                            <button onclick="closePasswordModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        
+                        <div class="p-6">
+                            <div class="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="fa-solid fa-check"></i></div>
+                            <h4 class="font-bold text-slate-800 text-lg mb-2">Pembayaran Dikonfirmasi!</h4>
+                            <p class="text-sm text-slate-600 mb-6">Akun penulis berhasil dibuat/diaktifkan. Berikan detail login ini kepada penulis.</p>
+                            
+                            <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 text-left space-y-3 mb-4">
+                                <div>
+                                    <p class="text-[10px] font-bold text-slate-500 uppercase">Email</p>
+                                    <p class="font-mono font-bold text-slate-800 text-sm" id="passEmail">-</p>
+                                </div>
+                                <div class="pt-3 border-t border-slate-200">
+                                    <p class="text-[10px] font-bold text-slate-500 uppercase">Password Sementara</p>
+                                    <div class="flex items-center justify-between">
+                                        <p class="font-mono font-bold text-sky-600 text-lg tracking-wider" id="passPassword">-</p>
+                                        <button onclick="copyPassword()" class="text-slate-400 hover:text-sky-600 transition" title="Copy Password"><i class="fa-solid fa-copy"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <a href="#" id="btnWaSend" target="_blank" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2 transition">
+                                <i class="fa-brands fa-whatsapp"></i> Kirim via WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FILTER & SEARCH -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 mb-6 flex flex-col sm:flex-row gap-4">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="text" id="searchInput" class="form-input pl-10" placeholder="Cari Order ID, Nama, atau Email..." />
+                    </div>
+                    <select id="filterStatus" class="form-input sm:w-48">
+                        <option value="all">Semua Status</option>
+                        <option value="belum_bayar">Belum Bayar</option>
+                        <option value="dp">DP (Belum Lunas)</option>
+                        <option value="lunas">Lunas</option>
+                    </select>
+                </div>
+
+                <!-- TABEL -->
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wider border-b border-slate-200">
+                                    <th class="p-4 font-bold">Order ID</th>
+                                    <th class="p-4 font-bold">Pemesan</th>
+                                    <th class="p-4 font-bold">Total Tagihan</th>
+                                    <th class="p-4 font-bold">Status Bayar</th>
+                                    <th class="p-4 font-bold text-right">Aksi Konfirmasi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orderTableBody" class="divide-y divide-slate-100">
+                                <tr><td colspan="5" class="p-8 text-center text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><br>Memuat data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL KONFIRMASI -->
+    <div id="modalConfirm" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="font-display text-lg font-black text-slate-800" id="modalTitle">Konfirmasi Pembayaran</h3>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-5" id="modalBody">
+                <!-- Diisi via JS -->
+            </div>
+            
+            <div class="p-5 border-t border-slate-100 bg-slate-50 rounded-b-3xl flex gap-3 justify-end">
+                <button onclick="closeModal()" class="btn btn-outline">Batal</button>
+                <button id="btnSubmitModal" class="btn btn-primary">Konfirmasi</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/supabase-client.js"></script>
+
+    <script>
+        let ordersData = [];
+        let filteredData = [];
+        let currentAction = null;
+        let selectedOrderId = null;
+        let currentUser = null;
+        let tempPasswordData = null; 
+
+        // --- AUTH CHECK ---
+        async function checkAuth() {
+            const user = await getCurrentUser();
+            if (!user) { window.location.href = 'admin-login.html'; return false; }
+            currentUser = user;
+            document.getElementById('userEmail').textContent = user.email;
+            return true;
+        }
+
+        // --- LOAD ORDERS ---
+        async function loadOrders() {
+            const tbody = document.getElementById('orderTableBody');
+            tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><br>Memuat data...</td></tr>`;
+
+            const { data, error } = await supabaseClient
+                .from('orders')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error(error);
+                tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-red-500">Gagal memuat data.</td></tr>`;
+                return;
+            }
+
+            ordersData = data;
+            applyFilter();
+        }
+
+        // --- FILTER ---
+        function applyFilter() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            const status = document.getElementById('filterStatus').value;
+
+            filteredData = ordersData.filter(o => {
+                const matchSearch = o.order_code.toLowerCase().includes(q) || 
+                                    o.nama_pemesan.toLowerCase().includes(q) || 
+                                    o.email_pemesan.toLowerCase().includes(q);
+                
+                let matchStatus = true;
+                if (status !== 'all') matchStatus = o.status_bayar === status;
+
+                return matchSearch && matchStatus;
+            });
+
+            renderTable();
+        }
+
+        // --- RENDER TABEL ---
+        function renderTable() {
+            const tbody = document.getElementById('orderTableBody');
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400">Tidak ada orderan yang cocok.</td></tr>`;
+                return;
+            }
+
+            let html = '';
+            filteredData.forEach(o => {
+                let badge = `<span class="badge bg-slate-100 text-slate-500">Belum Bayar</span>`;
+                if (o.status_bayar === 'dp') badge = `<span class="badge bg-amber-100 text-amber-700">DP (Sisa ${rp(o.sisa_bayar)})</span>`;
+                if (o.status_bayar === 'lunas') badge = `<span class="badge bg-green-100 text-green-700"><i class="fa-solid fa-check-circle"></i> Lunas</span>`;
+
+                let btnAksi = '';
+                
+                // TOMBOL 1: Generate Akses (Selalu muncul di semua status)
+                const btnAkses = `<button onclick="generateAccess('${o.id}')" class="btn bg-sky-500 text-white hover:bg-sky-600 ml-2" title="Buat Akun Penulis"><i class="fa-solid fa-key text-[10px]"></i> Akses</button>`;
+
+                if (o.status_bayar === 'belum_bayar') {
+                    btnAksi = `
+                        <div class="flex justify-end gap-2">
+                            <button onclick="openModal('${o.id}', 'dp', ${o.total})" class="btn bg-amber-500 text-white hover:bg-amber-600">DP 60%</button>
+                            <button onclick="openModal('${o.id}', 'lunas')" class="btn bg-green-500 text-white hover:bg-green-600">Lunas</button>
+                            ${btnAkses}
+                        </div>
+                    `;
+                } else if (o.status_bayar === 'dp') {
+                    btnAksi = `
+                        <div class="flex justify-end gap-2">
+                            <button onclick="openModal('${o.id}', 'lunas')" class="btn bg-green-500 text-white hover:bg-green-600">Pelunasan</button>
+                            ${btnAkses}
+                        </div>
+                    `;
+                } else {
+                    btnAksi = `
+                        <div class="flex justify-end gap-2 items-center">
+                            <span class="text-xs font-bold text-slate-400 italic"><i class="fa-solid fa-check"></i> Selesai</span>
+                            ${btnAkses}
+                        </div>
+                    `;
+                }
+
+                html += `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-4">
+                            <div class="text-sm font-black text-slate-800">${o.order_code}</div>
+                            <div class="text-[10px] text-slate-500">${new Date(o.created_at).toLocaleDateString('id-ID')}</div>
+                        </td>
+                        <td class="p-4">
+                            <div class="text-sm font-bold text-slate-700">${o.nama_pemesan}</div>
+                            <div class="text-xs text-slate-500">${o.email_pemesan}</div>
+                        </td>
+                        <td class="p-4 text-sm font-bold text-slate-800">${rp(o.total)}</td>
+                        <td class="p-4">${badge}</td>
+                        <td class="p-4 text-right">${btnAksi}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        // --- MODAL KONFIRMASI PEMBAYARAN ---
+        window.openModal = function(orderId, action, total = 0) {
+            selectedOrderId = orderId;
+            currentAction = action;
+            
+            const modal = document.getElementById('modalConfirm');
+            const title = document.getElementById('modalTitle');
+            const body = document.getElementById('modalBody');
+            const btn = document.getElementById('btnSubmitModal');
+
+            modal.classList.remove('hidden');
+
+            if (action === 'dp') {
+                title.textContent = 'Konfirmasi DP (60%)';
+                const nominalDp = Math.round(total * 0.6);
+                body.innerHTML = `
+                    <p class="text-sm text-slate-600 mb-4">Pastikan Anda sudah menerima pembayaran DP dari penulis. Sistem akan mengaktifkan akses dashboard mereka.</p>
+                    <label class="form-label">Nominal DP Diterima (Rp)</label>
+                    <input type="number" id="inputNominal" class="form-input text-lg font-bold text-sky-700" value="${nominalDp}">
+                    <div class="mt-3 p-3 bg-sky-50 rounded-xl border border-sky-100">
+                        <p class="text-xs text-slate-600">Total Tagihan: <b>${rp(total)}</b></p>
+                        <p class="text-xs text-slate-600">Sisa yang harus dilunasi: <b id="previewSisa">${rp(total - nominalDp)}</b></p>
+                    </div>
+                `;
+                
+                setTimeout(() => {
+                    const input = document.getElementById('inputNominal');
+                    if(input) {
+                        input.addEventListener('input', (e) => {
+                            const val = parseFloat(e.target.value) || 0;
+                            document.getElementById('previewSisa').textContent = rp(total - val);
+                        });
+                    }
+                }, 100);
+
+                btn.className = 'btn bg-amber-500 text-white hover:bg-amber-600';
+                btn.textContent = 'Konfirmasi DP & Aktifkan';
+            } else {
+                title.textContent = 'Konfirmasi Lunas';
+                body.innerHTML = `
+                    <div class="text-center py-4">
+                        <div class="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="fa-solid fa-check-double"></i></div>
+                        <p class="text-sm text-slate-600 mb-2">Pastikan Anda sudah menerima <b>pelunasan/pembayaran penuh</b>.</p>
+                        <p class="text-xs text-slate-500">Dengan mengklik tombol di bawah, status order akan menjadi LUNAS dan akses dashboard penulis aktif sepenuhnya.</p>
+                    </div>
+                `;
+                btn.className = 'btn bg-green-500 text-white hover:bg-green-600';
+                btn.textContent = 'Ya, Konfirmasi Lunas';
+            }
+        }
+
+        // --- FUNGSI TUTUP MODAL KONFIRMASI ---
+        window.closeModal = function() {
+            document.getElementById('modalConfirm').classList.add('hidden');
+            selectedOrderId = null;
+            currentAction = null;
+        };
+
+        // --- FUNGSI KHUSUS GENERATE AKSES (TANPA UBAH PEMBAYARAN) ---
+        window.generateAccess = async function(orderId) {
+            const order = ordersData.find(o => String(o.id) === String(orderId));
+            if (!order) return alert('Order tidak ditemukan.');
+
+            const konfirmasi = confirm(`Buatkan/generate ulang akses login untuk penulis:\n\nNama: ${order.nama_pemesan}\nEmail: ${order.email_pemesan}\n\nLanjutkan?`);
+            if (!konfirmasi) return;
+
+            const btn = event.currentTarget;
+            const originalHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+            const accRes = await adminGenerateAuthorAccess(orderId, currentUser.email, order.nama_pemesan);
+
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+
+            if (accRes && accRes.ok) {
+                tempPasswordData = accRes;
+                document.getElementById('passEmail').textContent = accRes.email;
+                document.getElementById('passPassword').textContent = accRes.password;
+                
+                const waNumber = order.wa_pemesan ? order.wa_pemesan.replace(/\D/g, '').replace(/^0/, '62') : '';
+                const waMessage = `Halo ${accRes.nama}, berikut adalah akses Dashboard Penulis Anda:\n\n🔗 Link Login: https://karyakata.id/author/author-login.html\n📧 Email: ${accRes.email}\n🔑 Password: ${accRes.password}\n\nSilakan login dan segera ganti password Anda di menu Profil.`;
+                document.getElementById('btnWaSend').href = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+                
+                document.getElementById('modalPassword').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                
+                loadOrders(); 
+            } else {
+                alert('Gagal membuat akun: ' + (accRes ? accRes.error : 'Error tidak diketahui'));
+            }
+        };
+
+        // --- SUBMIT MODAL (KONFIRMASI PEMBAYARAN) ---
+        document.getElementById('btnSubmitModal').addEventListener('click', async () => {
+            if (!selectedOrderId) return;
+
+            const btn = document.getElementById('btnSubmitModal');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+
+            const order = ordersData.find(o => o.id === selectedOrderId);
+
+            let res;
+            if (currentAction === 'dp') {
+                const nominal = parseFloat(document.getElementById('inputNominal').value);
+                res = await adminKonfirmasiDP(selectedOrderId, nominal, null, currentUser.email, 'DP via Admin Panel');
+            } else {
+                res = await adminKonfirmasiLunas(selectedOrderId, null, currentUser.email, 'Lunas via Admin Panel');
+            }
+
+            if (res.success || res.ok) {
+                const accRes = await adminGenerateAuthorAccess(selectedOrderId, currentUser.email, order.nama_pemesan);
+                
+                if (accRes && accRes.ok) {
+                    closeModal(); // Tutup modal pembayaran
+                    
+                    tempPasswordData = accRes;
+                    document.getElementById('passEmail').textContent = accRes.email;
+                    document.getElementById('passPassword').textContent = accRes.password;
+                    
+                    const waNumber = order.wa_pemesan ? order.wa_pemesan.replace(/\D/g, '').replace(/^0/, '62') : '';
+                    const waMessage = `Halo ${accRes.nama}, pembayaran order Anda sudah kami konfirmasi!\n\nBerikut adalah akses Dashboard Penulis Anda:\n\n🔗 Link Login: https://karyakata.id/author/author-login.html\n📧 Email: ${accRes.email}\n🔑 Password: ${accRes.password}\n\nSilakan login dan segera ganti password Anda di menu Profil.`;
+                    document.getElementById('btnWaSend').href = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+                    
+                    document.getElementById('modalPassword').classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                    
+                    loadOrders(); 
+                } else {
+                    alert('Pembayaran sukses, tapi gagal membuat akun: ' + (accRes ? accRes.error : 'Error tidak diketahui'));
+                }
+            } else {
+                alert('Gagal: ' + (res.error || 'Terjadi kesalahan'));
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        });
+
+        // --- FUNGSI PENDUKUNG MODAL PASSWORD ---
+        window.closePasswordModal = function() {
+            document.getElementById('modalPassword').classList.add('hidden');
+            document.body.style.overflow = '';
+            tempPasswordData = null;
+        };
+
+        window.copyPassword = function() {
+            if (!tempPasswordData) return;
+            navigator.clipboard.writeText(tempPasswordData.password).then(() => {
+                alert('Password berhasil di-copy!');
+            });
+        };
+
+        // --- EVENT LISTENERS ---
+        document.getElementById('searchInput').addEventListener('input', applyFilter);
+        document.getElementById('filterStatus').addEventListener('change', applyFilter);
+        
+        document.getElementById('sidebarToggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        });
+        document.getElementById('sidebarOverlay').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        });
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            if(confirm('Logout dari admin panel?')) {
+                await adminSignOut();
+                window.location.href = 'admin-login.html';
+            }
+        });
+
+        // --- INIT ---
+        (async () => {
+            if (await checkAuth()) {
+                loadOrders();
+            }
+        })();
+    </script>
+</body>
+</html>

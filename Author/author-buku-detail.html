@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detail Buku — Karyakata.id</title>
+    
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: {
+                sky: { 50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD', 400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6', 800: '#064485', 900: '#053364' },
+                gold: { 100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A', 500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A' }
+            }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['"Plus Jakarta Sans"', 'sans-serif'] } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #64748B; transition: all .2s ease; }
+        .sidebar-link:hover { background: #EFF6FF; color: #0B7BE8; }
+        .sidebar-link.active { background: #0B7BE8; color: white; box-shadow: 0 4px 12px rgba(11,123,232,0.3); }
+        
+        /* Timeline Styles */
+        .timeline-step { position: relative; padding-left: 40px; padding-bottom: 24px; }
+        .timeline-step::before {
+            content: ''; position: absolute; left: 11px; top: 24px; bottom: 0;
+            width: 2px; background: #E2E8F0;
+        }
+        .timeline-step:last-child::before { display: none; }
+        .timeline-step.done::before { background: #0B7BE8; }
+        
+        .timeline-icon {
+            position: absolute; left: 0; top: 0;
+            width: 24px; height: 24px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; background: #F1F5F9; color: #94A3B8;
+            border: 2px solid white; box-shadow: 0 0 0 2px #F1F5F9; z-index: 10;
+        }
+        .timeline-step.done .timeline-icon { background: #0B7BE8; color: white; box-shadow: 0 0 0 2px #DBEAFE; }
+        .timeline-step.current .timeline-icon { background: #F5A623; color: white; box-shadow: 0 0 0 2px #FEF3E2; animation: pulse 2s infinite; }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(245, 166, 35, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(245, 166, 35, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(245, 166, 35, 0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col md:flex-row">
+
+    <!-- MOBILE HEADER -->
+    <div class="md:hidden bg-white border-b border-slate-200 p-4 flex items-center justify-between sticky top-0 z-40">
+        <a href="../index.html" class="flex items-center gap-2">
+            <img src="../assets/img/logo.png" alt="Karyakata" class="h-8 w-auto" />
+            <span class="font-display text-lg font-black"><span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span></span>
+        </a>
+        <button id="btnMenuMobile" class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600"><i class="fa-solid fa-bars"></i></button>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="hidden md:flex w-full md:w-64 bg-white border-r border-slate-200 flex-col fixed md:sticky top-0 h-screen z-50 md:z-0 transition-transform">
+        <div class="p-6 border-b border-slate-100 hidden md:block">
+            <a href="../index.html" class="flex items-center gap-2">
+                <img src="../assets/img/logo.png" alt="Karyakata" class="h-9 w-auto" />
+                <span class="font-display text-xl font-black"><span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span></span>
+            </a>
+        </div>
+        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+            <p class="text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-3 px-4">Menu Utama</p>
+            <a href="author-dashboard.html" class="sidebar-link"><i class="fa-solid fa-house w-5"></i> Ringkasan</a>
+            <a href="author-buku.html" class="sidebar-link active"><i class="fa-solid fa-book w-5"></i> Buku Saya</a>
+            <a href="author-penjualan.html" class="sidebar-link"><i class="fa-solid fa-chart-line w-5"></i> Penjualan</a>
+            <a href="author-royalti.html" class="sidebar-link"><i class="fa-solid fa-coins w-5"></i> Royalti</a>
+            <p class="text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-3 px-4 mt-6">Akun</p>
+            <a href="author-profil.html" class="sidebar-link"><i class="fa-solid fa-user w-5"></i> Profil Saya</a>
+        </nav>
+        <div class="p-4 border-t border-slate-100">
+            <div class="flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-xl mb-3">
+                <div class="w-9 h-9 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center font-bold text-sm" id="sidebarAvatar">P</div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-bold text-slate-800 truncate" id="sidebarNama">Penulis</p>
+                    <p class="text-[10px] text-slate-500 truncate" id="sidebarEmail">-</p>
+                </div>
+            </div>
+            <button onclick="doLogout()" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition">
+                <i class="fa-solid fa-right-from-bracket"></i> Keluar
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 p-4 md:p-8 lg:p-10 max-w-6xl mx-auto w-full">
+        
+        <!-- Tombol Kembali -->
+        <a href="author-buku.html" class="inline-flex items-center gap-2 text-slate-500 hover:text-sky-600 font-bold text-sm mb-6 transition">
+            <i class="fa-solid fa-arrow-left"></i> Kembali
+        </a>
+
+        <!-- LOADING -->
+        <div id="loadingState" class="text-center py-20 text-slate-400">
+            <i class="fa-solid fa-spinner fa-spin text-3xl mb-4 text-sky-500"></i>
+            <p>Memuat detail buku...</p>
+        </div>
+
+        <!-- ERROR (Jika ID tidak ditemukan) -->
+        <div id="errorState" class="hidden text-center py-20">
+            <div class="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl"><i class="fa-solid fa-circle-exclamation"></i></div>
+            <h2 class="font-display text-2xl font-black text-slate-800 mb-2">Buku Tidak Ditemukan</h2>
+            <p class="text-slate-500">Data pesanan atau buku ini tidak tersedia di akun Anda.</p>
+        </div>
+
+        <!-- KONTEN UTAMA -->
+        <div id="mainContent" class="hidden">
+            <div class="grid md:grid-cols-3 gap-8">
+                
+                <!-- KOLOM KIRI: COVER & INFO SINGKAT -->
+                <div class="md:col-span-1 space-y-6">
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                        <div class="aspect-[2/3] bg-slate-100 relative">
+                            <img id="bookCover" src="" class="w-full h-full object-cover hidden" onerror="this.style.display='none'; document.getElementById('bookCoverFallback').style.display='flex';">
+                            <div id="bookCoverFallback" class="w-full h-full flex flex-col items-center justify-center text-slate-300">
+                                <i class="fa-solid fa-book text-6xl mb-4"></i>
+                                <p class="text-sm font-bold px-4 text-center" id="coverTitleFallback"></p>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div id="statusBadge" class="mb-4"></div>
+                            <h1 class="font-display text-2xl font-black text-slate-800 leading-tight mb-2" id="bookTitle"></h1>
+                            <p class="text-slate-500 text-sm mb-4" id="bookGenre"></p>
+                            
+                            <div class="pt-4 border-t border-slate-100 space-y-3 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Order ID</span>
+                                    <span class="font-bold text-slate-800" id="orderCode">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Tanggal Order</span>
+                                    <span class="font-bold text-slate-800" id="orderDate">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Jumlah Halaman</span>
+                                    <span class="font-bold text-slate-800" id="bookPages">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KOLOM KANAN: TIMELINE & KETERANGAN -->
+                <div class="md:col-span-2 space-y-6">
+                    
+                    <!-- STATUS PEMBAYARAN -->
+                    <div id="paymentCard" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                        <h3 class="font-display font-black text-lg text-slate-800 mb-4">Status Pembayaran</h3>
+                        <div id="paymentStatusContent"></div>
+                    </div>
+
+                    <!-- TIMELINE PENERBITAN -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm">
+                        <h3 class="font-display font-black text-lg text-slate-800 mb-6">Progres Penerbitan</h3>
+                        
+                        <div id="timelineContainer" class="space-y-0">
+                            <!-- Timeline items akan di-generate via JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- PASTIKAN PATH MENGGUNAKAN ../assets/ -->
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/supabase-client.js"></script>
+    <script src="../assets/js/author-guard.js"></script>
+
+    <script>
+        const btnMenu = document.getElementById('btnMenuMobile');
+        const sidebar = document.getElementById('sidebar');
+        if(btnMenu) btnMenu.addEventListener('click', () => sidebar.classList.toggle('hidden'));
+
+        async function doLogout() {
+            if(confirm('Yakin ingin keluar?')) {
+                await authorLogout();
+                window.location.replace('author-login.html');
+            }
+        }
+
+        // Data tahapan
+        const TAHAPAN = [
+            { key: 'verifikasi_naskah', label: 'Verifikasi Naskah', desc: 'Admin sedang memeriksa kelengkapan naskah Anda.', icon: 'fa-file-signature' },
+            { key: 'penyuntingan', label: 'Penyuntingan', desc: 'Naskah sedang diedit oleh tim editor profesional.', icon: 'fa-pen-nib' },
+            { key: 'layout', label: 'Layout', desc: 'Proses penataan isi buku agar rapi dan nyaman dibaca.', icon: 'fa-table-columns' },
+            { key: 'desain_cover', label: 'Desain Cover', desc: 'Pembuatan desain sampul buku sesuai brief Anda.', icon: 'fa-palette' },
+            { key: 'isbn_qrcbn', label: 'Pengajuan ISBN/QRCBN', desc: 'Proses pengajuan nomor identitas buku ke Perpusnas.', icon: 'fa-barcode' },
+            { key: 'cetak', label: 'Proses Cetak', desc: 'Buku sedang dicetak di percetakan rekanan kami.', icon: 'fa-print' },
+            { key: 'pengiriman', label: 'Pengiriman', desc: 'Buku fisik sedang dikirim ke alamat Anda.', icon: 'fa-truck-fast' },
+            { key: 'terbit', label: 'Sudah Terbit', desc: 'Buku sudah selesai dan siap dijual di katalog.', icon: 'fa-check-circle' }
+        ];
+
+        async function loadDetail() {
+            const checkGuard = setInterval(async () => {
+                if (window.__author) {
+                    clearInterval(checkGuard);
+                    
+                    document.getElementById('sidebarNama').textContent = window.__author.nama;
+                    document.getElementById('sidebarEmail').textContent = window.__author.email;
+                    document.getElementById('sidebarAvatar').textContent = window.__author.nama.charAt(0).toUpperCase();
+
+                    // 1. Ambil ID dari URL
+                    const params = new URLSearchParams(window.location.search);
+                    const id = params.get('id');
+
+                    if (!id) { showError(); return; }
+
+                    // 2. Load data Orders & Books
+                    const resOrders = await authorGetOrders();
+                    const resBooks = await authorGetBooks();
+
+                    if (!resOrders.success) { showError(); return; }
+
+                    const order = resOrders.orders.find(o => String(o.id) === String(id));
+                    
+                    if (!order) { showError(); return; }
+
+                    let book = null;
+                    if (resBooks.success) {
+                        book = resBooks.books.find(b => String(b.order_id) === String(id));
+                    }
+
+                    renderDetail(order, book);
+                }
+            }, 100);
+        }
+
+        function showError() {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('errorState').classList.remove('hidden');
+        }
+
+        function renderDetail(order, book) {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+
+            // --- Data Dasar ---
+            document.getElementById('bookTitle').textContent = order.judul || 'Tanpa Judul';
+            document.getElementById('coverTitleFallback').textContent = order.judul || 'Tanpa Judul';
+            
+            const genre = order.sub_genre || order.genre || 'Buku';
+            document.getElementById('bookGenre').textContent = genre;
+            document.getElementById('orderCode').textContent = order.order_code;
+            document.getElementById('orderDate').textContent = new Date(order.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+            document.getElementById('bookPages').textContent = (order.halaman || 0) + ' Halaman';
+
+            // --- Cover ---
+            const coverUrl = book ? book.cover_url : order.cover_url;
+            if (coverUrl) {
+                const finalUrl = coverUrl.startsWith('http') ? coverUrl : supabaseClient.storage.from('covers').getPublicUrl(coverUrl).data.publicUrl;
+                document.getElementById('bookCover').src = finalUrl;
+                document.getElementById('bookCover').classList.remove('hidden');
+                document.getElementById('bookCoverFallback').style.display = 'none';
+            }
+
+            // --- Status Pembayaran ---
+            const payCard = document.getElementById('paymentStatusContent');
+            if (order.status_bayar === 'lunas') {
+                payCard.innerHTML = `
+                    <div class="flex items-center gap-3 bg-green-50 border border-green-200 p-4 rounded-xl text-green-700">
+                        <i class="fa-solid fa-check-circle text-2xl"></i>
+                        <div>
+                            <p class="font-bold">Lunas</p>
+                            <p class="text-xs">Pembayaran sudah diselesaikan. Terima kasih!</p>
+                        </div>
+                    </div>
+                `;
+            } else if (order.status_bayar === 'dp') {
+                payCard.innerHTML = `
+                    <div class="flex items-center gap-3 bg-amber-50 border border-amber-200 p-4 rounded-xl text-amber-700">
+                        <i class="fa-solid fa-clock text-2xl"></i>
+                        <div class="flex-1">
+                            <p class="font-bold">Baru Bayar DP</p>
+                            <p class="text-xs mb-2">Sisa tagihan: <b>${rp(order.sisa_bayar)}</b></p>
+                            ${['cetak','pengiriman','terbit'].includes(order.tahap_penerbitan) ? `<button onclick="requestPelunasan('${order.id}')" class="bg-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg">Bayar Pelunasan</button>` : `<p class="text-[10px] italic">Pelunasan dibuka saat masuk tahap cetak.</p>`}
+                        </div>
+                    </div>
+                `;
+            } else {
+                payCard.innerHTML = `
+                    <div class="flex items-center gap-3 bg-slate-50 border border-slate-200 p-4 rounded-xl text-slate-600">
+                        <i class="fa-solid fa-circle-info text-2xl"></i>
+                        <div>
+                            <p class="font-bold">Belum Bayar</p>
+                            <p class="text-xs">Silakan hubungi admin via WhatsApp.</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // --- Render Timeline ---
+            const container = document.getElementById('timelineContainer');
+            let html = '';
+
+            const currentTahap = order.tahap_penerbitan || 'verifikasi_naskah';
+            const currentIndex = TAHAPAN.findIndex(t => t.key === currentTahap);
+
+            const badge = document.getElementById('statusBadge');
+            const tData = TAHAPAN[currentIndex] || TAHAPAN[0];
+            badge.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-100 text-sky-700 text-xs font-bold rounded-full"><i class="fa-solid ${tData.icon}"></i> ${tData.label}</span>`;
+
+            TAHAPAN.forEach((t, index) => {
+                let state = 'pending';
+                if (index < currentIndex) state = 'done';
+                if (index === currentIndex) state = 'current';
+                if (order.tahap_penerbitan === 'terbit' && t.key === 'terbit') state = 'done';
+
+                html += `
+                    <div class="timeline-step ${state}">
+                        <div class="timeline-icon">
+                            ${state === 'done' ? '<i class="fa-solid fa-check"></i>' : `<i class="fa-solid ${t.icon}"></i>`}
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm ${state === 'pending' ? 'text-slate-400' : 'text-slate-800'}">${t.label}</h4>
+                            <p class="text-xs text-slate-500 mt-0.5">${t.desc}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        async function requestPelunasan(orderId) {
+            if (!confirm('Anda akan diarahkan ke WhatsApp untuk proses pelunasan. Lanjutkan?')) return;
+
+            const res = await authorRequestPelunasan(orderId);
+
+            if (!res.success) {
+                alert(res.error);
+                return;
+            }
+
+            const msg = `Halo Admin Karyakata, saya ingin melakukan *PELUNASAN*.\n\n🆔 Kode Pelunasan: *${res.kode_pelunasan}*\n💰 Sisa Tagihan: *${rp(res.sisa_bayar)}*\n\nMohon info nomor rekening/QRIS untuk pelunasan. Terima kasih.`;
+            window.open(`https://wa.me/${res.wa_admin}?text=${encodeURIComponent(msg)}`, '_blank');
+            
+            setTimeout(() => window.location.reload(), 1500);
+        }
+
+        loadDetail();
+    </script>
+</body>
+</html>

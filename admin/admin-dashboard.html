@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin — Dashboard — Karyakata.id</title>
+    <meta name="robots" content="noindex, nofollow" />
+
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: {
+                sky: { 50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD', 400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6', 800: '#064485', 900: '#053364' },
+                gold: { 100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A', 500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A' }
+            }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['"Plus Jakarta Sans"', 'sans-serif'] } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #F8FAFC; }
+        .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #475569; transition: all .2s ease; text-decoration: none; }
+        .sidebar-link:hover { background: #EFF6FF; color: #0B7BE8; }
+        .sidebar-link.active { background: linear-gradient(135deg, #0B7BE8, #0967C7); color: white; box-shadow: 0 6px 16px rgba(11, 123, 232, 0.3); }
+        .sidebar-link i { width: 20px; text-align: center; font-size: 15px; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 16px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all .2s ease; border: none; text-decoration: none; white-space: nowrap; }
+        .btn-outline { background: white; color: #475569; border: 2px solid #E2E8F0; }
+        .btn-outline:hover { border-color: #0B7BE8; color: #0B7BE8; }
+        #sidebarOverlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 40; }
+        #sidebarOverlay.active { display: block; }
+
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        .skeleton { background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
+
+        .stat-card { background: white; border-radius: 20px; padding: 20px; border: 1px solid #E2E8F0; position: relative; overflow: hidden; transition: all .2s ease; }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px -10px rgba(11,123,232,0.15); }
+
+        .rank-badge { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 12px; flex-shrink: 0; }
+        .rank-1 { background: linear-gradient(135deg, #F5A623, #D98B0E); color: white; }
+        .rank-2 { background: linear-gradient(135deg, #94A3B8, #64748B); color: white; }
+        .rank-3 { background: linear-gradient(135deg, #CD7F32, #A86B0A); color: white; }
+        .rank-other { background: #F1F5F9; color: #64748B; }
+    </style>
+</head>
+<body>
+
+    <div id="sidebarOverlay"></div>
+
+    <div class="flex min-h-screen">
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50 -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
+            <div class="p-5 border-b border-slate-100">
+                <a href="admin-dashboard.html" class="flex items-center gap-3 group">
+                    <img src="../assets/img/logo.png" alt="Karyakata" class="h-10 w-auto" onerror="this.style.display='none'" />
+                    <span class="font-display text-lg font-black leading-none"><span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span></span>
+                </a>
+                <div class="mt-3 flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1 bg-gold-100 text-gold-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        <i class="fa-solid fa-shield-halved text-[8px]"></i> ADMIN PANEL
+                    </span>
+                </div>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-2">MENU UTAMA</p>
+                <a href="admin-dashboard.html" class="sidebar-link active"><i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span></a>
+                <a href="admin-order.html" class="sidebar-link"><i class="fa-solid fa-receipt"></i> <span>Order</span></a>
+                <a href="admin-konfirmasi.html" class="sidebar-link"><i class="fa-solid fa-money-check-dollar"></i> <span>Konfirmasi & Akses</span></a>
+                <a href="admin-penjualan.html" class="sidebar-link"><i class="fa-solid fa-chart-line"></i> <span>Input Penjualan</span></a>
+                <a href="admin-author.html" class="sidebar-link"><i class="fa-solid fa-users"></i> <span>Data Penulis</span></a>
+                <a href="admin-naskah.html" class="sidebar-link"><i class="fa-solid fa-file-lines"></i> <span>Naskah Masuk</span></a>
+                <a href="admin-pesan.html" class="sidebar-link"><i class="fa-solid fa-envelope"></i> <span>Pesan Kontak</span></a>
+                <a href="admin-subscriber.html" class="sidebar-link"><i class="fa-solid fa-envelope-open-text"></i> <span>Subscriber</span></a>
+
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">KONTEN</p>
+                <a href="admin-buku.html" class="sidebar-link"><i class="fa-solid fa-book"></i> <span>Buku / Katalog</span></a>
+                <a href="admin-blog.html" class="sidebar-link"><i class="fa-solid fa-newspaper"></i> <span>Blog</span></a>
+                <a href="admin-mitra.html" class="sidebar-link"><i class="fa-solid fa-handshake"></i> <span>Mitra &amp; Komunitas</span></a>
+
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">LAINNYA</p>
+                <a href="../index.html" target="_blank" class="sidebar-link"><i class="fa-solid fa-external-link-alt"></i> <span>Lihat Website</span></a>
+            </nav>
+
+            <div class="p-4 border-t border-slate-100">
+                <div class="bg-slate-50 rounded-2xl p-3">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">A</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-bold text-slate-800 truncate" id="userEmail">admin@...</p>
+                            <p class="text-[10px] text-slate-500">Administrator</p>
+                        </div>
+                    </div>
+                    <button id="logoutBtn" class="w-full btn btn-outline text-xs justify-center">
+                        <i class="fa-solid fa-right-from-bracket text-[10px]"></i> <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 min-w-0">
+            <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-lg border-b border-slate-200">
+                <div class="flex items-center justify-between px-4 md:px-6 h-16">
+                    <div class="flex items-center gap-3">
+                        <button id="sidebarToggle" class="lg:hidden w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600"><i class="fa-solid fa-bars"></i></button>
+                        <div>
+                            <h1 class="font-display text-lg md:text-xl font-black text-slate-800">Dashboard</h1>
+                            <p class="text-[11px] text-slate-500 hidden md:block">Ringkasan performa Karyakata</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button id="refreshBtn" class="btn btn-outline text-xs"><i class="fa-solid fa-rotate"></i> <span class="hidden sm:inline">Refresh</span></button>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">A</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-4 md:p-6 space-y-6">
+
+                <!-- ======================================== -->
+                <!-- PERLU PERHATIAN -->
+                <!-- ======================================== -->
+                <div id="attentionWrap" class="hidden">
+                    <h2 class="font-display text-sm font-black text-slate-700 tracking-wide mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-bell text-gold-500"></i> PERLU PERHATIAN
+                    </h2>
+                    <div id="attentionGrid" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
+                </div>
+
+                <!-- ======================================== -->
+                <!-- STAT CARDS UTAMA -->
+                <!-- ======================================== -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="stat-card">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-11 h-11 rounded-xl bg-sky-100 flex items-center justify-center text-sky-600 text-lg"><i class="fa-solid fa-receipt"></i></div>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">TOTAL ORDER</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statTotalOrder">—</p>
+                        <p class="text-[10px] text-slate-500 mt-1" id="statTotalOrderSub">—</p>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-11 h-11 rounded-xl bg-green-100 flex items-center justify-center text-green-600 text-lg"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">TOTAL REVENUE</p>
+                        <p class="font-display text-2xl font-black text-green-600" id="statRevenue">—</p>
+                        <p class="text-[10px] text-slate-500 mt-1">Dari order selesai</p>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-11 h-11 rounded-xl bg-gold-100 flex items-center justify-center text-gold-600 text-lg"><i class="fa-solid fa-book"></i></div>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">BUKU TERBIT</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statBuku">—</p>
+                        <p class="text-[10px] text-slate-500 mt-1" id="statBukuSub">—</p>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-11 h-11 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600 text-lg"><i class="fa-solid fa-users"></i></div>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 tracking-wide mb-1">PENULIS AKTIF</p>
+                        <p class="font-display text-2xl font-black text-slate-800" id="statPenulis">—</p>
+                        <p class="text-[10px] text-slate-500 mt-1" id="statPenulisSub">—</p>
+                    </div>
+                </div>
+
+                <!-- ======================================== -->
+                <!-- GRAFIK -->
+                <!-- ======================================== -->
+                <div class="grid lg:grid-cols-3 gap-4">
+                    <!-- Line chart -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-5">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="font-display font-black text-slate-800">Tren Penjualan</h3>
+                                <p class="text-[11px] text-slate-500">6 bulan terakhir (dari data `sales`)</p>
+                            </div>
+                            <span class="text-xs font-bold text-sky-600 bg-sky-50 px-3 py-1 rounded-full" id="chartTotalLabel">—</span>
+                        </div>
+                        <div class="h-64"><canvas id="salesChart"></canvas></div>
+                    </div>
+
+                    <!-- Doughnut order status -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5">
+                        <div class="mb-4">
+                            <h3 class="font-display font-black text-slate-800">Status Order</h3>
+                            <p class="text-[11px] text-slate-500">Distribusi seluruh order</p>
+                        </div>
+                        <div class="h-48 flex items-center justify-center"><canvas id="statusChart"></canvas></div>
+                        <div id="statusLegend" class="mt-4 space-y-2"></div>
+                    </div>
+                </div>
+
+                <!-- ======================================== -->
+                <!-- RINGKASAN KEUANGAN -->
+                <!-- ======================================== -->
+                <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white">
+                    <div class="flex items-center gap-2 mb-5">
+                        <i class="fa-solid fa-wallet text-gold-400"></i>
+                        <h3 class="font-display font-black text-lg">Ringkasan Keuangan</h3>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-white/5 backdrop-blur rounded-xl p-4 border border-white/10">
+                            <p class="text-[10px] font-bold text-slate-400 tracking-wide mb-1">TOTAL OMZET PENJUALAN</p>
+                            <p class="font-display text-2xl font-black text-green-400" id="finOmzet">—</p>
+                            <p class="text-[10px] text-slate-400 mt-1">Dari semua buku terjual</p>
+                        </div>
+                        <div class="bg-white/5 backdrop-blur rounded-xl p-4 border border-white/10">
+                            <p class="text-[10px] font-bold text-slate-400 tracking-wide mb-1">ROYALTI PENULIS</p>
+                            <p class="font-display text-2xl font-black text-gold-400" id="finRoyalti">—</p>
+                            <p class="text-[10px] text-slate-400 mt-1">Estimasi 15% dari omzet</p>
+                        </div>
+                        <div class="bg-white/5 backdrop-blur rounded-xl p-4 border border-white/10">
+                            <p class="text-[10px] font-bold text-slate-400 tracking-wide mb-1">PENDAPATAN BERSIH</p>
+                            <p class="font-display text-2xl font-black text-sky-400" id="finBersih">—</p>
+                            <p class="text-[10px] text-slate-400 mt-1">Omzet − royalti</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ======================================== -->
+                <!-- TOP BUKU & ORDER TERBARU -->
+                <!-- ======================================== -->
+                <div class="grid lg:grid-cols-2 gap-4">
+
+                    <!-- Top Buku -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="font-display font-black text-slate-800">Top 5 Buku Terlaris</h3>
+                                <p class="text-[11px] text-slate-500">Berdasarkan qty terjual</p>
+                            </div>
+                            <i class="fa-solid fa-trophy text-gold-500 text-lg"></i>
+                        </div>
+                        <div id="topBooksList" class="space-y-2">
+                            <div class="skeleton h-12 w-full"></div>
+                            <div class="skeleton h-12 w-full"></div>
+                            <div class="skeleton h-12 w-full"></div>
+                        </div>
+                    </div>
+
+                    <!-- Order Terbaru -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="font-display font-black text-slate-800">Order Terbaru</h3>
+                                <p class="text-[11px] text-slate-500">5 order terakhir masuk</p>
+                            </div>
+                            <a href="admin-order.html" class="text-xs font-bold text-sky-600 hover:underline">Lihat Semua</a>
+                        </div>
+                        <div id="recentOrdersList" class="space-y-2">
+                            <div class="skeleton h-12 w-full"></div>
+                            <div class="skeleton h-12 w-full"></div>
+                            <div class="skeleton h-12 w-full"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <div id="toastWrap" class="fixed top-4 right-4 z-[200] space-y-2"></div>
+
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/supabase-client.js"></script>
+
+    <script>
+    // ========================================
+    // ADMIN DASHBOARD — MAIN SCRIPT
+    // ========================================
+
+    let currentUser = null;
+    let salesChart = null;
+    let statusChart = null;
+
+    // Data cache
+    let allOrders = [];
+    let allBooks = [];
+    let allSales = [];
+    let allAuthors = [];
+    let allSubmissions = [];
+    let allContacts = [];
+    let allSubscribers = [];
+
+    // DOM refs
+    const userEmail = document.getElementById('userEmail');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const toastWrap = document.getElementById('toastWrap');
+
+    // ========================================
+    // TOAST
+    // ========================================
+    function showToast(message, type = 'info') {
+        const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-sky-500', warning: 'bg-gold-500' };
+        const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info', warning: 'fa-triangle-exclamation' };
+        const toast = document.createElement('div');
+        toast.className = `${colors[type]} text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-bold max-w-sm`;
+        toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span class="flex-1">${message}</span>`;
+        toastWrap.appendChild(toast);
+        setTimeout(() => { toast.style.transition = 'all 0.3s ease'; toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
+    }
+
+    // ========================================
+    // HELPERS
+    // ========================================
+    function rp(n) { return 'Rp ' + Math.round(n || 0).toLocaleString('id-ID'); }
+
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function formatDate(d) {
+        if (!d) return '—';
+        return new Date(d).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function getStatusBadge(status) {
+        const map = {
+            pending:  { bg: 'bg-yellow-100', text: 'text-yellow-700', label: 'Pending' },
+            dibayar:  { bg: 'bg-sky-100',    text: 'text-sky-700',    label: 'Dibayar' },
+            diproses: { bg: 'bg-indigo-100', text: 'text-indigo-700', label: 'Diproses' },
+            selesai:  { bg: 'bg-green-100',  text: 'text-green-700',  label: 'Selesai' },
+            batal:    { bg: 'bg-red-100',    text: 'text-red-700',    label: 'Batal' },
+        };
+        const s = map[status] || map.pending;
+        return `<span class="inline-flex items-center gap-1 ${s.bg} ${s.text} text-[10px] font-bold px-2 py-0.5 rounded-full">${s.label}</span>`;
+    }
+
+    // ========================================
+    // AUTH GUARD
+    // ========================================
+    async function checkAuth() {
+        try {
+            const user = await getCurrentUser();
+            if (!user) { window.location.href = 'admin-login.html'; return false; }
+            currentUser = user;
+            userEmail.textContent = user.email;
+            return true;
+        } catch (err) {
+            window.location.href = 'admin-login.html';
+            return false;
+        }
+    }
+
+    // ========================================
+    // LOAD ALL DATA (paralel)
+    // ========================================
+    async function loadAllData() {
+        try {
+            const [ordersRes, booksRes, salesRes, authorsRes, subsRes, contactsRes, subscribersRes] = await Promise.all([
+                supabaseClient.from('orders').select('*').order('created_at', { ascending: false }),
+                supabaseClient.from('books').select('*'),
+                supabaseClient.from('sales').select('*').order('tanggal', { ascending: false }),
+                supabaseClient.from('authors').select('*'),
+                supabaseClient.from('submissions').select('*').order('created_at', { ascending: false }),
+                supabaseClient.from('contacts').select('*').order('created_at', { ascending: false }),
+                supabaseClient.from('subscribers').select('*').order('created_at', { ascending: false })
+            ]);
+
+            allOrders = ordersRes.data || [];
+            allBooks = booksRes.data || [];
+            allSales = salesRes.data || [];
+            allAuthors = authorsRes.data || [];
+            allSubmissions = subsRes.data || [];
+            allContacts = contactsRes.data || [];
+            allSubscribers = subscribersRes.data || [];
+
+            renderAll();
+
+        } catch (err) {
+            console.error('Load data error:', err);
+            showToast('Gagal memuat data: ' + err.message, 'error');
+        }
+    }
+
+    // ========================================
+    // RENDER SEMUA
+    // ========================================
+    function renderAll() {
+        renderStats();
+        renderAttention();
+        renderSalesChart();
+        renderStatusChart();
+        renderFinance();
+        renderTopBooks();
+        renderRecentOrders();
+    }
+
+    // ========================================
+    // STAT CARDS
+    // ========================================
+    function renderStats() {
+        // Total Order
+        const totalOrder = allOrders.length;
+        const orderBulanIni = allOrders.filter(o => {
+            const d = new Date(o.created_at);
+            const now = new Date();
+            return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+        }).length;
+        document.getElementById('statTotalOrder').textContent = totalOrder;
+        document.getElementById('statTotalOrderSub').innerHTML = `<span class="text-sky-600 font-bold">+${orderBulanIni}</span> bulan ini`;
+
+        // Revenue (order selesai)
+        const revenue = allOrders.filter(o => o.status === 'selesai').reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+        document.getElementById('statRevenue').textContent = rp(revenue);
+
+        // Buku terbit
+        const bukuPublished = allBooks.filter(b => b.is_published).length;
+        document.getElementById('statBuku').textContent = bukuPublished;
+        document.getElementById('statBukuSub').textContent = `dari ${allBooks.length} total buku`;
+
+        // Penulis aktif (authors)
+        const penulisCount = allAuthors.length;
+        const penulisDenganBuku = new Set(allBooks.filter(b => b.author_email).map(b => b.author_email)).size;
+        document.getElementById('statPenulis').textContent = penulisCount;
+        document.getElementById('statPenulisSub').textContent = `${penulisDenganBuku} punya buku terbit`;
+    }
+
+    // ========================================
+    // PERLU PERHATIAN (notification cards)
+    // ========================================
+    function renderAttention() {
+        const pendingOrder = allOrders.filter(o => o.status === 'pending').length;
+        const newSubmissions = allSubmissions.filter(s => (s.status || 'baru') === 'baru').length;
+        const newContacts = allContacts.filter(c => (c.status || 'baru') === 'baru').length;
+        const newSubscribers = allSubscribers.filter(s => {
+            const d = new Date(s.created_at);
+            return (Date.now() - d.getTime()) < 7 * 24 * 60 * 60 * 1000;
+        }).length;
+
+        const items = [];
+        if (pendingOrder > 0) items.push({ icon: 'fa-clock', color: 'yellow', label: 'Order Pending', value: pendingOrder, href: 'admin-order.html' });
+        if (newSubmissions > 0) items.push({ icon: 'fa-file-lines', color: 'sky', label: 'Naskah Baru', value: newSubmissions, href: 'admin-naskah.html' });
+        if (newContacts > 0) items.push({ icon: 'fa-envelope', color: 'gold', label: 'Pesan Baru', value: newContacts, href: 'admin-pesan.html' });
+        if (newSubscribers > 0) items.push({ icon: 'fa-users', color: 'purple', label: 'Subscriber Baru', value: newSubscribers, href: 'admin-subscriber.html' });
+
+        const wrap = document.getElementById('attentionWrap');
+        const grid = document.getElementById('attentionGrid');
+
+        if (items.length === 0) {
+            wrap.classList.add('hidden');
+            return;
+        }
+
+        const colorMap = {
+            yellow: 'bg-yellow-50 border-yellow-200 text-yellow-700',
+            sky: 'bg-sky-50 border-sky-200 text-sky-700',
+            gold: 'bg-gold-100 border-gold-200 text-gold-700',
+            purple: 'bg-purple-50 border-purple-200 text-purple-700',
+        };
+
+        grid.innerHTML = items.map(item => `
+            <a href="${item.href}" class="flex items-center gap-3 p-3 rounded-xl border-2 ${colorMap[item.color]} hover:shadow-md transition">
+                <div class="w-9 h-9 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid ${item.icon}"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-[10px] font-bold uppercase tracking-wide opacity-80">${item.label}</p>
+                    <p class="font-display text-xl font-black">${item.value}</p>
+                </div>
+            </a>
+        `).join('');
+
+        wrap.classList.remove('hidden');
+    }
+
+    // ========================================
+    // SALES CHART (line, 6 bulan)
+    // ========================================
+    function renderSalesChart() {
+        const now = new Date();
+        const labels = [];
+        const dataPoints = [];
+
+        for (let i = 5; i >= 0; i--) {
+            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            labels.push(d.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' }));
+            const total = allSales.filter(s => {
+                const sDate = new Date(s.tanggal);
+                return sDate.getMonth() === d.getMonth() && sDate.getFullYear() === d.getFullYear();
+            }).reduce((sum, s) => sum + (Number(s.total) || 0), 0);
+            dataPoints.push(total);
+        }
+
+        const grandTotal = dataPoints.reduce((a, b) => a + b, 0);
+        document.getElementById('chartTotalLabel').textContent = rp(grandTotal) + ' total';
+
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        if (salesChart) salesChart.destroy();
+        salesChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Penjualan',
+                    data: dataPoints,
+                    borderColor: '#0B7BE8',
+                    backgroundColor: 'rgba(11, 123, 232, 0.1)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#0B7BE8',
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: (ctx) => ' ' + rp(ctx.parsed.y) } }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: (v) => v >= 1000000 ? (v/1000000) + 'jt' : v >= 1000 ? (v/1000) + 'rb' : v,
+                            color: '#94a3b8', font: { size: 11 }
+                        },
+                        grid: { color: '#f1f5f9' }
+                    },
+                    x: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
+                }
+            }
+        });
+    }
+
+    // ========================================
+    // STATUS CHART (doughnut)
+    // ========================================
+    function renderStatusChart() {
+        const statuses = ['pending', 'dibayar', 'diproses', 'selesai', 'batal'];
+        const colors = ['#F59E0B', '#0B7BE8', '#6366F1', '#10B981', '#EF4444'];
+        const labels = ['Pending', 'Dibayar', 'Diproses', 'Selesai', 'Batal'];
+        const data = statuses.map(s => allOrders.filter(o => o.status === s).length);
+
+        const ctx = document.getElementById('statusChart').getContext('2d');
+        if (statusChart) statusChart.destroy();
+        statusChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels,
+                datasets: [{ data, backgroundColor: colors, borderWidth: 0, hoverOffset: 6 }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // Custom legend
+        document.getElementById('statusLegend').innerHTML = labels.map((label, i) => `
+            <div class="flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full" style="background:${colors[i]}"></span>
+                    <span class="text-slate-600 font-medium">${label}</span>
+                </div>
+                <span class="font-bold text-slate-800">${data[i]}</span>
+            </div>
+        `).join('');
+    }
+
+    // ========================================
+    // FINANCE
+    // ========================================
+    function renderFinance() {
+        const omzet = allSales.reduce((sum, s) => sum + (Number(s.total) || 0), 0);
+        const royalti = omzet * 0.15;
+        const bersih = omzet - royalti;
+
+        document.getElementById('finOmzet').textContent = rp(omzet);
+        document.getElementById('finRoyalti').textContent = rp(royalti);
+        document.getElementById('finBersih').textContent = rp(bersih);
+    }
+
+    // ========================================
+    // TOP BOOKS
+    // ========================================
+    function renderTopBooks() {
+        const wrap = document.getElementById('topBooksList');
+
+        // Aggregate sales by book_id
+        const byBook = {};
+        allSales.forEach(s => {
+            if (!byBook[s.book_id]) byBook[s.book_id] = { qty: 0, revenue: 0 };
+            byBook[s.book_id].qty += Number(s.qty) || 0;
+            byBook[s.book_id].revenue += Number(s.total) || 0;
+        });
+
+        const sorted = Object.entries(byBook)
+            .map(([book_id, v]) => {
+                const book = allBooks.find(b => String(b.id) === String(book_id));
+                return {
+                    judul: book ? book.judul : 'Buku Dihapus',
+                    penulis: book ? book.penulis : '—',
+                    qty: v.qty,
+                    revenue: v.revenue
+                };
+            })
+            .sort((a, b) => b.qty - a.qty)
+            .slice(0, 5);
+
+        if (sorted.length === 0) {
+            wrap.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">Belum ada data penjualan.</div>`;
+            return;
+        }
+
+        wrap.innerHTML = sorted.map((b, i) => {
+            const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'rank-other';
+            return `
+                <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition">
+                    <div class="rank-badge ${rankClass}">${i + 1}</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-bold text-slate-800 text-sm truncate">${escapeHtml(b.judul)}</p>
+                        <p class="text-[11px] text-slate-500 truncate">${escapeHtml(b.penulis)}</p>
+                    </div>
+                    <div class="text-right flex-shrink-0">
+                        <p class="font-bold text-sky-600 text-sm">${b.qty} <span class="text-[10px] text-slate-500 font-normal">terjual</span></p>
+                        <p class="text-[10px] text-green-600 font-bold">${rp(b.revenue)}</p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // ========================================
+    // RECENT ORDERS
+    // ========================================
+    function renderRecentOrders() {
+        const wrap = document.getElementById('recentOrdersList');
+        const recent = allOrders.slice(0, 5);
+
+        if (recent.length === 0) {
+            wrap.innerHTML = `<div class="text-center py-8 text-slate-400 text-sm">Belum ada order.</div>`;
+            return;
+        }
+
+        wrap.innerHTML = recent.map(o => `
+            <a href="admin-order.html" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition">
+                <div class="w-9 h-9 rounded-lg bg-sky-50 flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-receipt text-sky-500 text-sm"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-mono text-[11px] font-bold text-sky-600 truncate">${escapeHtml(o.order_code)}</p>
+                    <p class="text-[11px] text-slate-600 truncate">${escapeHtml(o.nama_pemesan)} · ${formatDate(o.created_at)}</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                    <p class="font-bold text-slate-800 text-xs">${rp(o.total)}</p>
+                    <div class="mt-1">${getStatusBadge(o.status)}</div>
+                </div>
+            </a>
+        `).join('');
+    }
+
+    // ========================================
+    // EVENT LISTENERS
+    // ========================================
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+        sidebarOverlay.classList.toggle('active');
+    });
+    sidebarOverlay.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        sidebarOverlay.classList.remove('active');
+    });
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+        if (confirm('Logout dari admin panel?')) {
+            await adminSignOut();
+            window.location.href = 'admin-login.html';
+        }
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('refreshBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span class="hidden sm:inline">Loading...</span>';
+        await loadAllData();
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-rotate"></i><span class="hidden sm:inline">Refresh</span>';
+        showToast('Data berhasil di-refresh', 'success');
+    });
+
+    // ========================================
+    // INIT
+    // ========================================
+    (async () => {
+        const ok = await checkAuth();
+        if (!ok) return;
+        await loadAllData();
+        console.log('%c📊 Karyakata Admin Dashboard loaded', 'font-size: 14px; font-weight: bold; color: #0B7BE8;');
+    })();
+    </script>
+
+</body>
+</html>

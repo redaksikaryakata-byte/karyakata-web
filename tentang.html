@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tentang Kami — Karyakata.id</title>
+    <meta name="description" content="Kenali Karyakata.id — penerbit buku modern Indonesia. Visi, misi, tim, dan nilai yang kami pegang. Mitra komunitas Yatta.id." />
+
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/img/favicon.png" />
+    <link rel="shortcut icon" href="assets/img/favicon.png" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: {
+                            50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD',
+                            400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6',
+                            800: '#064485', 900: '#053364',
+                        },
+                        gold: {
+                            100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A',
+                            500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        html { scroll-behavior: smooth; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.8s ease-out forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 166, 35, 0.7); }
+            50% { box-shadow: 0 0 0 12px rgba(245, 166, 35, 0); }
+        }
+        .pulse-glow { animation: pulseGlow 2s infinite; }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #0B7BE8 0%, #0967C7 40%, #0755A6 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero-gradient::after {
+            content: '';
+            position: absolute;
+            bottom: -50%; left: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(245, 166, 35, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .card-lift { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 24px 48px -16px rgba(11, 123, 232, 0.25);
+        }
+
+        .nav-link { color: #334155; font-weight: 500; transition: all .2s ease; }
+        .nav-link:hover { color: #0B7BE8; }
+        .nav-link.active { color: #0B7BE8; font-weight: 700; }
+
+        .btn-primary {
+            background: #0B7BE8; color: white; font-weight: 700;
+            transition: all .3s ease;
+            box-shadow: 0 8px 20px rgba(11, 123, 232, 0.35);
+        }
+        .btn-primary:hover {
+            background: #0967C7; transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(11, 123, 232, 0.45);
+        }
+        .btn-gold {
+            background: #F5A623; color: #422006; font-weight: 700;
+            transition: all .3s ease;
+            box-shadow: 0 8px 20px rgba(245, 166, 35, 0.35);
+        }
+        .btn-gold:hover {
+            background: #D98B0E; color: white; transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(245, 166, 35, 0.45);
+        }
+
+        /* Timeline vertical */
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: 24px; top: 50px; bottom: -20px;
+            width: 2px;
+            background: linear-gradient(to bottom, #0B7BE8, #DBEAFE);
+        }
+        .timeline-line:last-child::before { display: none; }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #eff6ff; }
+        ::-webkit-scrollbar-thumb { background: #4A9EF0; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0B7BE8; }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-b border-sky-100" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+
+                <a href="index.html" class="flex items-center gap-2 group">
+                    <img src="assets/img/logo.png" alt="Karyakata.id" class="h-10 md:h-12 w-auto group-hover:scale-105 transition" />
+                    <span class="font-display text-xl md:text-2xl font-black leading-none">
+                        <span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span>
+                    </span>
+                </a>
+
+                <div class="hidden lg:flex items-center gap-8 text-sm">
+                    <a href="index.html" class="nav-link">Beranda</a>
+                    <a href="layanan.html" class="nav-link">Layanan</a>
+                    <a href="katalog.html" class="nav-link">Katalog</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="tentang.html" class="nav-link active">Tentang</a>
+                    <a href="kontak.html" class="nav-link">Kontak</a>
+                </div>
+
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="author/author-login.html" class="text-sky-700 bg-sky-50 hover:bg-sky-100 px-5 py-2.5 rounded-full text-sm font-bold transition flex items-center gap-2">
+                        <i class="fa-solid fa-user-pen"></i>
+                        <span>Login Penulis</span>
+                    </a>
+                    <a href="kirim-naskah.html" class="btn-gold px-5 py-2.5 rounded-full text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Kirim Naskah</span>
+                    </a>
+                </div>
+
+                <button id="menuBtn" class="lg:hidden w-10 h-10 rounded-lg bg-sky-50 flex items-center justify-center text-sky-700">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobileMenu" class="hidden lg:hidden bg-white border-t border-sky-100 px-4 py-4 space-y-1">
+            <a href="index.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Beranda</a>
+            <a href="layanan.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Layanan</a>
+            <a href="katalog.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Katalog</a>
+            <a href="blog.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Blog</a>
+            <a href="tentang.html" class="block px-4 py-2.5 bg-sky-50 text-sky-700 rounded-xl font-bold">Tentang</a>
+            <a href="kontak.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Kontak</a>
+            <a href="author/author-login.html" class="block text-center bg-sky-50 text-sky-700 px-5 py-3 rounded-xl text-sm font-bold mt-2">
+                <i class="fa-solid fa-user-pen mr-1"></i> Login Penulis
+            </a>
+            <a href="kirim-naskah.html" class="block text-center btn-gold px-5 py-3 rounded-xl text-sm font-bold mt-2">
+                <i class="fa-solid fa-paper-plane mr-1"></i> Kirim Naskah
+            </a>
+        </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <section class="hero-gradient pt-32 md:pt-40 pb-16 md:pb-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <nav class="flex items-center justify-center lg:justify-start gap-2 text-sky-200 text-xs md:text-sm mb-6 animate-fade-up">
+                <a href="index.html" class="hover:text-white transition">Beranda</a>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                <span class="text-white font-bold">Tentang</span>
+            </nav>
+
+            <div class="text-center lg:text-left max-w-3xl">
+                <h1 class="font-display text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.1] animate-fade-up delay-1">
+                    Tentang <span class="text-gold-300">Karyakata</span>
+                </h1>
+                <p class="text-sky-100 text-base md:text-lg mt-6 leading-relaxed animate-fade-up delay-2">
+                    Lebih dari sekadar penerbit — kami partner perjalanan karyamu menuju dunia literasi Indonesia.
+                </p>
+            </div>
+        </div>
+
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+                <path d="M0 80L60 74.7C120 69.3 240 58.7 360 58.7C480 58.7 600 69.3 720 69.3C840 69.3 960 58.7 1080 53.3C1200 48 1320 48 1380 48L1440 48V80H0Z" fill="white"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- SIAPA KAMI -->
+    <section class="py-16 md:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-10 items-center">
+
+                <div class="lg:col-span-5">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-sky-400/20 rounded-3xl blur-2xl"></div>
+                        <div class="relative bg-gradient-to-br from-sky-500 to-sky-700 rounded-3xl p-10 md:p-12 text-white">
+                            <i class="fa-solid fa-quote-left text-gold-300 text-4xl mb-5"></i>
+                            <p class="font-display text-xl md:text-2xl font-black leading-snug mb-6">
+                                Berkarya dengan Kata, Berkata dengan Karya.
+                            </p>
+                            <p class="text-sky-100 text-sm leading-relaxed">
+                                Setiap buku yang kami terbitkan adalah jendela baru untuk dunia literasi Indonesia. Kami percaya, setiap penulis berhak mendapatkan kesempatan yang sama untuk karyanya dibaca.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7">
+                    <div class="inline-flex items-center gap-2 bg-sky-100 border border-sky-200 rounded-full px-4 py-1.5 mb-4">
+                        <i class="fa-solid fa-book-open-reader text-sky-600 text-xs"></i>
+                        <span class="text-sky-700 text-xs md:text-sm font-bold tracking-wide">SIAPA KAMI</span>
+                    </div>
+                    <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight mb-6">
+                        Penerbit Buku <span class="text-sky-600">Modern Indonesia</span>
+                    </h2>
+                    <div class="space-y-4 text-slate-600 text-base leading-relaxed">
+                        <p>
+                            <b class="text-slate-800">Karyakata.id</b> adalah penerbit buku independen yang berdedikasi untuk membantu penulis Indonesia menerbitkan karya terbaik mereka. Kami bukan hanya penerbitan — kami adalah partner yang menemani setiap tahap proses penerbitan.
+                        </p>
+                        <p>
+                            Kami berkolaborasi dengan komunitas penulis <b>Yatta.id</b> untuk memajukan literasi Indonesia, dan terbuka juga untuk penulis umum dari seluruh nusantara. Semua genre kami terima — fiksi, non-fiksi, puisi, buku anak, hingga buku akademik dan modul.
+                        </p>
+                        <p>
+                            Dengan tim editor berpengalaman, desainer profesional, dan jaringan distribusi yang luas, kami memastikan setiap buku yang terbit dari Karyakata mendapat kualitas yang membanggakan penulisnya.
+                        </p>
+                    </div>
+
+                    <!-- Stats mini -->
+                    <div class="grid grid-cols-3 gap-4 mt-8">
+                        <div class="text-center p-4 bg-sky-50 rounded-2xl border border-sky-100">
+                            <div class="font-display text-3xl font-black text-sky-600 mb-1">100<span class="text-gold-500">+</span></div>
+                            <p class="text-xs text-slate-600 font-semibold">Buku Terbit</p>
+                        </div>
+                        <div class="text-center p-4 bg-sky-50 rounded-2xl border border-sky-100">
+                            <div class="font-display text-3xl font-black text-sky-600 mb-1">500<span class="text-gold-500">+</span></div>
+                            <p class="text-xs text-slate-600 font-semibold">Penulis Aktif</p>
+                        </div>
+                        <div class="text-center p-4 bg-sky-50 rounded-2xl border border-sky-100">
+                            <div class="font-display text-3xl font-black text-sky-600 mb-1">4.9<span class="text-gold-500">★</span></div>
+                            <p class="text-xs text-slate-600 font-semibold">Rating</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- VISI & MISI -->
+    <section class="py-16 md:py-24 bg-sky-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+                <div class="inline-flex items-center gap-2 bg-gold-100 border border-gold-200 rounded-full px-4 py-1.5 mb-4">
+                    <i class="fa-solid fa-compass text-gold-600 text-xs"></i>
+                    <span class="text-gold-700 text-xs md:text-sm font-bold tracking-wide">VISI &amp; MISI</span>
+                </div>
+                <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight">
+                    Arah &amp; <span class="text-sky-600">Komitmen Kami</span>
+                </h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
+
+                <!-- VISI -->
+                <div class="bg-white rounded-3xl p-8 border-2 border-sky-100 card-lift">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-700 flex items-center justify-center text-white text-xl shadow-lg shadow-sky-500/30 mb-6">
+                        <i class="fa-solid fa-eye"></i>
+                    </div>
+                    <h3 class="font-display text-2xl font-black text-slate-800 mb-4">Visi</h3>
+                    <p class="text-slate-600 text-base leading-relaxed">
+                        Menjadi penerbit buku modern yang <b>memudahkan setiap penulis Indonesia</b> menerbitkan karya terbaiknya, serta menjadi jembatan antara penulis dan pembaca di seluruh nusantara.
+                    </p>
+                </div>
+
+                <!-- MISI -->
+                <div class="bg-white rounded-3xl p-8 border-2 border-gold-100 card-lift">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-white text-xl shadow-lg shadow-gold-500/30 mb-6">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <h3 class="font-display text-2xl font-black text-slate-800 mb-4">Misi</h3>
+                    <ul class="space-y-3 text-slate-600 text-sm leading-relaxed">
+                        <li class="flex items-start gap-2.5">
+                            <i class="fa-solid fa-circle-check text-gold-500 mt-0.5"></i>
+                            <span>Menyediakan layanan penerbitan yang terjangkau dan berkualitas</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <i class="fa-solid fa-circle-check text-gold-500 mt-0.5"></i>
+                            <span>Mendampingi penulis di setiap tahap proses penerbitan</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <i class="fa-solid fa-circle-check text-gold-500 mt-0.5"></i>
+                            <span>Mempromosikan karya penulis Indonesia ke jangkauan lebih luas</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <i class="fa-solid fa-circle-check text-gold-500 mt-0.5"></i>
+                            <span>Membangun ekosistem literasi yang sehat dan berkelanjutan</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- NILAI-NILAI -->
+    <section class="py-16 md:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+                <div class="inline-flex items-center gap-2 bg-sky-100 border border-sky-200 rounded-full px-4 py-1.5 mb-4">
+                    <i class="fa-solid fa-heart text-sky-600 text-xs"></i>
+                    <span class="text-sky-700 text-xs md:text-sm font-bold tracking-wide">NILAI KAMI</span>
+                </div>
+                <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight">
+                    Prinsip yang <span class="text-sky-600">Kami Pegang</span>
+                </h2>
+                <p class="text-slate-600 text-base md:text-lg mt-4">
+                    Empat nilai inti yang menjadi fondasi setiap langkah kami.
+                </p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <div class="p-6 rounded-2xl bg-slate-50 hover:bg-sky-50 transition-colors duration-300 group text-center">
+                    <div class="w-14 h-14 rounded-2xl bg-sky-500 text-white flex items-center justify-center text-xl mx-auto mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-handshake"></i>
+                    </div>
+                    <h3 class="font-display font-black text-slate-800 mb-2">Amanah</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Setiap naskah yang dipercayakan pada kami adalah titipan yang kami jaga dengan sepenuh hati.
+                    </p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-slate-50 hover:bg-sky-50 transition-colors duration-300 group text-center">
+                    <div class="w-14 h-14 rounded-2xl bg-gold-500 text-white flex items-center justify-center text-xl mx-auto mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-gem"></i>
+                    </div>
+                    <h3 class="font-display font-black text-slate-800 mb-2">Kualitas</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Kami tidak kompromi pada kualitas. Setiap buku yang terbit adalah representasi kami.
+                    </p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-slate-50 hover:bg-sky-50 transition-colors duration-300 group text-center">
+                    <div class="w-14 h-14 rounded-2xl bg-sky-500 text-white flex items-center justify-center text-xl mx-auto mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h3 class="font-display font-black text-slate-800 mb-2">Cepat &amp; Transparan</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Proses yang cepat, komunikasi terbuka, dan biaya yang jelas. Tanpa biaya tersembunyi.
+                    </p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-slate-50 hover:bg-sky-50 transition-colors duration-300 group text-center">
+                    <div class="w-14 h-14 rounded-2xl bg-gold-500 text-white flex items-center justify-center text-xl mx-auto mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <h3 class="font-display font-black text-slate-800 mb-2">Kolaboratif</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Kami percaya bahwa buku terbaik lahir dari kolaborasi penulis, editor, dan tim kami.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- TIM -->
+    <section class="py-16 md:py-24 bg-sky-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+                <div class="inline-flex items-center gap-2 bg-sky-100 border border-sky-200 rounded-full px-4 py-1.5 mb-4">
+                    <i class="fa-solid fa-user-group text-sky-600 text-xs"></i>
+                    <span class="text-sky-700 text-xs md:text-sm font-bold tracking-wide">TIM KAMI</span>
+                </div>
+                <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight">
+                    Orang-Orang di <span class="text-sky-600">Balik Layar</span>
+                </h2>
+                <p class="text-slate-600 text-base md:text-lg mt-4">
+                    Tim kecil dengan dedikasi besar untuk literasi Indonesia.
+                </p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+
+                <div class="bg-white rounded-3xl p-6 border-2 border-sky-100 text-center card-lift">
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-sky-400 to-sky-700 flex items-center justify-center text-white font-display font-black text-3xl mx-auto mb-4 shadow-lg shadow-sky-500/30">
+                        A
+                    </div>
+                    <h3 class="font-display font-black text-slate-800 mb-1">Abd. Rahman Danial, S.E., M.M.</h3>
+                    <p class="text-sky-600 text-xs font-bold mb-3">Founder &amp; Leader of Management</p>
+                    <p class="text-slate-500 text-xs leading-relaxed">
+                        Visioner di balik Karyakata. Berpengalaman 10+ tahun di dunia literasi.
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-3xl p-6 border-2 border-sky-100 text-center card-lift">
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-white font-display font-black text-3xl mx-auto mb-4 shadow-lg shadow-gold-500/30">
+                        B
+                    </div>
+                    <h3 class="font-display font-black text-slate-800 mb-1">Virya Anisa Towalu, M.I.Kom</h3>
+                    <p class="text-gold-600 text-xs font-bold mb-3">Editorial Management</p>
+                    <p class="text-slate-500 text-xs leading-relaxed">
+                        Memimpin tim redaksi untuk menghasilkan naskah berkualitas.
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-3xl p-6 border-2 border-sky-100 text-center card-lift">
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-sky-400 to-sky-700 flex items-center justify-center text-white font-display font-black text-3xl mx-auto mb-4 shadow-lg shadow-sky-500/30">
+                        C
+                    </div>
+                    <h3 class="font-display font-black text-slate-800 mb-1">Aditya Z. Rahim, S.Pd.</h3>
+                    <p class="text-sky-600 text-xs font-bold mb-3">Platform Design and Marketing</p>
+                    <p class="text-slate-500 text-xs leading-relaxed">
+                        Menampilkan wajah platform yang menarik &amp; jangkauan yang luas.
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-3xl p-6 border-2 border-sky-100 text-center card-lift">
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-white font-display font-black text-3xl mx-auto mb-4 shadow-lg shadow-gold-500/30">
+                        D
+                    </div>
+                    <h3 class="font-display font-black text-slate-800 mb-1">Siti Nurgian Utina, S.Pd.</h3>
+                    <p class="text-gold-600 text-xs font-bold mb-3">Collaboration and Community Programs</p>
+                    <p class="text-slate-500 text-xs leading-relaxed">
+                        Membawa platform untuk menjalin kolaborasi dan tumbuh bersama dengan program yang inovatif, berdampak dan bermanfaat.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- PERJALANAN (TIMELINE) -->
+    <section class="py-16 md:py-24 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+                <div class="inline-flex items-center gap-2 bg-gold-100 border border-gold-200 rounded-full px-4 py-1.5 mb-4">
+                    <i class="fa-solid fa-route text-gold-600 text-xs"></i>
+                    <span class="text-gold-700 text-xs md:text-sm font-bold tracking-wide">PERJALANAN</span>
+                </div>
+                <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight">
+                    Langkah <span class="text-sky-600">Kami</span>
+                </h2>
+            </div>
+
+            <div class="space-y-8">
+
+                <div class="flex gap-5 timeline-line relative">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-sky-500 text-white flex items-center justify-center font-black z-10 shadow-lg shadow-sky-500/30">
+                        <i class="fa-solid fa-seedling"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-sky-600 tracking-widest mb-1">2 Juli 2019 </p>
+                        <h3 class="font-display text-lg font-black text-slate-800 mb-2">Berwala dari Komunitas</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Berawal dari sebuah komunitas yang bernama Pena Pedia, kami mengumpulkan para penulis muda untuk berkontribusi dalam membangun literasi di Indonesia.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex gap-5 timeline-line relative">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-gold-500 text-white flex items-center justify-center font-black z-10 shadow-lg shadow-gold-500/30">
+                        <i class="fa-solid fa-handshake"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-gold-600 tracking-widest mb-1">20 Februari 2020</p>
+                        <h3 class="font-display text-lg font-black text-slate-800 mb-2">Resmi Sebagai Penerbit</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Kami berhasil menjadi penerbit di bawah naungan CV Rumah Akademi Group sekaligus meluncurkan buku pertama kami berjudul Prakastia.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex gap-5 timeline-line relative">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-sky-500 text-white flex items-center justify-center font-black z-10 shadow-lg shadow-sky-500/30">
+                        <i class="fa-solid fa-book"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-sky-600 tracking-widest mb-1">23 Oktober 2023</p>
+                        <h3 class="font-display text-lg font-black text-slate-800 mb-2">Lahirnya Karyakata</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Kami bertransformasi menjadi penerbitan yang mandiri dengan legalitas dan badan hukum resmi berdasarkan SK KEMENKUMHAM serta legalitas lainnya yang kami miliki.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex gap-5 timeline-line relative">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-gold-500 text-white flex items-center justify-center font-black z-10 shadow-lg shadow-gold-500/30">
+                        <i class="fa-solid fa-rocket"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-gold-600 tracking-widest mb-1">2025+</p>
+                        <h3 class="font-display text-lg font-black text-slate-800 mb-2">Terus Berkembang</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Kami terus berinovasi, melahirkan ratusan penulis di seluruh Indonesia, menerbitkan ratusan judul buku, ribuan eksemplar telah terjual, dan terus memberi dampak serta kebermanfaatan melalui komunitas kami.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-16 md:py-24 relative overflow-hidden">
+        <div class="hero-gradient absolute inset-0"></div>
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+
+            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-1.5 mb-6">
+                <span class="w-2 h-2 rounded-full bg-gold-400 pulse-glow"></span>
+                <span class="text-white/90 text-xs md:text-sm font-semibold tracking-wide">MARI BERKOLABORASI</span>
+            </div>
+
+            <h2 class="font-display text-4xl sm:text-5xl md:text-6xl font-black text-white leading-tight mb-6">
+                Jadi Bagian dari <span class="text-gold-300">Cerita Kami</span>
+            </h2>
+
+            <p class="text-sky-100 text-base md:text-lg leading-relaxed mb-10 max-w-2xl mx-auto">
+                Punya naskah yang siap terbit? Atau ingin berkolaborasi dengan kami? Kami terbuka untuk semua.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="kirim-naskah.html" class="btn-gold px-8 py-4 rounded-full text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Kirim Naskah</span>
+                </a>
+                <a href="kontak.html" class="bg-white/10 backdrop-blur-md hover:bg-white/20 border border-white/30 text-white font-bold px-8 py-4 rounded-full text-sm flex items-center justify-center gap-2 transition">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span>Hubungi Kami</span>
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-300 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-12 gap-10 mb-12">
+
+                <div class="md:col-span-4">
+                    <div class="mb-5 flex items-center gap-3">
+                        <img src="assets/img/logo-footer.png" alt="Karyakata.id" class="h-16 w-auto" />
+                        <span class="font-display text-2xl font-black leading-none">
+                            <span class="text-white">Karyakata</span><span class="text-gold-400">.id</span>
+                        </span>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                        Penerbit buku modern Indonesia. Mitra komunitas Yatta.id. <br>
+                        <span class="text-gold-400 font-semibold">Berkarya dengan Kata, Berkata dengan Karya.</span>
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <a href="https://www.instagram.com/karyakata.publishing" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-gradient-to-br hover:from-pink-500 hover:to-purple-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-black flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </a>
+                        <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-green-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-red-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">MENU</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="index.html" class="text-slate-400 hover:text-sky-400 transition">Beranda</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Layanan</a></li>
+                        <li><a href="katalog.html" class="text-slate-400 hover:text-sky-400 transition">Katalog</a></li>
+                        <li><a href="blog.html" class="text-slate-400 hover:text-sky-400 transition">Blog</a></li>
+                        <li><a href="tentang.html" class="text-slate-400 hover:text-sky-400 transition">Tentang</a></li>
+                        <li><a href="kontak.html" class="text-slate-400 hover:text-sky-400 transition">Kontak</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">LAYANAN</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="layanan.html#paket" class="text-slate-400 hover:text-sky-400 transition">Paket Penerbitan</a></li>
+                        <li><a href="terbit-satuan.html" class="text-slate-400 hover:text-sky-400 transition">Terbit &amp; Cetak Satuan</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Editing &amp; Proofreading</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Layout &amp; Desain Cover</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Cetak &amp; Distribusi</a></li>
+                        <li><a href="kirim-naskah.html" class="text-slate-400 hover:text-sky-400 transition">Kirim Naskah</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">KONTAK</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-envelope text-sky-400 mt-0.5"></i>
+                            <span class="text-slate-400">redaksikaryakata@gmail.com</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-brands fa-whatsapp text-sky-400 mt-0.5"></i>
+                            <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="text-slate-400 hover:text-sky-400 transition">+62 895-6200-00033</a>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot text-sky-400 mt-0.5"></i>
+                            <span class="text-slate-400">Yogyakarta-Gorontalo/Indonesia</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-users text-sky-400 mt-0.5"></i>
+                            <a href="https://www.yatta.id" target="_blank" rel="noopener" class="text-slate-400 hover:text-sky-400 transition">Komunitas Kami — www.yatta.id</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-slate-500 text-xs text-center md:text-left">
+                    &copy; <span id="year"></span> Karyakata.id — Karyakata Publishing. All rights reserved.
+                </p>
+                <div class="flex items-center gap-6 text-xs">
+                    <a href="syarat.html" class="text-slate-500 hover:text-sky-400 transition">Syarat &amp; Ketentuan</a>
+                    <a href="privacy.html" class="text-slate-500 hover:text-sky-400 transition">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                const icon = menuBtn.querySelector('i');
+                if (mobileMenu.classList.contains('hidden')) {
+                    icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars');
+                } else {
+                    icon.classList.remove('fa-bars'); icon.classList.add('fa-xmark');
+                }
+            });
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    const icon = menuBtn.querySelector('i');
+                    icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars');
+                });
+            });
+        }
+
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 50) {
+                navbar.classList.add('shadow-lg', 'shadow-sky-500/5');
+            } else {
+                navbar.classList.remove('shadow-lg', 'shadow-sky-500/5');
+            }
+        });
+
+        const yearEl = document.getElementById('year');
+        if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+        console.log('%c📚 Karyakata.id — Tentang', 'font-size: 16px; font-weight: bold; color: #0B7BE8;');
+    </script>
+
+</body>
+</html>

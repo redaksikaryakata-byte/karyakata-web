@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profil Saya — Karyakata.id</title>
+    
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: {
+                sky: { 50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD', 400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6', 800: '#064485', 900: '#053364' },
+                gold: { 100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A', 500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A' }
+            }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['"Plus Jakarta Sans"', 'sans-serif'] } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #64748B; transition: all .2s ease; }
+        .sidebar-link:hover { background: #EFF6FF; color: #0B7BE8; }
+        .sidebar-link.active { background: #0B7BE8; color: white; box-shadow: 0 4px 12px rgba(11,123,232,0.3); }
+        .form-input { width: 100%; padding: 12px 16px; border: 2px solid #DBEAFE; border-radius: 12px; font-size: 14px; outline: none; transition: all .2s ease; background: white; }
+        .form-input:focus { border-color: #0B7BE8; box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1); }
+        .form-label { display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col md:flex-row">
+
+    <!-- MOBILE HEADER -->
+    <div class="md:hidden bg-white border-b border-slate-200 p-4 flex items-center justify-between sticky top-0 z-40">
+        <a href="../index.html" class="flex items-center gap-2">
+            <img src="../assets/img/logo.png" alt="Karyakata" class="h-8 w-auto" />
+            <span class="font-display text-lg font-black"><span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span></span>
+        </a>
+        <button id="btnMenuMobile" class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600"><i class="fa-solid fa-bars"></i></button>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="hidden md:flex w-full md:w-64 bg-white border-r border-slate-200 flex-col fixed md:sticky top-0 h-screen z-50 md:z-0 transition-transform">
+        <div class="p-6 border-b border-slate-100 hidden md:block">
+            <a href="../index.html" class="flex items-center gap-2">
+                <img src="../assets/img/logo.png" alt="Karyakata" class="h-9 w-auto" />
+                <span class="font-display text-xl font-black"><span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span></span>
+            </a>
+        </div>
+        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+            <p class="text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-3 px-4">Menu Utama</p>
+            <a href="author-dashboard.html" class="sidebar-link"><i class="fa-solid fa-house w-5"></i> Ringkasan</a>
+            <a href="author-buku.html" class="sidebar-link"><i class="fa-solid fa-book w-5"></i> Buku Saya</a>
+            <a href="author-penjualan.html" class="sidebar-link"><i class="fa-solid fa-chart-line w-5"></i> Penjualan</a>
+            <a href="author-royalti.html" class="sidebar-link"><i class="fa-solid fa-coins w-5"></i> Royalti</a>
+            <p class="text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-3 px-4 mt-6">Akun</p>
+            <a href="author-profil.html" class="sidebar-link active"><i class="fa-solid fa-user w-5"></i> Profil Saya</a>
+        </nav>
+        <div class="p-4 border-t border-slate-100">
+            <div class="flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-xl mb-3">
+                <div class="w-9 h-9 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center font-bold text-sm" id="sidebarAvatar">P</div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-bold text-slate-800 truncate" id="sidebarNama">Penulis</p>
+                    <p class="text-[10px] text-slate-500 truncate" id="sidebarEmail">-</p>
+                </div>
+            </div>
+            <button onclick="doLogout()" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition">
+                <i class="fa-solid fa-right-from-bracket"></i> Keluar
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 p-4 md:p-8 lg:p-10 max-w-4xl mx-auto w-full">
+        
+        <div class="mb-8">
+            <h1 class="font-display text-2xl md:text-3xl font-black text-slate-800">Profil Saya</h1>
+            <p class="text-slate-500 text-sm mt-1">Lengkapi data diri dan rekening untuk pencairan royalti.</p>
+        </div>
+
+        <form id="profileForm" class="space-y-6">
+            
+            <!-- SECTION 1: DATA DIRI -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm">
+                <h3 class="font-display font-black text-lg text-slate-800 mb-5 border-b border-slate-100 pb-3">Data Diri</h3>
+                
+                <div class="flex flex-col sm:flex-row gap-6 mb-6">
+                    <!-- Foto Profil (Placeholder preview) -->
+                    <div class="flex-shrink-0">
+                        <div class="w-24 h-24 rounded-full bg-slate-100 border-4 border-white shadow-lg overflow-hidden relative group">
+                            <img id="previewFoto" src="../assets/img/placeholder-avatar.png" class="w-full h-full object-cover">
+                            <label class="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center cursor-pointer transition">
+                                <i class="fa-solid fa-camera text-white text-xl"></i>
+                                <input type="file" id="inputFoto" accept="image/*" class="hidden">
+                            </label>
+                        </div>
+                        <p class="text-[10px] text-center text-slate-400 mt-2">Klik untuk ubah</p>
+                    </div>
+
+                    <div class="flex-1 grid sm:grid-cols-2 gap-4">
+                        <div class="sm:col-span-2">
+                            <label class="form-label">Nama Penulis (Pena) <span class="text-red-500">*</span></label>
+                            <input type="text" id="nama" class="form-input" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Email (Terkunci)</label>
+                            <input type="email" id="email" class="form-input bg-slate-50 cursor-not-allowed text-slate-500" readonly>
+                        </div>
+                        <div>
+                            <label class="form-label">No. WhatsApp</label>
+                            <input type="tel" id="wa" class="form-input" placeholder="08xxxx">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="form-label">Kota Domisili</label>
+                            <input type="text" id="kota" class="form-input" placeholder="Contoh: Yogyakarta">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="form-label">Bio Singkat</label>
+                            <textarea id="bio" class="form-input" rows="3" placeholder="Ceritakan sedikit tentang diri Anda..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: REKENING BANK -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm">
+                <div class="flex items-center gap-3 mb-5 border-b border-slate-100 pb-3">
+                    <h3 class="font-display font-black text-lg text-slate-800">Rekening Pencairan Royalti</h3>
+                    <span class="px-2 py-0.5 bg-gold-100 text-gold-700 text-[10px] font-bold rounded uppercase">Wajib</span>
+                </div>
+                
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="form-label">Nama Bank / E-Wallet</label>
+                        <input type="text" id="rekening_bank" class="form-input" placeholder="Contoh: BCA / Mandiri / Dana">
+                    </div>
+                    <div>
+                        <label class="form-label">Nomor Rekening</label>
+                        <input type="text" id="rekening_nomor" class="form-input" placeholder="1234567890">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="form-label">Nama Pemilik Rekening</label>
+                        <input type="text" id="rekening_nama" class="form-input" placeholder="Sesuai buku tabungan">
+                    </div>
+                </div>
+                <p class="text-xs text-slate-500 mt-3"><i class="fa-solid fa-circle-info text-sky-500"></i> Pastikan nama pemilik rekening sama dengan nama penulis untuk mempermudah proses verifikasi.</p>
+            </div>
+
+            <!-- TOMBOL SIMPAN -->
+            <div class="flex justify-end">
+                <button type="submit" id="btnSimpan" class="px-8 py-3.5 bg-sky-500 text-white rounded-xl font-bold shadow-lg shadow-sky-500/30 hover:bg-sky-600 transition flex items-center gap-2">
+                    <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
+                </button>
+            </div>
+
+        </form>
+
+        <!-- SECTION GANTI PASSWORD -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm mt-6">
+            <h3 class="font-display font-black text-lg text-slate-800 mb-5 border-b border-slate-100 pb-3">Keamanan Akun</h3>
+            
+            <form id="passwordForm" class="space-y-4">
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="form-label">Password Lama <span class="text-red-500">*</span></label>
+                        <input type="password" id="oldPassword" class="form-input" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Password Baru <span class="text-red-500">*</span></label>
+                        <input type="password" id="newPassword" class="form-input" minlength="6" required>
+                    </div>
+                </div>
+                <div class="flex justify-end">
+                    <button type="submit" id="btnPass" class="px-6 py-2.5 bg-slate-800 text-white rounded-xl font-bold text-sm hover:bg-slate-700 transition flex items-center gap-2">
+                        <i class="fa-solid fa-key"></i> Ubah Password
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <script>
+            document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('btnPass');
+                const oldP = document.getElementById('oldPassword').value;
+                const newP = document.getElementById('newPassword').value;
+                
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+
+                // Panggil fungsi dari supabase-client.js
+                const res = await authorChangePassword(oldP, newP);
+                
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-key"></i> Ubah Password';
+
+                if (res.ok) {
+                    alert('Password berhasil diubah! Silakan gunakan password baru untuk login berikutnya.');
+                    document.getElementById('passwordForm').reset();
+                } else {
+                    alert('Gagal: ' + res.error);
+                }
+            });
+        </script>
+    </main>
+
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/supabase-client.js"></script>
+    <script src="../assets/js/author-guard.js"></script>
+
+    <script>
+        const btnMenu = document.getElementById('btnMenuMobile');
+        const sidebar = document.getElementById('sidebar');
+        if(btnMenu) btnMenu.addEventListener('click', () => sidebar.classList.toggle('hidden'));
+
+        async function doLogout() {
+            if(confirm('Yakin ingin keluar?')) {
+                await authorLogout();
+                window.location.replace('author-login.html');
+            }
+        }
+
+        let currentEmail = '';
+
+        async function loadProfile() {
+            const checkGuard = setInterval(async () => {
+                if (window.__author) {
+                    clearInterval(checkGuard);
+                    
+                    document.getElementById('sidebarNama').textContent = window.__author.nama;
+                    document.getElementById('sidebarEmail').textContent = window.__author.email;
+                    document.getElementById('sidebarAvatar').textContent = window.__author.nama.charAt(0).toUpperCase();
+                    
+                    currentEmail = window.__author.email;
+                    document.getElementById('email').value = currentEmail;
+
+                    // Ambil data profil
+                    const res = await authorGetProfile();
+                    if (res.success && res.author) {
+                        const a = res.author;
+                        document.getElementById('nama').value = a.nama_penulis || '';
+                        document.getElementById('wa').value = a.wa || '';
+                        document.getElementById('kota').value = a.kota || '';
+                        document.getElementById('bio').value = a.bio || '';
+                        document.getElementById('rekening_bank').value = a.rekening_bank || '';
+                        document.getElementById('rekening_nomor').value = a.rekening_nomor || '';
+                        document.getElementById('rekening_nama').value = a.rekening_nama || '';
+
+                        if (a.foto_url) {
+                            document.getElementById('previewFoto').src = a.foto_url;
+                        }
+                    }
+                }
+            }, 100);
+        }
+
+        // Preview Foto (upload ke Supabase)
+        document.getElementById('inputFoto').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Preview lokal sementara
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                document.getElementById('previewFoto').src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            // Upload ke Supabase Storage
+            const resUpload = await uploadAuthorPhoto(file, currentEmail);
+            if (resUpload.success) {
+                // Simpan URL ke DB
+                // (Kita akan update via RPC di bawah, tapi karena form belum disubmit, kita simpan URL-nya dulu di variabel/variabel hidden)
+                document.getElementById('previewFoto').dataset.urlBaru = resUpload.url;
+            } else {
+                alert('Gagal upload foto: ' + resUpload.error);
+            }
+        });
+
+        // Submit Form
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnSimpan');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+
+            const payload = {
+                nama: document.getElementById('nama').value,
+                wa: document.getElementById('wa').value,
+                kota: document.getElementById('kota').value,
+                bio: document.getElementById('bio').value,
+                rekening_bank: document.getElementById('rekening_bank').value,
+                rekening_nama: document.getElementById('rekening_nama').value,
+                rekening_nomor: document.getElementById('rekening_nomor').value,
+            };
+
+            // (Opsional) Kalau ada foto baru yang diupload, simpan URL-nya. 
+            // Catatan: RPC saat ini belum handle foto_url. Jadi foto hanya terupload di storage. 
+            // Untuk update foto_url di DB, nanti kita perlu RPC baru atau handle di admin.
+            // (Untuk MVP ini, kita fokus ke data teks).
+
+            const res = await authorUpdateProfile(payload);
+
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+
+            if (res.success || res.ok) {
+                alert('Profil berhasil disimpan!');
+                // Update session local storage (nama)
+                setAuthorSession(getAuthorToken(), currentEmail, payload.nama);
+                window.__author.nama = payload.nama;
+                document.getElementById('sidebarNama').textContent = payload.nama;
+                document.getElementById('sidebarAvatar').textContent = payload.nama.charAt(0).toUpperCase();
+            } else {
+                alert('Gagal menyimpan: ' + (res.error || 'Terjadi kesalahan'));
+            }
+        });
+
+        loadProfile();
+    </script>
+</body>
+</html>

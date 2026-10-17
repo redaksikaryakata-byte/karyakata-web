@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Policy — Karyakata.id</title>
+    <meta name="description" content="Kebijakan Privasi Karyakata.id — bagaimana kami mengumpulkan, menggunakan, dan melindungi data Anda." />
+
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/img/favicon.png" />
+    <link rel="shortcut icon" href="assets/img/favicon.png" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: {
+                            50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD',
+                            400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6',
+                            800: '#064485', 900: '#053364',
+                        },
+                        gold: {
+                            100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A',
+                            500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        html { scroll-behavior: smooth; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.8s ease-out forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #0B7BE8 0%, #0967C7 40%, #0755A6 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero-gradient::after {
+            content: '';
+            position: absolute;
+            bottom: -50%; left: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(245, 166, 35, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .nav-link { color: #334155; font-weight: 500; transition: all .2s ease; }
+        .nav-link:hover { color: #0B7BE8; }
+        .nav-link.active { color: #0B7BE8; font-weight: 700; }
+
+        .btn-gold {
+            background: #F5A623; color: #422006; font-weight: 700;
+            transition: all .3s ease;
+            box-shadow: 0 8px 20px rgba(245, 166, 35, 0.35);
+        }
+        .btn-gold:hover {
+            background: #D98B0E; color: white; transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(245, 166, 35, 0.45);
+        }
+
+        /* Article content */
+        .article-content { color: #334155; line-height: 1.85; font-size: 15px; }
+        .article-content h2 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 22px;
+            font-weight: 900;
+            color: #0f172a;
+            margin-top: 40px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #DBEAFE;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .article-content h2 .num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #0B7BE8, #0755A6);
+            color: white;
+            font-size: 16px;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+        .article-content h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 17px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-top: 24px;
+            margin-bottom: 10px;
+        }
+        .article-content p { margin-bottom: 14px; }
+        .article-content ul { margin: 12px 0 18px 0; padding-left: 0; list-style: none; }
+        .article-content ul li {
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 8px;
+        }
+        .article-content ul li::before {
+            content: '';
+            position: absolute;
+            left: 8px; top: 10px;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #F5A623;
+        }
+        .article-content strong { color: #0f172a; }
+
+        .info-box {
+            background: #EFF6FF;
+            border-left: 4px solid #0B7BE8;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 20px 0;
+        }
+        .info-box p { margin-bottom: 0; font-size: 14px; }
+        .info-box i { color: #0B7BE8; }
+
+        /* TOC */
+        .toc {
+            background: #EFF6FF;
+            border: 2px solid #DBEAFE;
+            border-radius: 16px;
+            padding: 20px 24px;
+        }
+        .toc-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 900;
+            color: #0f172a;
+            margin-bottom: 12px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .toc ol { list-style: none; padding: 0; margin: 0; counter-reset: item; }
+        .toc ol li {
+            counter-increment: item;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .toc ol li::before {
+            content: counter(item) ".";
+            color: #0B7BE8;
+            font-weight: 700;
+            margin-right: 8px;
+        }
+        .toc a {
+            color: #334155;
+            text-decoration: none;
+            transition: color .2s ease;
+        }
+        .toc a:hover { color: #0B7BE8; text-decoration: underline; }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #eff6ff; }
+        ::-webkit-scrollbar-thumb { background: #4A9EF0; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0B7BE8; }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-b border-sky-100" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+
+                <a href="index.html" class="flex items-center gap-2 group">
+                    <img src="assets/img/logo.png" alt="Karyakata.id" class="h-10 md:h-12 w-auto group-hover:scale-105 transition" />
+                    <span class="font-display text-xl md:text-2xl font-black leading-none">
+                        <span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span>
+                    </span>
+                </a>
+
+                <div class="hidden lg:flex items-center gap-8 text-sm">
+                    <a href="index.html" class="nav-link">Beranda</a>
+                    <a href="layanan.html" class="nav-link">Layanan</a>
+                    <a href="katalog.html" class="nav-link">Katalog</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="tentang.html" class="nav-link">Tentang</a>
+                    <a href="kontak.html" class="nav-link">Kontak</a>
+                </div>
+
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="kirim-naskah.html" class="btn-gold px-5 py-2.5 rounded-full text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Kirim Naskah</span>
+                    </a>
+                </div>
+
+                <button id="menuBtn" class="lg:hidden w-10 h-10 rounded-lg bg-sky-50 flex items-center justify-center text-sky-700">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobileMenu" class="hidden lg:hidden bg-white border-t border-sky-100 px-4 py-4 space-y-1">
+            <a href="index.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Beranda</a>
+            <a href="layanan.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Layanan</a>
+            <a href="katalog.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Katalog</a>
+            <a href="blog.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Blog</a>
+            <a href="tentang.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Tentang</a>
+            <a href="kontak.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Kontak</a>
+            <a href="kirim-naskah.html" class="block text-center btn-gold px-5 py-3 rounded-xl text-sm font-bold mt-2">
+                <i class="fa-solid fa-paper-plane mr-1"></i> Kirim Naskah
+            </a>
+        </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <section class="hero-gradient pt-32 md:pt-40 pb-16 md:pb-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <nav class="flex items-center justify-center lg:justify-start gap-2 text-sky-200 text-xs md:text-sm mb-6 animate-fade-up">
+                <a href="index.html" class="hover:text-white transition">Beranda</a>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                <span class="text-white font-bold">Privacy Policy</span>
+            </nav>
+
+            <div class="text-center lg:text-left max-w-3xl">
+                <h1 class="font-display text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.1] animate-fade-up delay-1">
+                    Privacy <span class="text-gold-300">Policy</span>
+                </h1>
+                <p class="text-sky-100 text-base md:text-lg mt-6 leading-relaxed animate-fade-up delay-2">
+                    Kami berkomitmen melindungi data pribadi Anda. Halaman ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan menjaga informasi Anda.
+                </p>
+            </div>
+        </div>
+
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+                <path d="M0 80L60 74.7C120 69.3 240 58.7 360 58.7C480 58.7 600 69.3 720 69.3C840 69.3 960 58.7 1080 53.3C1200 48 1320 48 1380 48L1440 48V80H0Z" fill="white"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- CONTENT -->
+    <section class="py-12 md:py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-10">
+
+                <!-- TOC -->
+                <aside class="lg:col-span-4 lg:sticky lg:top-28 lg:self-start">
+                    <div class="toc">
+                        <div class="toc-title">Daftar Isi</div>
+                        <ol>
+                            <li><a href="#pendahuluan">Pendahuluan</a></li>
+                            <li><a href="#data">Data yang Kami Kumpulkan</a></li>
+                            <li><a href="#penggunaan">Cara Kami Menggunakan Data</a></li>
+                            <li><a href="#berbagi">Berbagi Data dengan Pihak Ketiga</a></li>
+                            <li><a href="#cookie">Cookie &amp; Teknologi Serupa</a></li>
+                            <li><a href="#keamanan">Keamanan Data</a></li>
+                            <li><a href="#penyimpanan">Penyimpanan Data</a></li>
+                            <li><a href="#hak">Hak Anda</a></li>
+                            <li><a href="#anak">Privasi Anak</a></li>
+                            <li><a href="#perubahan">Perubahan Kebijakan</a></li>
+                            <li><a href="#kontak">Hubungi Kami</a></li>
+                        </ol>
+                    </div>
+                </aside>
+
+                <!-- ARTICLE -->
+                <article class="lg:col-span-8">
+                    <div class="article-content">
+
+                        <p class="text-slate-500 text-sm mb-6">
+                            <i class="fa-solid fa-calendar text-sky-500"></i>
+                            Terakhir diperbarui: <b>1 Januari 2026</b>
+                        </p>
+
+                        <!-- 1 -->
+                        <h2 id="pendahuluan"><span class="num">1</span> Pendahuluan</h2>
+                        <p>
+                            <strong>Karyakata.id</strong> ("kami", "milik kami") menghargai privasi setiap pengguna website dan layanan kami. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, menyimpan, dan melindungi informasi pribadi Anda.
+                        </p>
+                        <p>
+                            Dengan menggunakan layanan Karyakata.id — baik melalui website, WhatsApp, email, maupun Lynk.id — Anda menyetujui praktik yang dijelaskan dalam kebijakan ini.
+                        </p>
+
+                        <div class="info-box">
+                            <p>
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <strong>Komitmen kami:</strong> Kami tidak akan pernah menjual, menyewakan, atau memperdagangkan data pribadi Anda kepada pihak ketiga untuk tujuan komersial.
+                            </p>
+                        </div>
+
+                        <!-- 2 -->
+                        <h2 id="data"><span class="num">2</span> Data yang Kami Kumpulkan</h2>
+                        <p>Kami mengumpulkan beberapa jenis data, tergantung interaksi Anda dengan layanan kami:</p>
+
+                        <h3>a. Data yang Anda Berikan Langsung</h3>
+                        <ul>
+                            <li><strong>Identitas:</strong> Nama lengkap, nama pena</li>
+                            <li><strong>Kontak:</strong> Nomor WhatsApp, email, alamat pengiriman</li>
+                            <li><strong>Naskah:</strong> Judul, genre, sinopsis, file naskah (jika upload)</li>
+                            <li><strong>Pembayaran:</strong> Bukti transfer (nama pengirim, jumlah, tanggal)</li>
+                            <li><strong>Komunikasi:</strong> Isi pesan, pertanyaan, permintaan bantuan</li>
+                        </ul>
+
+                        <h3>b. Data yang Dikumpulkan Otomatis</h3>
+                        <ul>
+                            <li>Alamat IP, jenis browser, perangkat yang digunakan</li>
+                            <li>Halaman yang dikunjungi, waktu kunjungan, durasi</li>
+                            <li>Referral (dari mana Anda menemukan website kami)</li>
+                        </ul>
+
+                        <h3>c. Data Akun &amp; Autentikasi</h3>
+                        <ul>
+                            <li><strong>Email &amp; Password:</strong> Digunakan untuk login ke Dashboard Penulis. Password disimpan dalam bentuk <em>hash</em> (untuk login) dan <em>plain text</em> (untuk keperluan reset oleh Admin).</li>
+                            <li><strong>Riwayat Login:</strong> Waktu login terakhir, token sesi aktif (untuk keamanan).</li>
+                        </ul>
+
+                        <!-- 3 -->
+                        <h2 id="penggunaan"><span class="num">3</span> Cara Kami Menggunakan Data</h2>
+                        <p>Data Anda digunakan untuk:</p>
+                        <ul>
+                            <li><strong>Memproses pesanan</strong> — penerbitan, cetak, pengiriman buku</li>
+                            <li><strong>Membuat &amp; mengelola akun penulis</strong> — login, reset password, update profil</li>
+                            <li><strong>Komunikasi</strong> — menghubungi Anda terkait order, review naskah, royalti</li>
+                            <li><strong>Verifikasi pembayaran</strong> — memastikan bukti bayar valid</li>
+                            <li><strong>Distribusi royalti</strong> — membayarkan royalti penjualan buku</li>
+                            <li><strong>Peningkatan layanan</strong> — menganalisis pola penggunaan untuk memperbaiki pengalaman</li>
+                            <li><strong>Marketing (opsional)</strong> — mengirim info buku baru, promo, atau event literasi (dengan persetujuan Anda)</li>
+                            <li><strong>Kepatuhan hukum</strong> — memenuhi kewajiban hukum yang berlaku</li>
+                        </ul>
+
+                        <!-- 4 -->
+                        <h2 id="berbagi"><span class="num">4</span> Berbagi Data dengan Pihak Ketiga</h2>
+                        <p>Kami <strong>tidak menjual</strong> data pribadi Anda. Namun, kami dapat membagikan data terbatas kepada:</p>
+                        <ul>
+                            <li><strong>Ekspedisi pengiriman</strong> (JNE, J&amp;T, SiCepat, dll) — hanya nama, alamat, dan telepon untuk pengiriman buku</li>
+                            <li><strong>Penyedia layanan pembayaran</strong> (bank, QRIS, Lynk.id) — untuk memproses transaksi</li>
+                            <li><strong>Layanan analitik</strong> (jika digunakan) — data anonim untuk statistik website</li>
+                            <li><strong>Pihak berwenang</strong> — jika diwajibkan oleh hukum Indonesia</li>
+                        </ul>
+
+                        <!-- 5 -->
+                        <h2 id="cookie"><span class="num">5</span> Cookie &amp; Teknologi Serupa</h2>
+                        <p>
+                            Website kami dapat menggunakan <strong>cookie</strong> dan teknologi serupa untuk:
+                        </p>
+                        <ul>
+                            <li>Mengingat preferensi Anda (bahasa, tampilan)</li>
+                            <li>Menganalisis traffic dan perilaku pengunjung</li>
+                            <li>Meningkatkan kecepatan dan performa website</li>
+                            <li>Menyimpan sesi login penulis (via <em>localStorage</em>)</li>
+                        </ul>
+                        <p>
+                            Anda dapat menonaktifkan cookie melalui pengaturan browser. Namun, beberapa fitur website mungkin tidak berfungsi optimal tanpa cookie.
+                        </p>
+
+                        <!-- 6 -->
+                        <h2 id="keamanan"><span class="num">6</span> Keamanan Data</h2>
+                        <p>
+                            Kami menerapkan langkah-langkah keamanan teknis dan organisasi untuk melindungi data Anda dari akses tidak sah, perubahan, pengungkapan, atau penghancuran:
+                        </p>
+                        <ul>
+                            <li>Enkripsi HTTPS untuk semua komunikasi</li>
+                            <li>Akses terbatas ke data hanya untuk tim yang berwenang</li>
+                            <li>Password admin yang kuat dan dirotasi berkala</li>
+                            <li>Backup data berkala</li>
+                            <li>Token sesi login penulis yang kedaluwarsa otomatis</li>
+                        </ul>
+                        <p>
+                            Meski demikian, <strong>tidak ada sistem yang 100% aman</strong>. Kami tidak dapat menjamin keamanan mutlak, tapi kami berkomitmen melakukan yang terbaik.
+                        </p>
+
+                        <!-- 7 -->
+                        <h2 id="penyimpanan"><span class="num">7</span> Penyimpanan Data</h2>
+                        <ul>
+                            <li>Data pesanan disimpan minimal <strong>3 tahun</strong> untuk keperluan administrasi dan royalti</li>
+                            <li>Data komunikasi (chat, email) disimpan selama <strong>2 tahun</strong></li>
+                            <li>Data akun penulis (email, password, profil) disimpan selama <strong>akun masih aktif</strong> atau hingga permintaan penghapusan</li>
+                            <li>Data naskah disimpan selama <strong>hubungan kerja sama berlangsung</strong> dan dapat dihapus atas permintaan penulis</li>
+                            <li>Data analitik anonim disimpan hingga <strong>2 tahun</strong></li>
+                        </ul>
+
+                        <!-- 8 -->
+                        <h2 id="hak"><span class="num">8</span> Hak Anda</h2>
+                        <p>Sebagai pengguna, Anda memiliki hak untuk:</p>
+                        <ul>
+                            <li><strong>Mengakses</strong> — meminta salinan data pribadi yang kami simpan</li>
+                            <li><strong>Memperbaiki</strong> — meminta koreksi data yang tidak akurat</li>
+                            <li><strong>Menghapus</strong> — meminta penghapusan data (dengan batasan hukum tertentu)</li>
+                            <li><strong>Membatasi</strong> — meminta pembatasan pemrosesan data</li>
+                            <li><strong>Menolak</strong> — menolak penggunaan data untuk marketing</li>
+                            <li><strong>Portabilitas</strong> — meminta data dalam format yang dapat dipindahkan</li>
+                            <li><strong>Mengganti Password</strong> — melalui halaman Profil di Dashboard Penulis</li>
+                        </ul>
+                        <p>
+                            Untuk menggunakan hak-hak ini, hubungi kami di <strong>redaksikaryakata@gmail.com</strong> atau WhatsApp <strong>+62 895-6200-00033</strong>. Kami akan merespon dalam <strong>7 hari kerja</strong>.
+                        </p>
+
+                        <!-- 9 -->
+                        <h2 id="anak"><span class="num">9</span> Privasi Anak</h2>
+                        <p>
+                            Layanan Karyakata.id <strong>tidak ditujukan untuk anak di bawah usia 17 tahun</strong>. Kami tidak dengan sengaja mengumpulkan data dari anak di bawah usia tersebut.
+                        </p>
+                        <p>
+                            Jika Anda mengetahui bahwa anak di bawah 17 tahun telah memberikan data pribadi kepada kami, silakan hubungi kami. Kami akan segera menghapus data tersebut.
+                        </p>
+
+                        <!-- 10 -->
+                        <h2 id="perubahan"><span class="num">10</span> Perubahan Kebijakan</h2>
+                        <ul>
+                            <li>Kami dapat <strong>memperbarui Kebijakan Privasi</strong> ini kapan saja.</li>
+                            <li>Versi terbaru akan selalu tersedia di halaman ini dengan tanggal pembaruan.</li>
+                            <li>Perubahan signifikan akan diinformasikan melalui WhatsApp atau email (jika Anda terdaftar).</li>
+                            <li>Dengan terus menggunakan layanan kami, Anda dianggap menyetujui versi terbaru.</li>
+                        </ul>
+
+                        <!-- 11 -->
+                        <h2 id="kontak"><span class="num">11</span> Hubungi Kami</h2>
+                        <p>Untuk pertanyaan, keluhan, atau permintaan terkait privasi, hubungi kami:</p>
+                        <ul>
+                            <li><strong>Email:</strong> redaksikaryakata@gmail.com</li>
+                            <li><strong>WhatsApp:</strong> <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="text-sky-600 font-bold hover:underline">+62 895-6200-00033</a></li>
+                            <li><strong>Instagram:</strong> <a href="https://www.instagram.com/karyakata.publishing" target="_blank" rel="noopener" class="text-sky-600 font-bold hover:underline">@karyakata.publishing</a></li>
+                        </ul>
+
+                        <div class="mt-10 p-5 bg-sky-50 rounded-2xl border-2 border-sky-100">
+                            <p class="text-sm text-slate-600 leading-relaxed">
+                                <i class="fa-solid fa-shield-halved text-sky-500"></i>
+                                <b class="text-slate-800">Privasi Anda penting bagi kami.</b> Kami berkomitmen melindungi setiap informasi yang Anda percayakan kepada Karyakata.id.
+                            </p>
+                        </div>
+
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-16 md:py-20 bg-sky-50">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="font-display text-2xl md:text-3xl font-black text-slate-800 mb-3">
+                Pertanyaan soal Privasi?
+            </h3>
+            <p class="text-slate-600 text-base mb-6">
+                Tim kami siap membantu menjelaskan bagaimana kami melindungi data Anda.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                <a href="https://wa.me/62895620000033?text=Halo%20Karyakata%2C%20saya%20mau%20tanya%20soal%20privacy" target="_blank" rel="noopener" class="btn-gold px-7 py-3.5 rounded-full text-sm flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span>Chat via WhatsApp</span>
+                </a>
+                <a href="syarat.html" class="bg-white border-2 border-sky-500 text-sky-600 font-bold px-7 py-3.5 rounded-full text-sm flex items-center justify-center gap-2 hover:bg-sky-500 hover:text-white transition">
+                    <i class="fa-solid fa-file-contract"></i>
+                    <span>Syarat &amp; Ketentuan</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-300 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-12 gap-10 mb-12">
+
+                <div class="md:col-span-4">
+                    <div class="mb-5 flex items-center gap-3">
+                        <img src="assets/img/logo-footer.png" alt="Karyakata.id" class="h-16 w-auto" />
+                        <span class="font-display text-2xl font-black leading-none">
+                            <span class="text-white">Karyakata</span><span class="text-gold-400">.id</span>
+                        </span>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                        Penerbit buku modern Indonesia. Mitra komunitas Yatta.id. <br>
+                        <span class="text-gold-400 font-semibold">Berkarya dengan Kata, Berkata dengan Karya.</span>
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <a href="https://www.instagram.com/karyakata.publishing" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-gradient-to-br hover:from-pink-500 hover:to-purple-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-black flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </a>
+                        <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-green-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-red-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">MENU</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="index.html" class="text-slate-400 hover:text-sky-400 transition">Beranda</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Layanan</a></li>
+                        <li><a href="katalog.html" class="text-slate-400 hover:text-sky-400 transition">Katalog</a></li>
+                        <li><a href="blog.html" class="text-slate-400 hover:text-sky-400 transition">Blog</a></li>
+                        <li><a href="tentang.html" class="text-slate-400 hover:text-sky-400 transition">Tentang</a></li>
+                        <li><a href="kontak.html" class="text-slate-400 hover:text-sky-400 transition">Kontak</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">LAYANAN</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="layanan.html#paket" class="text-slate-400 hover:text-sky-400 transition">Paket Penerbitan</a></li>
+                        <li><a href="terbit-satuan.html" class="text-slate-400 hover:text-sky-400 transition">Terbit &amp; Cetak Satuan</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Editing &amp; Proofreading</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Layout &amp; Desain Cover</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Cetak &amp; Distribusi</a></li>
+                        <li><a href="kirim-naskah.html" class="text-slate-400 hover:text-sky-400 transition">Kirim Naskah</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">KONTAK</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-envelope text-sky-400 mt-0.5"></i>
+                            <span class="text-slate-400">redaksikaryakata@gmail.com</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-brands fa-whatsapp text-sky-400 mt-0.5"></i>
+                            <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="text-slate-400 hover:text-sky-400 transition">+62 895-6200-00033</a>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot text-sky-400 mt-0.5"></i>
+                            <span class="text-slate-400">Yogyakarta-Gorontalo/Indonesia</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-users text-sky-400 mt-0.5"></i>
+                            <a href="https://www.yatta.id" target="_blank" rel="noopener" class="text-slate-400 hover:text-sky-400 transition">Komunitas Kami — www.yatta.id</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-slate-500 text-xs text-center md:text-left">
+                    &copy; <span id="year"></span> Karyakata.id — Karyakata Publishing. All rights reserved.
+                </p>
+                <div class="flex items-center gap-6 text-xs">
+                    <a href="syarat.html" class="text-slate-500 hover:text-sky-400 transition">Syarat &amp; Ketentuan</a>
+                    <a href="privacy.html" class="text-sky-400 font-bold">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                const icon = menuBtn.querySelector('i');
+                if (mobileMenu.classList.contains('hidden')) {
+                    icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars');
+                } else {
+                    icon.classList.remove('fa-bars'); icon.classList.add('fa-xmark');
+                }
+            });
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    const icon = menuBtn.querySelector('i');
+                    icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars');
+                });
+            });
+        }
+
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 50) {
+                navbar.classList.add('shadow-lg', 'shadow-sky-500/5');
+            } else {
+                navbar.classList.remove('shadow-lg', 'shadow-sky-500/5');
+            }
+        });
+
+        const yearEl = document.getElementById('year');
+        if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+        console.log('%c📚 Karyakata.id — Privacy Policy', 'font-size: 16px; font-weight: bold; color: #0B7BE8;');
+    </script>
+
+</body>
+</html>

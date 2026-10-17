@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Layanan &amp; Paket Penerbitan — Karyakata.id</title>
+    <meta name="description" content="Paket penerbitan buku profesional dari Karyakata.id — dari Rp 650.000. Editing, layout, cover, ISBN/QRCBN, cetak, dan distribusi. Tersedia juga terbit & cetak satuan." />
+
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/img/favicon.png" />
+    <link rel="shortcut icon" href="assets/img/favicon.png" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: {
+                            50: '#EFF6FF',
+                            100: '#DBEAFE',
+                            200: '#BFDBFE',
+                            300: '#93C5FD',
+                            400: '#4A9EF0',
+                            500: '#0B7BE8',
+                            600: '#0967C7',
+                            700: '#0755A6',
+                            800: '#064485',
+                            900: '#053364',
+                        },
+                        gold: {
+                            100: '#FEF3E2',
+                            200: '#FDE0B5',
+                            300: '#FBC97D',
+                            400: '#F8B84A',
+                            500: '#F5A623',
+                            600: '#D98B0E',
+                            700: '#A86B0A',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        html { scroll-behavior: smooth; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.8s ease-out forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 166, 35, 0.7); }
+            50% { box-shadow: 0 0 0 12px rgba(245, 166, 35, 0); }
+        }
+        .pulse-glow { animation: pulseGlow 2s infinite; }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #0B7BE8 0%, #0967C7 40%, #0755A6 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero-gradient::after {
+            content: '';
+            position: absolute;
+            bottom: -50%; left: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(245, 166, 35, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .card-lift { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 24px 48px -16px rgba(11, 123, 232, 0.25);
+        }
+
+        .nav-link { color: #334155; font-weight: 500; transition: all .2s ease; }
+        .nav-link:hover { color: #0B7BE8; }
+        .nav-link.active { color: #0B7BE8; font-weight: 700; }
+
+        .btn-primary {
+            background: #0B7BE8;
+            color: white;
+            font-weight: 700;
+            transition: all .3s ease;
+            box-shadow: 0 8px 20px rgba(11, 123, 232, 0.35);
+        }
+        .btn-primary:hover {
+            background: #0967C7;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(11, 123, 232, 0.45);
+        }
+        .btn-gold {
+            background: #F5A623;
+            color: #422006;
+            font-weight: 700;
+            transition: all .3s ease;
+            box-shadow: 0 8px 20px rgba(245, 166, 35, 0.35);
+        }
+        .btn-gold:hover {
+            background: #D98B0E;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(245, 166, 35, 0.45);
+        }
+
+        /* FAQ Accordion */
+        .faq-item summary {
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 0;
+            font-weight: 700;
+            color: #1e293b;
+            transition: color .2s ease;
+        }
+        .faq-item summary::-webkit-details-marker { display: none; }
+        .faq-item summary:hover { color: #0B7BE8; }
+        .faq-item summary i {
+            transition: transform .3s ease;
+            color: #0B7BE8;
+            flex-shrink: 0;
+        }
+        .faq-item[open] summary i { transform: rotate(180deg); }
+        .faq-item[open] summary { color: #0B7BE8; }
+        .faq-item .faq-content {
+            padding-bottom: 20px;
+            color: #475569;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        /* Pricing featured */
+        .pricing-featured {
+            border-color: #F5A623;
+            box-shadow: 0 20px 60px -20px rgba(245, 166, 35, 0.4);
+            transform: scale(1.03);
+        }
+        @media (max-width: 1023px) {
+            .pricing-featured { transform: scale(1); }
+        }
+
+        /* Form inputs */
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #DBEAFE;
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            transition: all .2s ease;
+            background: white;
+        }
+        .form-input:focus { border-color: #0B7BE8; box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1); }
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+
+        /* Add-on checkbox */
+        .addon-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border: 2px solid #DBEAFE;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all .2s ease;
+            background: white;
+        }
+        .addon-item:hover { border-color: #93C5FD; background: #EFF6FF; }
+        .addon-item.checked { border-color: #0B7BE8; background: #EFF6FF; }
+        .addon-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #0B7BE8;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* Radio metode bayar */
+        .pay-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border: 2px solid #DBEAFE;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all .2s ease;
+            background: white;
+        }
+        .pay-option:hover { border-color: #93C5FD; }
+        .pay-option.checked { border-color: #0B7BE8; background: #EFF6FF; }
+        .pay-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #0B7BE8;
+            cursor: pointer;
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #eff6ff; }
+        ::-webkit-scrollbar-thumb { background: #4A9EF0; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0B7BE8; }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-b border-sky-100" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+
+                <a href="index.html" class="flex items-center gap-2 group">
+                    <img src="assets/img/logo.png" alt="Karyakata.id" class="h-10 md:h-12 w-auto group-hover:scale-105 transition" />
+                    <span class="font-display text-xl md:text-2xl font-black leading-none">
+                        <span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span>
+                    </span>
+                </a>
+
+                <div class="hidden lg:flex items-center gap-8 text-sm">
+                    <a href="index.html" class="nav-link">Beranda</a>
+                    <a href="layanan.html" class="nav-link active">Layanan</a>
+                    <a href="katalog.html" class="nav-link">Katalog</a>
+                    <a href="blog.html" class="nav-link">Blog</a>
+                    <a href="tentang.html" class="nav-link">Tentang</a>
+                    <a href="kontak.html" class="nav-link">Kontak</a>
+                </div>
+
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="author/author-login.html" class="text-sky-700 bg-sky-50 hover:bg-sky-100 px-5 py-2.5 rounded-full text-sm font-bold transition flex items-center gap-2">
+                        <i class="fa-solid fa-user-pen"></i>
+                        <span>Login Penulis</span>
+                    </a>
+                    <a href="kirim-naskah.html" class="btn-gold px-5 py-2.5 rounded-full text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Kirim Naskah</span>
+                    </a>
+                </div>
+
+                <button id="menuBtn" class="lg:hidden w-10 h-10 rounded-lg bg-sky-50 flex items-center justify-center text-sky-700">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobileMenu" class="hidden lg:hidden bg-white border-t border-sky-100 px-4 py-4 space-y-1">
+            <a href="index.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Beranda</a>
+            <a href="layanan.html" class="block px-4 py-2.5 bg-sky-50 text-sky-700 rounded-xl font-bold">Layanan</a>
+            <a href="katalog.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Katalog</a>
+            <a href="blog.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Blog</a>
+            <a href="tentang.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Tentang</a>
+            <a href="kontak.html" class="block px-4 py-2.5 text-slate-700 hover:bg-sky-50 rounded-xl font-medium">Kontak</a>
+            <a href="author/author-login.html" class="block text-center bg-sky-50 text-sky-700 px-5 py-3 rounded-xl text-sm font-bold mt-2">
+                <i class="fa-solid fa-user-pen mr-1"></i> Login Penulis
+            </a>
+            <a href="kirim-naskah.html" class="block text-center btn-gold px-5 py-3 rounded-xl text-sm font-bold mt-2">
+                <i class="fa-solid fa-paper-plane mr-1"></i> Kirim Naskah
+            </a>
+        </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <section class="hero-gradient pt-32 md:pt-40 pb-16 md:pb-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <nav class="flex items-center justify-center lg:justify-start gap-2 text-sky-200 text-xs md:text-sm mb-6 animate-fade-up">
+                <a href="index.html" class="hover:text-white transition">Beranda</a>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                <span class="text-white font-bold">Layanan</span>
+            </nav>
+
+            <div class="text-center lg:text-left max-w-3xl">
+                <h1 class="font-display text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.1] animate-fade-up delay-1">
+                    Layanan &amp; <span class="text-gold-300">Paket Penerbitan</span>
+                </h1>
+                <p class="text-sky-100 text-base md:text-lg mt-6 leading-relaxed animate-fade-up delay-2">
+                    Dari naskah mentah sampai buku siap jual di toko online. Pilih paket penerbitan lengkap, atau terbitkan naskahmu secara satuan.
+                </p>
+            </div>
+        </div>
+
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
+                <path d="M0 80L60 74.7C120 69.3 240 58.7 360 58.7C480 58.7 600 69.3 720 69.3C840 69.3 960 58.7 1080 53.3C1200 48 1320 48 1380 48L1440 48V80H0Z" fill="white"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- YANG KAMU DAPATKAN -->
+    <section class="py-16 md:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+                <div class="inline-flex items-center gap-2 bg-sky-100 border border-sky-200 rounded-full px-4 py-1.5 mb-4">
+                    <i class="fa-solid fa-gift text-sky-600 text-xs"></i>
+                    <span class="text-sky-700 text-xs md:text-sm font-bold tracking-wide">YANG KAMU DAPATKAN</span>
+                </div>
+                <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight">
+                    Semua Termasuk dalam <span class="text-sky-600">Setiap Paket</span>
+                </h2>
+                <p class="text-slate-600 text-base md:text-lg mt-4">
+                    Layanan lengkap dari naskah mentah sampai buku siap jual.
+                </p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <div class="card-lift bg-white rounded-2xl p-7 border-2 border-sky-100 hover:border-sky-300">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center text-lg mb-5 shadow-lg shadow-sky-500/30">
+                        <i class="fa-solid fa-spell-check"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-black text-slate-800 mb-2">Penyuntingan Naskah</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Editor profesional memperbaiki ejaan, tata bahasa, struktur, dan konsistensi naskahmu.
+                    </p>
+                </div>
+
+                <div class="card-lift bg-white rounded-2xl p-7 border-2 border-sky-100 hover:border-sky-300">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 text-white flex items-center justify-center text-lg mb-5 shadow-lg shadow-gold-500/30">
+                        <i class="fa-solid fa-palette"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-black text-slate-800 mb-2">Layout &amp; Desain Cover</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Isi buku ditata rapi dan nyaman dibaca. Cover didesain eksklusif sesuai genre bukumu.
+                    </p>
+                </div>
+
+                <div class="card-lift bg-white rounded-2xl p-7 border-2 border-sky-100 hover:border-sky-300">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center text-lg mb-5 shadow-lg shadow-sky-500/30">
+                        <i class="fa-solid fa-barcode"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-black text-slate-800 mb-2">ISBN/QRCBN Resmi</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Setiap buku terbit dengan QISBN/RCBN resmi. Legal, aman, dan diakui secara nasional.
+                    </p>
+                </div>
+
+                <div class="card-lift bg-white rounded-2xl p-7 border-2 border-sky-100 hover:border-sky-300">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 text-white flex items-center justify-center text-lg mb-5 shadow-lg shadow-gold-500/30">
+                        <i class="fa-solid fa-print"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-black text-slate-800 mb-2">Cetak Berkualitas</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Dicetak dengan kertas dan jilid terbaik. Kualitas hasil cetak yang membanggakan.
+                    </p>
+                </div>
+
+                <div class="card-lift bg-white rounded-2xl p-7 border-2 border-sky-100 hover:border-sky-300">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center text-lg mb-5 shadow-lg shadow-sky-500/30">
+                        <i class="fa-solid fa-store"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-black text-slate-800 mb-2">Promo di Bookstore</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Bukumu dipromosikan & dijual di Karyakata Bookstore. Jangkauan pembaca lebih luas.
+                    </p>
+                </div>
+
+                <div class="card-lift bg-white rounded-2xl p-7 border-2 border-sky-100 hover:border-sky-300">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 text-white flex items-center justify-center text-lg mb-5 shadow-lg shadow-gold-500/30">
+                        <i class="fa-solid fa-certificate"></i>
+                    </div>
+                    <h3 class="font-display text-lg font-black text-slate-800 mb-2">Sertifikat &amp; Bookmark</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Kamu dapat sertifikat penulis (PDF) dan bookmark eksklusif untuk buku terbitanmu.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- PAKET PENERBITAN -->
+    <section class="py-16 md:py-24 bg-sky-50" id="paket">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+                <div class="inline-flex items-center gap-2 bg-gold-100 border border-gold-200 rounded-full px-4 py-1.5 mb-4">
+                    <i class="fa-solid fa-tags text-gold-600 text-xs"></i>
+                    <span class="text-gold-700 text-xs md:text-sm font-bold tracking-wide">PAKET PENERBITAN</span>
+                </div>
+                <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight">
+                    Pilih Paket yang <span class="text-sky-600">Cocok</span>
+                </h2>
+                <p class="text-slate-600 text-base md:text-lg mt-4">
+                    Tiga pilihan paket penerbitan untuk berbagai kebutuhan penulis — dari yang baru mulai sampai yang mau maksimal.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto items-stretch">
+
+                <!-- PAKET BUKU 650K -->
+                <div class="bg-white rounded-3xl p-8 border-2 border-sky-100 flex flex-col relative">
+                    <div class="mb-6">
+                        <div class="inline-flex items-center gap-2 bg-sky-100 text-sky-700 rounded-full px-3 py-1 mb-3">
+                            <i class="fa-solid fa-book text-[10px]"></i>
+                            <span class="text-[10px] font-bold tracking-widest">UNTUK PEMULA</span>
+                        </div>
+                        <h3 class="font-display text-2xl font-black text-slate-800 mb-1">Paket Buku</h3>
+                        <p class="text-slate-500 text-sm">Paket hemat untuk penulis pertama kali.</p>
+                    </div>
+
+                    <div class="mb-6 pb-6 border-b border-sky-100">
+                        <div class="font-display text-3xl md:text-4xl font-black text-slate-800">
+                            Rp 650.000
+                        </div>
+                    </div>
+
+                    <ul class="space-y-3 mb-8 flex-1">
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                            <span>Ukuran buku 13×19 atau 14×20</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                            <span>ISBN/QRCBN resmi</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                            <span><b>Gratis 1 Buku</b></span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                            <span>Gratis Penyuntingan</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                            <span>Desain Cover 1 Opsi (maks. 3 revisi)</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                            <span>Sertifikat PDF</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                            <span>Gratis Bookmark</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                            <span>Promo &amp; penjualan di Karyakata Bookstore</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                            <span><b>Royalti Penulis 15%</b> harga per buku</span>
+                        </li>
+                    </ul>
+
+                    <a href="order-paket.html?paket=650k" class="block text-center bg-white border-2 border-sky-500 text-sky-600 font-bold px-6 py-3.5 rounded-full text-sm hover:bg-sky-500 hover:text-white transition">
+                        Pilih Paket Ini
+                    </a>
+                </div>
+
+                <!-- PAKET BUKU PLUS 850K (FEATURED) -->
+                <div class="pricing-featured bg-white rounded-3xl p-8 border-2 flex flex-col relative">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2">
+                        <div class="bg-gold-500 text-white text-xs font-bold tracking-widest px-4 py-1.5 rounded-full shadow-lg shadow-gold-500/40 whitespace-nowrap">
+                            <i class="fa-solid fa-star text-[10px] mr-1"></i>
+                            PALING POPULER
+                        </div>
+                    </div>
+
+                    <div class="mb-6 mt-2">
+                        <div class="inline-flex items-center gap-2 bg-gold-100 text-gold-700 rounded-full px-3 py-1 mb-3">
+                            <i class="fa-solid fa-crown text-[10px]"></i>
+                            <span class="text-[10px] font-bold tracking-widest">REKOMENDASI</span>
+                        </div>
+                        <h3 class="font-display text-2xl font-black text-slate-800 mb-1">Paket Buku Plus</h3>
+                        <p class="text-slate-500 text-sm">Paling banyak dipilih penulis indie.</p>
+                    </div>
+
+                    <div class="mb-6 pb-6 border-b border-gold-100">
+                        <div class="font-display text-3xl md:text-4xl font-black text-slate-800">
+                            Rp 850.000
+                        </div>
+                    </div>
+
+                    <ul class="space-y-3 mb-8 flex-1">
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-gold-500 mt-0.5"></i>
+                            <span>Ukuran buku 13×19 atau 14×20</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-gold-500 mt-0.5"></i>
+                            <span>ISBN/QRCBN resmi</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-gold-500 mt-0.5"></i>
+                            <span><b>Gratis 3 Buku</b></span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-gold-500 mt-0.5"></i>
+                            <span><b>Gratis Ongkir</b></span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-gold-500 mt-0.5"></i>
+                            <span>Gratis Penyuntingan</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-gold-500 mt-0.5"></i>
+                            <span>Desain Cover 2 Opsi (revisi sepuasnya)</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-gold-500 mt-0.5"></i>
+                            <span>Sertifikat PDF</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-gold-500 mt-0.5"></i>
+                            <span>Gratis Bookmark</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-gold-500 mt-0.5"></i>
+                            <span>Promo &amp; penjualan di Karyakata Bookstore</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-gold-500 mt-0.5"></i>
+                            <span><b>Royalti penulis 20%</b> harga per buku</span>
+                        </li>
+                    </ul>
+
+                    <a href="order-paket.html?paket=850k" class="block text-center btn-gold px-6 py-3.5 rounded-full text-sm">
+                        Pilih Paket Ini
+                    </a>
+                </div>
+
+                <!-- PAKET MODUL 1JT -->
+                <div class="bg-white rounded-3xl p-8 border-2 border-sky-100 flex flex-col relative">
+                    <div class="mb-6">
+                        <div class="inline-flex items-center gap-2 bg-sky-100 text-sky-700 rounded-full px-3 py-1 mb-3">
+                            <i class="fa-solid fa-gem text-[10px]"></i>
+                            <span class="text-[10px] font-bold tracking-widest">UNTUK MODUL &amp; KTI</span>
+                        </div>
+                        <h3 class="font-display text-2xl font-black text-slate-800 mb-1">Paket Modul</h3>
+                        <p class="text-slate-500 text-sm">Untuk modul, KTI, dan buku akademik.</p>
+                    </div>
+
+                    <div class="mb-6 pb-6 border-b border-sky-100">
+                        <div class="font-display text-3xl md:text-4xl font-black text-slate-800">
+                            Rp 1.000.000
+                        </div>
+                    </div>
+
+                    <ul class="space-y-3 mb-8 flex-1">
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                            <span>Ukuran modul min. 15×21, maks. 17×24</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                            <span>ISBN/QRCBN resmi</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                            <span><b>Gratis 2 Buku</b> (gratis ongkir)</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                            <span>Gratis Penyuntingan</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                            <span>Gratis Desain Cover</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                            <span>Sertifikat PDF</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                            <span>Gratis Bookmark</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                            <span>Promo &amp; penjualan di Karyakata Bookstore</span>
+                        </li>
+                        <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                            <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                            <span><b>Royalti Penulis 20%</b> harga per buku</span>
+                        </li>
+                    </ul>
+
+                    <a href="order-paket.html?paket=1jt" class="block text-center bg-white border-2 border-sky-500 text-sky-600 font-bold px-6 py-3.5 rounded-full text-sm hover:bg-sky-500 hover:text-white transition">
+                        Pilih Paket Ini
+                    </a>
+                </div>
+
+            </div>
+
+            <p class="text-center text-slate-500 text-sm mt-10 max-w-2xl mx-auto">
+                <i class="fa-solid fa-info-circle text-sky-500"></i>
+                Klik "Pilih Paket Ini" untuk order via form. Untuk <b>terbit &amp; cetak satuan</b>, scroll ke bawah.
+            </p>
+
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- TERBIT & CETAK SATUAN (KARTU RINGKAS) -->
+    <!-- ============================================ -->
+    <section class="py-16 md:py-24 bg-white" id="satuan">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+                <div class="inline-flex items-center gap-2 bg-sky-100 border border-sky-200 rounded-full px-4 py-1.5 mb-4">
+                    <i class="fa-solid fa-book-bookmark text-sky-600 text-xs"></i>
+                    <span class="text-sky-700 text-xs md:text-sm font-bold tracking-wide">TERBIT &amp; CETAK SATUAN</span>
+                </div>
+                <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight">
+                    Naskah Sudah Jadi? <span class="text-sky-600">Terbitkan Sekarang</span>
+                </h2>
+                <p class="text-slate-600 text-base md:text-lg mt-4">
+                    Punya naskah yang sudah siap terbit? Terbitkan secara satuan dengan layanan tambahan yang bisa disesuaikan kebutuhanmu.
+                </p>
+            </div>
+
+            <div class="max-w-2xl mx-auto">
+                <div class="card-lift bg-gradient-to-br from-white to-sky-50 rounded-3xl p-8 md:p-10 border-2 border-sky-200 hover:border-sky-400 relative overflow-hidden">
+
+                    <div class="absolute -top-20 -right-20 w-48 h-48 bg-sky-100 rounded-full opacity-60"></div>
+                    <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-gold-100 rounded-full opacity-60"></div>
+
+                    <div class="relative">
+                        <div class="inline-flex items-center gap-2 bg-gold-500 text-white rounded-full px-3 py-1 mb-5">
+                            <i class="fa-solid fa-star text-[10px]"></i>
+                            <span class="text-[10px] font-bold tracking-widest">MIN. 30 EKSEMPLAR</span>
+                        </div>
+
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-700 flex items-center justify-center text-white text-2xl shadow-lg shadow-sky-500/30 mb-5">
+                            <i class="fa-solid fa-book-bookmark"></i>
+                        </div>
+
+                        <h3 class="font-display text-2xl md:text-3xl font-black text-slate-800 mb-3">
+                            Terbit &amp; Cetak Satuan
+                        </h3>
+
+                        <p class="text-slate-600 text-sm md:text-base leading-relaxed mb-6">
+                            Khusus untuk naskah yang sudah jadi dan siap terbit. Bisa tambah layanan <b>desain cover, layout, editing, ilustrasi, HAKI</b>, dan lainnya sesuai kebutuhanmu.
+                        </p>
+
+                        <ul class="space-y-2.5 mb-8">
+                            <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                                <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                                <span>Minimal order 30 eksemplar</span>
+                            </li>
+                            <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                                <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                                <span>Harga otomatis sesuai jumlah halaman &amp; ukuran</span>
+                            </li>
+                            <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                                <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                                <span>Layanan tambahan opsional (9 pilihan)</span>
+                            </li>
+                            <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                                <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                                <span>Bisa cek ongkir mandiri via Berdu.id</span>
+                            </li>
+                            <li class="flex items-start gap-2.5 text-sm text-slate-700">
+                                <i class="fa-solid fa-circle-check text-sky-500 mt-0.5"></i>
+                                <span>Royalti 15% dari penjualan di katalog</span>
+                            </li>
+                        </ul>
+
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <a href="terbit-satuan.html" class="flex-1 btn-primary px-6 py-3.5 rounded-full text-sm flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-calculator"></i>
+                                <span>Mulai Order</span>
+                            </a>
+                            <a href="https://wa.me/62895620000033?text=Halo%20Karyakata%2C%20saya%20mau%20tanya%20soal%20terbit%20satuan" target="_blank" rel="noopener" class="flex-1 bg-white border-2 border-sky-500 text-sky-600 font-bold px-6 py-3.5 rounded-full text-sm flex items-center justify-center gap-2 hover:bg-sky-500 hover:text-white transition">
+                                <i class="fa-brands fa-whatsapp"></i>
+                                <span>Tanya Dulu</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <section class="py-16 md:py-20 bg-red-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10">
+                <div class="inline-flex items-center gap-2 bg-red-100 border border-red-200 rounded-full px-4 py-1.5 mb-4">
+                    <i class="fa-solid fa-triangle-exclamation text-red-600 text-xs"></i>
+                    <span class="text-red-700 text-xs md:text-sm font-bold tracking-wide">PERHATIAN</span>
+                </div>
+                <h2 class="font-display text-2xl sm:text-3xl md:text-4xl font-black text-red-700 leading-tight">
+                    Ketentuan ISBN &amp; QRCBN
+                </h2>
+            </div>
+
+            <div class="bg-white rounded-2xl border-2 border-red-200 p-6 md:p-8 space-y-5">
+                <div class="flex items-start gap-3">
+                    <div class="w-7 h-7 rounded-full bg-red-500 text-white flex items-center justify-center font-black text-xs flex-shrink-0 mt-0.5">1</div>
+                    <p class="text-slate-700 text-sm leading-relaxed">
+                        <b class="text-red-700">Pengajuan ISBN</b> di penerbit kami perlu divalidasi kelayakan dan kualitas naskahnya. Jika tidak memenuhi ketentuan, naskah tidak akan mendapatkan ISBN. <b>Sebagai gantinya, kami tetap memberikan layanan penerbitan dengan nomor identitas pengganti ISBN yakni QRCBN.</b>
+                    </p>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <div class="w-7 h-7 rounded-full bg-red-500 text-white flex items-center justify-center font-black text-xs flex-shrink-0 mt-0.5">2</div>
+                    <div class="text-slate-700 text-sm leading-relaxed">
+                        <b class="text-red-700">Naskah/buku yang tidak perlu mendapatkan ISBN</b> berupa:
+                        <ul class="list-disc list-inside mt-2 space-y-1 ml-2 text-slate-600">
+                            <li>Antologi buku untuk koleksi Komunitas/Organisasi</li>
+                            <li>Tugas mahasiswa</li>
+                            <li>Buku hanya untuk keperluan pelaporan kegiatan/seminar/saraschan/atau sejenisnya</li>
+                            <li>Modul, prosiding, KTI, orasi ilmiah, dan sejenisnya</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <div class="w-7 h-7 rounded-full bg-red-500 text-white flex items-center justify-center font-black text-xs flex-shrink-0 mt-0.5">3</div>
+                    <p class="text-slate-700 text-sm leading-relaxed">
+                        Anda tetap dapat mengajukan ISBN dengan syarat <b class="text-red-700">mengubah bukunya menjadi buku teks</b> dengan prinsip <b class="text-red-700">wajib didistribusikan</b> baik gratis atau berbayar.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="py-16 md:py-24 bg-sky-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+                <div class="inline-flex items-center gap-2 bg-sky-100 border border-sky-200 rounded-full px-4 py-1.5 mb-4">
+                    <i class="fa-solid fa-circle-question text-sky-600 text-xs"></i>
+                    <span class="text-sky-700 text-xs md:text-sm font-bold tracking-wide">FAQ</span>
+                </div>
+                <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 leading-tight">
+                    Pertanyaan yang <span class="text-sky-600">Sering Ditanya</span>
+                </h2>
+                <p class="text-slate-600 text-base md:text-lg mt-4">
+                    Belum menemukan jawaban? <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="text-sky-600 font-bold hover:text-sky-700">Chat kami langsung</a>.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-3xl p-6 md:p-8 divide-y divide-sky-100">
+
+                <details class="faq-item">
+                    <summary>
+                        <span>Berapa lama proses penerbitan sampai buku jadi?</span>
+                        <i class="fa-solid fa-chevron-down text-sm"></i>
+                    </summary>
+                    <div class="faq-content">
+                        Rata-rata 4-8 minggu untuk paket penerbitan, dan 3-6 minggu untuk terbit &amp; cetak satuan (kalau naskah sudah siap). Tergantung kompleksitas naskah, jumlah revisi, dan antrian produksi. Kamu akan dapat update progress secara berkala.
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>
+                        <span>Apa bedanya ISBN dan QRCBN?</span>
+                        <i class="fa-solid fa-chevron-down text-sm"></i>
+                    </summary>
+                    <div class="faq-content">
+                        <b>ISBN</b> (International Standard Book Number) adalah nomor identitas resmi untuk buku yang dijual umum, diterbitkan oleh Perpusnas RI. <b>QRCBN</b> (Quick Response Code Book Number) adalah sistem nomor identitas alternatif untuk buku komunitas, antologi, atau buku yang tidak masuk distribusi komersial nasional. Keduanya legal dan resmi. Lihat ketentuan di section <b>Perhatian</b> di atas.
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>
+                        <span>Apakah saya masih punya hak cipta atas buku saya?</span>
+                        <i class="fa-solid fa-chevron-down text-sm"></i>
+                    </summary>
+                    <div class="faq-content">
+                        <b>100% ya.</b> Hak cipta tetap milik penulis. Karyakata hanya memegang izin penerbitan &amp; distribusi sesuai kesepakatan. Kamu bebas mencetak, menjual, atau menerbitkan ulang di masa depan.
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>
+                        <span>Berapa royalti yang saya dapat dari penjualan buku?</span>
+                        <i class="fa-solid fa-chevron-down text-sm"></i>
+                    </summary>
+                    <div class="faq-content">
+                        Royalti standar kami: <b>15% dari harga jual buku</b> di katalog Karyakata. Royalti dibayarkan <b>setiap 3 bulan</b> setelah buku resmi terbit dan terjual. Penulis bisa memilih royalti ditransfer cash atau dijadikan potongan harga untuk pembelian buku berikutnya (opsional).
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>
+                        <span>Naskah dengan format apa yang diterima?</span>
+                        <i class="fa-solid fa-chevron-down text-sm"></i>
+                    </summary>
+                    <div class="faq-content">
+                        Kami menerima <b>Microsoft Word (.docx)</b> atau <b>Google Docs</b>. Untuk puisi &amp; buku anak, boleh disertai file gambar/ilustrasi. Belum punya file rapi? Kirim apa adanya dulu — kami bantu rapikan.
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>
+                        <span>Apakah bisa cicil pembayaran?</span>
+                        <i class="fa-solid fa-chevron-down text-sm"></i>
+                    </summary>
+                    <div class="faq-content">
+                        Bisa. Skema umum: <b>50% DP di awal</b>, <b>50% pelunasan sebelum cetak</b>. Untuk paket Premium bisa diatur 3x termin. Silakan diskusikan dengan tim kami via WhatsApp.
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>
+                        <span>Kalau naskah saya ditolak, apakah uang kembali?</span>
+                        <i class="fa-solid fa-chevron-down text-sm"></i>
+                    </summary>
+                    <div class="faq-content">
+                        Kalau naskah ditolak di tahap review (sebelum pembayaran), tidak ada biaya sama sekali. Kalau sudah bayar dan di tengah jalan ada kendala, kami akan carikan solusi terbaik — refund sebagian atau alihkan ke layanan lain.
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>
+                        <span>Bagaimana cara cek ongkir dan pembayaran?</span>
+                        <i class="fa-solid fa-chevron-down text-sm"></i>
+                    </summary>
+                    <div class="faq-content">
+                        Untuk <b>cek ongkir</b>, gunakan link <a href="https://berdu.id/cek-ongkir" target="_blank" rel="noopener" class="text-sky-600 font-bold">Berdu.id</a> yang tersedia di form. Isi kota asal (Jakarta Pusat), kota tujuan, dan berat paket (otomatis dari jumlah eksemplar). Untuk <b>pembayaran</b>, kami menerima transfer bank dan QRIS. Upload bukti bayar di form, admin akan verifikasi.
+                    </div>
+                </details>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="py-16 md:py-24 relative overflow-hidden">
+        <div class="hero-gradient absolute inset-0"></div>
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+
+            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-1.5 mb-6">
+                <span class="w-2 h-2 rounded-full bg-gold-400 pulse-glow"></span>
+                <span class="text-white/90 text-xs md:text-sm font-semibold tracking-wide">MASIH BINGUNG?</span>
+            </div>
+
+            <h2 class="font-display text-4xl sm:text-5xl md:text-6xl font-black text-white leading-tight mb-6">
+                Konsultasi <span class="text-gold-300">Gratis</span> Dulu
+            </h2>
+
+            <p class="text-sky-100 text-base md:text-lg leading-relaxed mb-10 max-w-2xl mx-auto">
+                Ceritakan naskahmu, tim kami akan rekomendasikan paket atau layanan paling cocok. Tanpa biaya, tanpa paksaan.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="https://wa.me/62895620000033?text=Halo%20Karyakata%2C%20saya%20mau%20konsultasi" target="_blank" rel="noopener" class="btn-gold px-8 py-4 rounded-full text-sm flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span>Chat via WhatsApp</span>
+                </a>
+                <a href="kontak.html" class="bg-white/10 backdrop-blur-md hover:bg-white/20 border border-white/30 text-white font-bold px-8 py-4 rounded-full text-sm flex items-center justify-center gap-2 transition">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span>Kirim Pesan</span>
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-300 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-12 gap-10 mb-12">
+
+                <div class="md:col-span-4">
+                    <div class="mb-5 flex items-center gap-3">
+                        <img src="assets/img/logo-footer.png" alt="Karyakata.id" class="h-16 w-auto" />
+                        <span class="font-display text-2xl font-black leading-none">
+                            <span class="text-white">Karyakata</span><span class="text-gold-400">.id</span>
+                        </span>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                        Penerbit buku modern Indonesia. Mitra komunitas Yatta.id. <br>
+                        <span class="text-gold-400 font-semibold">Berkarya dengan Kata, Berkata dengan Karya.</span>
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <a href="https://www.instagram.com/karyakata.publishing" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-gradient-to-br hover:from-pink-500 hover:to-purple-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-black flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </a>
+                        <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-green-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="#" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-red-600 flex items-center justify-center text-slate-400 hover:text-white transition">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">MENU</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="index.html" class="text-slate-400 hover:text-sky-400 transition">Beranda</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Layanan</a></li>
+                        <li><a href="katalog.html" class="text-slate-400 hover:text-sky-400 transition">Katalog</a></li>
+                        <li><a href="blog.html" class="text-slate-400 hover:text-sky-400 transition">Blog</a></li>
+                        <li><a href="tentang.html" class="text-slate-400 hover:text-sky-400 transition">Tentang</a></li>
+                        <li><a href="kontak.html" class="text-slate-400 hover:text-sky-400 transition">Kontak</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">LAYANAN</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="order-paket.html" class="text-slate-400 hover:text-sky-400 transition">Order Paket</a></li>
+                        <li><a href="terbit-satuan.html" class="text-slate-400 hover:text-sky-400 transition">Terbit &amp; Cetak Satuan</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Editing &amp; Proofreading</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Layout &amp; Desain Cover</a></li>
+                        <li><a href="layanan.html" class="text-slate-400 hover:text-sky-400 transition">Cetak &amp; Distribusi</a></li>
+                        <li><a href="kirim-naskah.html" class="text-slate-400 hover:text-sky-400 transition">Kirim Naskah</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3">
+                    <h4 class="font-display font-black text-white text-sm mb-4 tracking-wide">KONTAK</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-envelope text-sky-400 mt-0.5"></i>
+                            <span class="text-slate-400">redaksikaryakata@gmail.com</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-brands fa-whatsapp text-sky-400 mt-0.5"></i>
+                            <a href="https://wa.me/62895620000033" target="_blank" rel="noopener" class="text-slate-400 hover:text-sky-400 transition">+62 895-6200-00033</a>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot text-sky-400 mt-0.5"></i>
+                            <span class="text-slate-400">Yogyakarta-Gorontalo/Indonesia</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-users text-sky-400 mt-0.5"></i>
+                            <a href="https://www.yatta.id" target="_blank" rel="noopener" class="text-slate-400 hover:text-sky-400 transition">Komunitas Kami — www.yatta.id</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-slate-500 text-xs text-center md:text-left">
+                    &copy; <span id="year"></span> Karyakata.id — Karyakata Publishing. All rights reserved.
+                </p>
+                <div class="flex items-center gap-6 text-xs">
+                    <a href="syarat.html" class="text-slate-500 hover:text-sky-400 transition">Syarat &amp; Ketentuan</a>
+                    <a href="privacy.html" class="text-slate-500 hover:text-sky-400 transition">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script>
+        // Mobile menu
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                const icon = menuBtn.querySelector('i');
+                if (mobileMenu.classList.contains('hidden')) {
+                    icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars');
+                } else {
+                    icon.classList.remove('fa-bars'); icon.classList.add('fa-xmark');
+                }
+            });
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    const icon = menuBtn.querySelector('i');
+                    icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars');
+                });
+            });
+        }
+
+        // Navbar scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 50) {
+                navbar.classList.add('shadow-lg', 'shadow-sky-500/5');
+            } else {
+                navbar.classList.remove('shadow-lg', 'shadow-sky-500/5');
+            }
+        });
+
+        // Year
+        const yearEl = document.getElementById('year');
+        if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+        console.log('%c📚 Karyakata.id — Layanan', 'font-size: 16px; font-weight: bold; color: #0B7BE8;');
+    </script>
+
+</body>
+</html>
