@@ -723,10 +723,47 @@
 
             currentPost = data;
 
-            // Update meta tags
+            // Update meta tags dasar
             document.title = `${data.title} — Karyakata.id`;
             const metaDesc = document.querySelector('meta[name="description"]');
             if (metaDesc) metaDesc.setAttribute('content', data.excerpt || stripHtml(data.content).substring(0, 160));
+
+            // ========================================
+            // INJECT OPEN GRAPH TAGS UNTUK THUMBNAIL
+            // ========================================
+            const coverUrl = getCoverUrl(data); // Ambil URL cover
+            const currentUrl = window.location.href;
+
+            // Fungsi bantuan untuk membuat/mengupdate tag meta
+            function setMetaTag(property, content) {
+                let element = document.querySelector(`meta[property="${property}"]`);
+                if (!element) {
+                    element = document.createElement('meta');
+                    element.setAttribute('property', property);
+                    document.head.appendChild(element);
+                }
+                element.setAttribute('content', content);
+            }
+
+            // Tag wajib Open Graph
+            setMetaTag('og:title', data.title);
+            setMetaTag('og:description', data.excerpt || stripHtml(data.content).substring(0, 160));
+            setMetaTag('og:url', currentUrl);
+            setMetaTag('og:type', 'article');
+            
+            // Tag Gambar (Thumbnail)
+            if (coverUrl) {
+                setMetaTag('og:image', coverUrl);
+                // Opsional: Tambahkan dimensi agar lebih cepat dirender
+                setMetaTag('og:image:width', '1200');
+                setMetaTag('og:image:height', '630');
+            }
+
+            // Tag untuk Twitter/X
+            setMetaTag('twitter:card', 'summary_large_image');
+            setMetaTag('twitter:title', data.title);
+            setMetaTag('twitter:description', data.excerpt || stripHtml(data.content).substring(0, 160));
+            if (coverUrl) setMetaTag('twitter:image', coverUrl);
 
             renderPost(data);
             incrementViews(data.id);
