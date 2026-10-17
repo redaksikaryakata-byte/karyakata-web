@@ -607,55 +607,44 @@ async function adminKonfirmasiDP(orderId, jumlahDp, buktiUrl = null, adminEmail 
     if (error) return { success: false, error: error.message };
     return data;
 }
+
 // ========================================
-// ADMIN — GENERATE AUTHOR ACCESS (Langsung ke Tabel)
+// ADMIN — GENERATE AUTHOR ACCESS
 // ========================================
 async function adminGenerateAuthorAccess(orderId, adminEmail, namaPenulis) {
     try {
-        // 1. Ambil data order
         const { data: order, error: errOrder } = await supabaseClient
             .from('orders').select('*').eq('id', orderId).single();
         if (errOrder) throw errOrder;
 
         const email = order.email_pemesan.toLowerCase();
-        
-        // 2. Generate password acak 8 karakter
         const password = Math.random().toString(36).slice(-8);
 
-        // 3. Cek apakah author sudah ada
         const { data: existingAuthor } = await supabaseClient
             .from('authors').select('*').eq('email', email).maybeSingle();
 
         let authError;
         if (!existingAuthor) {
-            // Jika belum ada, insert baru
             const { error: insErr } = await supabaseClient.from('authors').insert({
                 email: email,
                 nama_penulis: namaPenulis,
-                password_hash: password // Simpan plain text dulu, nanti diganti di DB
+                password_hash: password 
             });
             authError = insErr;
         } else {
-            // Jika sudah ada, update password
             const { error: updErr } = await supabaseClient.from('authors')
                 .update({ password_hash: password, updated_at: new Date().toISOString() })
                 .eq('email', email);
-            authErr = updErr;
+            authError = updErr;
         }
 
         if (authError) throw authError;
 
-        // 4. Aktifkan dashboard di tabel orders
         await supabaseClient.from('orders')
             .update({ dashboard_aktif: true, updated_at: new Date().toISOString() })
             .eq('id', orderId);
 
-        return {
-            ok: true,
-            email: email,
-            password: password,
-            nama: namaPenulis
-        };
+        return { ok: true, email: email, password: password, nama: namaPenulis };
 
     } catch (err) {
         console.error('adminGenerateAuthorAccess Error:', err);
@@ -663,7 +652,6 @@ async function adminGenerateAuthorAccess(orderId, adminEmail, namaPenulis) {
     }
 }
 
-// ---
 async function adminKonfirmasiLunas(orderId, buktiUrl = null, adminEmail = null, catatan = null) {
     const { data, error } = await supabaseClient.rpc('admin_konfirmasi_lunas', {
         p_order_id: orderId,
@@ -675,9 +663,6 @@ async function adminKonfirmasiLunas(orderId, buktiUrl = null, adminEmail = null,
     return data;
 }
 
-// ========================================
-// ADMIN — GET AUTHORS (Untuk Dropdown)
-// ========================================
 async function adminGetAuthors() {
     const { data, error } = await supabaseClient.rpc('admin_get_authors');
     if (error) return { success: false, error: error.message };
@@ -766,7 +751,6 @@ async function getPartners() {
         const isKonfirmasiPage = window.location.pathname.includes('admin-konfirmasi.html');
         const isPenjualanPage = window.location.pathname.includes('admin-penjualan.html');
 
-        // 0. Menu Dashboard (di atas Order)
         if (!nav.querySelector('a[href="admin-dashboard.html"]')) {
             const dashLink = document.createElement('a');
             dashLink.href = 'admin-dashboard.html';
@@ -787,7 +771,6 @@ async function getPartners() {
             });
         }
 
-        // 1. Menu Konfirmasi
         if (!nav.querySelector('a[href="admin-konfirmasi.html"]')) {
             const newLink = document.createElement('a');
             newLink.href = 'admin-konfirmasi.html';
@@ -798,7 +781,6 @@ async function getPartners() {
             orderLink.parentNode.insertBefore(newLink, orderLink.nextSibling);
         }
 
-        // 2. Menu Input Penjualan
         const konfirmasiLink = nav.querySelector('a[href="admin-konfirmasi.html"]');
         if (konfirmasiLink && !nav.querySelector('a[href="admin-penjualan.html"]')) {
             const salesLink = document.createElement('a');
@@ -810,7 +792,6 @@ async function getPartners() {
             konfirmasiLink.parentNode.insertBefore(salesLink, konfirmasiLink.nextSibling);
         }
         
-        // 3. Menu Data Penulis
         const isAuthorPage = window.location.pathname.includes('admin-author.html');
         if (isAuthorPage) {
             nav.querySelectorAll('.sidebar-link.active').forEach(el => el.classList.remove('active'));
@@ -829,81 +810,102 @@ async function getPartners() {
 })();
 
 // ========================================
-// SMOOTH MOBILE MENU ANIMATION (TAMBAHAN BARU)
+// SMOOTH MENU ANIMATION (CSS PURE APPROACH)
 // ========================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Kita pilih semua tombol burger yang umum dipakai
-    const menuBtns = document.querySelectorAll('#menuBtn, #btnMenuMobile, #sidebarToggle');
-    
-    menuBtns.forEach(btn => {
-        // Cari menu target berdasarkan tombol yang diklik
-        let targetMenu = document.getElementById('mobileMenu');
-        if (btn.id === 'sidebarToggle') targetMenu = document.getElementById('sidebar');
+    const menus = [
+        { btn: 'menuBtn', menu: 'mobileMenu', type: 'dropdown' },
+        { btn: 'btnMenuMobile', menu: 'sidebar', type: 'drawer' },
+        { btn: 'sidebarToggle', menu: 'sidebar', type: 'drawer' }
+    ];
 
-        if (btn && targetMenu) {
-            // Hapus class 'hidden' bawaan agar kita bisa pakai animasi transisi CSS
-            targetMenu.classList.remove('hidden');
-            
-            // Set styling dasar untuk animasi
-            targetMenu.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-            targetMenu.style.overflow = 'hidden';
+    menus.forEach(({ btn, menu, type }) => {
+        const btnEl = document.getElementById(btn);
+        const menuEl = document.getElementById(menu);
+        
+        if (!btnEl || !menuEl) return;
 
-            // Jika ini sidebar (bukan menu mobile), gunakan animasi geser kiri-kanan
-            if (targetMenu.id === 'sidebar') {
-                targetMenu.style.transform = 'translateX(-100%)';
-                targetMenu.style.opacity = '0';
+        // Hapus hidden bawaan agar CSS transisi bisa bekerja
+        menuEl.classList.remove('hidden');
+
+        if (type === 'dropdown') {
+            // Styling awal untuk animasi dropdown
+            menuEl.style.overflow = 'hidden';
+            menuEl.style.maxHeight = '0';
+            menuEl.style.opacity = '0';
+            menuEl.style.transform = 'translateY(-10px)';
+            menuEl.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            menuEl.style.pointerEvents = 'none'; // Mencegah klik saat tertutup
+
+            btnEl.addEventListener('click', (e) => {
+                e.stopImmediatePropagation(); // Hentikan script lain yang bentrok
                 
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const isOpen = targetMenu.style.transform === 'translateX(0px)' || targetMenu.style.transform === '';
+                // Cek apakah sedang terbuka
+                const isOpen = menuEl.style.maxHeight !== '0px' && menuEl.style.maxHeight !== '';
+                
+                if (isOpen) {
+                    // Tutup
+                    menuEl.style.maxHeight = '0';
+                    menuEl.style.opacity = '0';
+                    menuEl.style.transform = 'translateY(-10px)';
+                    menuEl.style.pointerEvents = 'none';
+                } else {
+                    // Buka
+                    menuEl.style.maxHeight = menuEl.scrollHeight + 'px';
+                    menuEl.style.opacity = '1';
+                    menuEl.style.transform = 'translateY(0)';
+                    menuEl.style.pointerEvents = 'auto';
+                }
+                
+                // Ganti icon burger <-> silang
+                const icon = btnEl.querySelector('i');
+                if (icon) {
                     if (isOpen) {
-                        targetMenu.style.transform = 'translateX(-100%)';
-                        targetMenu.style.opacity = '0';
-                        setTimeout(() => targetMenu.classList.add('hidden'), 300);
+                        icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars');
                     } else {
-                        targetMenu.classList.remove('hidden');
-                        targetMenu.style.transform = 'translateX(0)';
-                        targetMenu.style.opacity = '1';
+                        icon.classList.remove('fa-bars'); icon.classList.add('fa-xmark');
                     }
-                });
-            } 
-            // Jika ini menu mobile biasa, gunakan animasi slide down (buka-tutup ke bawah)
-            else {
-                targetMenu.style.maxHeight = '0';
-                targetMenu.style.opacity = '0';
-                targetMenu.style.transform = 'translateY(-10px)';
-                targetMenu.style.pointerEvents = 'none';
+                }
+            });
 
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const isOpen = targetMenu.style.maxHeight !== '0px' && targetMenu.style.maxHeight !== '';
-
-                    if (isOpen) {
-                        targetMenu.style.maxHeight = '0';
-                        targetMenu.style.opacity = '0';
-                        targetMenu.style.transform = 'translateY(-10px)';
-                        targetMenu.style.pointerEvents = 'none';
-                    } else {
-                        targetMenu.style.maxHeight = targetMenu.scrollHeight + 'px';
-                        targetMenu.style.opacity = '1';
-                        targetMenu.style.transform = 'translateY(0)';
-                        targetMenu.style.pointerEvents = 'auto';
-                    }
-                });
-            }
-
-            // Tutup menu otomatis saat link di dalamnya diklik
-            targetMenu.querySelectorAll('a').forEach(link => {
+            // Tutup otomatis saat link diklik
+            menuEl.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
-                    if (targetMenu.id === 'sidebar') {
-                        targetMenu.style.transform = 'translateX(-100%)';
-                        targetMenu.style.opacity = '0';
-                        setTimeout(() => targetMenu.classList.add('hidden'), 300);
-                    } else {
-                        targetMenu.style.maxHeight = '0';
-                        targetMenu.style.opacity = '0';
-                        targetMenu.style.transform = 'translateY(-10px)';
-                        targetMenu.style.pointerEvents = 'none';
+                    menuEl.style.maxHeight = '0';
+                    menuEl.style.opacity = '0';
+                    menuEl.style.transform = 'translateY(-10px)';
+                    menuEl.style.pointerEvents = 'none';
+                    const icon = btnEl.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars');
+                    }
+                });
+            });
+
+        } else if (type === 'drawer') {
+            // Styling awal untuk sidebar/drawer
+            menuEl.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            menuEl.style.transform = 'translateX(-100%)';
+            menuEl.classList.add('shadow-2xl');
+
+            btnEl.addEventListener('click', (e) => {
+                e.stopImmediatePropagation();
+                
+                const isOpen = menuEl.style.transform === 'translateX(0px)' || menuEl.style.transform === '';
+                
+                if (isOpen) {
+                    menuEl.style.transform = 'translateX(-100%)';
+                } else {
+                    menuEl.style.transform = 'translateX(0)';
+                }
+            });
+
+            // Tutup otomatis saat link diklik (opsional untuk mobile)
+            menuEl.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    // Hanya tutup otomatis jika di layar kecil (mobile)
+                    if (window.innerWidth < 1024) {
+                        menuEl.style.transform = 'translateX(-100%)';
                     }
                 });
             });
