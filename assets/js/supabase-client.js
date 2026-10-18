@@ -806,6 +806,24 @@ async function getPartners() {
             authorLink.innerHTML = '<i class="fa-solid fa-users"></i><span>Data Penulis</span>';
             penjualanLink.parentNode.insertBefore(authorLink, penjualanLink.nextSibling);
         }
+
+        // 4. Menu Testimoni
+        const isTestimoniPage = window.location.pathname.includes('admin-testimoni.html');
+        if (isTestimoniPage) {
+            nav.querySelectorAll('.sidebar-link.active').forEach(el => el.classList.remove('active'));
+        }
+        
+        // Cari menu Blog untuk diletakkan di bawahnya
+        const blogLink = nav.querySelector('a[href="admin-blog.html"]');
+        if (blogLink && !nav.querySelector('a[href="admin-testimoni.html"]')) {
+            const testiLink = document.createElement('a');
+            testiLink.href = 'admin-testimoni.html';
+            let baseClass = orderLink.className.replace('active', '').trim();
+            testiLink.className = baseClass;
+            if (isTestimoniPage) testiLink.classList.add('active');
+            testiLink.innerHTML = '<i class="fa-solid fa-quote-left"></i><span>Testimoni</span>';
+            blogLink.parentNode.insertBefore(testiLink, blogLink.nextSibling);
+        }
     });
 })();
 
