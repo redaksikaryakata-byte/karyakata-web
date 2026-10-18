@@ -783,24 +783,19 @@
     }
 
     // ========================================
-    // INCREMENT VIEWS (via RPC atau fallback)
+    // INCREMENT VIEWS (via RPC)
     // ========================================
     async function incrementViews(postId) {
         try {
-            // Coba pakai RPC kalau ada
+            // Panggil fungsi RPC yang baru kita buat di Supabase
             const { error } = await supabaseClient
                 .rpc('increment_post_views', { post_id: postId });
 
             if (error) {
-                // Fallback: update manual
-                const current = currentPost.views_count || 0;
-                await supabaseClient
-                    .from('posts')
-                    .update({ views_count: current + 1 })
-                    .eq('id', postId);
+                console.warn('Increment views error:', error.message);
             }
         } catch (err) {
-            console.warn('Increment views error (non-fatal):', err);
+            console.warn('Increment views catch error:', err);
         }
     }
 
