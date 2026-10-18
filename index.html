@@ -809,68 +809,13 @@
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                <div class="card-lift bg-white rounded-3xl p-7 border border-sky-100 relative">
-                    <i class="fa-solid fa-quote-right absolute top-6 right-6 text-sky-100 text-4xl"></i>
-                    <div class="flex text-gold-500 text-sm mb-4">
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                    </div>
-                    <p class="text-slate-700 text-sm leading-relaxed mb-6 relative z-10">
-                        "Prosesnya cepat dan profesional. Naskah saya yang awalnya berantakan jadi rapi banget setelah diedit tim Karyakata. Recommended!"
-                    </p>
-                    <div class="flex items-center gap-3 pt-4 border-t border-sky-50">
-                        <div class="w-11 h-11 rounded-full bg-gradient-to-br from-sky-400 to-sky-700 flex items-center justify-center text-white font-black">A</div>
-                        <div>
-                            <p class="font-display font-bold text-slate-800 text-sm">Andini Rahmawati</p>
-                            <p class="text-slate-500 text-xs">Penulis Novel</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-lift bg-white rounded-3xl p-7 border border-sky-100 relative">
-                    <i class="fa-solid fa-quote-right absolute top-6 right-6 text-gold-100 text-4xl"></i>
-                    <div class="flex text-gold-500 text-sm mb-4">
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                    </div>
-                    <p class="text-slate-700 text-sm leading-relaxed mb-6 relative z-10">
-                        "Sebagai penulis pemula, saya bingung harus mulai dari mana. Tim Karyakata sabar banget memandu dari nol sampai buku saya terbit."
-                    </p>
-                    <div class="flex items-center gap-3 pt-4 border-t border-sky-50">
-                        <div class="w-11 h-11 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-white font-black">B</div>
-                        <div>
-                            <p class="font-display font-bold text-slate-800 text-sm">Bagas Prasetyo</p>
-                            <p class="text-slate-500 text-xs">Penulis Antologi</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-lift bg-white rounded-3xl p-7 border border-sky-100 relative">
-                    <i class="fa-solid fa-quote-right absolute top-6 right-6 text-sky-100 text-4xl"></i>
-                    <div class="flex text-gold-500 text-sm mb-4">
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                    </div>
-                    <p class="text-slate-700 text-sm leading-relaxed mb-6 relative z-10">
-                        "Cover buku saya didesain ulang dan hasilnya jauh lebih menarik. Penjualan di Lynk.id langsung naik drastis. Terima kasih Karyakata!"
-                    </p>
-                    <div class="flex items-center gap-3 pt-4 border-t border-sky-50">
-                        <div class="w-11 h-11 rounded-full bg-gradient-to-br from-sky-400 to-sky-700 flex items-center justify-center text-white font-black">C</div>
-                        <div>
-                            <p class="font-display font-bold text-slate-800 text-sm">Citra Lestari</p>
-                            <p class="text-slate-500 text-xs">Penulis Non-Fiksi</p>
-                        </div>
-                    </div>
+            <!-- Grid Testimoni Dinamis -->
+            <div id="testimonialsGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <!-- Placeholder Loading -->
+                <div class="card-lift bg-white rounded-3xl p-7 border border-sky-100 relative col-span-full">
+                    <div class="skeleton h-4 w-1/4 mb-4"></div>
+                    <div class="skeleton h-16 w-full mb-4"></div>
+                    <div class="skeleton h-10 w-1/2"></div>
                 </div>
             </div>
         </div>
@@ -1434,6 +1379,69 @@
 
         // Panggil setelah halaman load
         loadBooks();
+
+        // ========================================
+        // LOAD TESTIMONIALS (Dinamis)
+        // ========================================
+        async function loadTestimonials() {
+            const grid = document.getElementById('testimonialsGrid');
+            if (!grid) return;
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('testimonials')
+                    .select('*')
+                    .eq('is_published', true)
+                    .order('created_at', { ascending: false })
+                    .limit(3); // Tampilkan maksimal 3 di beranda
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    grid.innerHTML = `<div class="col-span-full text-center text-slate-500 py-8">Belum ada testimoni.</div>`;
+                    return;
+                }
+
+                grid.innerHTML = data.map(t => {
+                    const isGold = t.warna_avatar === 'gold';
+                    const bgColor = isGold ? 'from-gold-400 to-gold-600' : 'from-sky-400 to-sky-700';
+                    const quoteColor = isGold ? 'text-gold-100' : 'text-sky-100';
+                    
+                    return `
+                        <div class="card-lift bg-white rounded-3xl p-7 border border-sky-100 relative">
+                            <i class="fa-solid fa-quote-right absolute top-6 right-6 ${quoteColor} text-4xl"></i>
+                            <div class="flex text-gold-500 text-sm mb-4">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                            </div>
+                            <p class="text-slate-700 text-sm leading-relaxed mb-6 relative z-10">
+                                "${t.isi_testimoni}"
+                            </p>
+                            <div class="flex items-center gap-3 pt-4 border-t border-sky-50">
+                                <div class="w-11 h-11 rounded-full bg-gradient-to-br ${bgColor} flex items-center justify-center text-white font-black">
+                                    ${t.inisial || t.nama.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <p class="font-display font-bold text-slate-800 text-sm">${t.nama}</p>
+                                    <p class="text-slate-500 text-xs">${t.profesi || ''}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error('Load testimonials error:', err);
+                grid.innerHTML = '';
+                grid.style.display = 'none';
+            }
+        }
+
+        // Panggil setelah halaman load
+        loadTestimonials();
     </script>
 
     <!-- VALIDASI ISBN / QRCBN -->

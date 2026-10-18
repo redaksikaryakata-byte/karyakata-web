@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin — Testimoni — Karyakata.id</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { sky: { 50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD', 400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6', 800: '#064485', 900: '#053364' }, gold: { 100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A', 500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A' } }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['"Plus Jakarta Sans"', 'sans-serif'] } } } }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #F8FAFC; }
+        .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #475569; transition: all .2s ease; text-decoration: none; }
+        .sidebar-link:hover { background: #EFF6FF; color: #0B7BE8; }
+        .sidebar-link.active { background: linear-gradient(135deg, #0B7BE8, #0967C7); color: white; box-shadow: 0 6px 16px rgba(11, 123, 232, 0.3); }
+        .sidebar-link i { width: 20px; text-align: center; font-size: 15px; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 16px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all .2s ease; border: none; text-decoration: none; white-space: nowrap; }
+        .btn-primary { background: #0B7BE8; color: white; } .btn-primary:hover { background: #0967C7; transform: translateY(-1px); }
+        .btn-outline { background: white; color: #475569; border: 2px solid #E2E8F0; } .btn-outline:hover { border-color: #0B7BE8; color: #0B7BE8; }
+        .btn-gold { background: #F5A623; color: white; } .btn-gold:hover { background: #D98B0E; transform: translateY(-1px); }
+        .form-input { width: 100%; padding: 12px 14px; border: 2px solid #E2E8F0; border-radius: 12px; font-size: 14px; outline: none; transition: all .2s ease; background: white; }
+        .form-input:focus { border-color: #0B7BE8; box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1); }
+        .form-label { display: block; font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 6px; }
+        .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; }
+        .modal-content { background: white; border-radius: 24px; max-width: 540px; width: 100%; max-height: 90vh; overflow-y: auto; }
+        #sidebarOverlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 40; } #sidebarOverlay.active { display: block; }
+    </style>
+</head>
+<body>
+    <div id="sidebarOverlay"></div>
+    <div class="flex min-h-screen">
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50 -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
+            <div class="p-5 border-b border-slate-100">
+                <a href="admin-order.html" class="flex items-center gap-3 group">
+                    <img src="../assets/img/logo.png" alt="Karyakata" class="h-10 w-auto" onerror="this.style.display='none'" />
+                    <span class="font-display text-lg font-black leading-none"><span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span></span>
+                </a>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-2">MENU UTAMA</p>
+                <a href="admin-order.html" class="sidebar-link"><i class="fa-solid fa-receipt"></i> <span>Order</span></a>
+                <a href="admin-konfirmasi.html" class="sidebar-link"><i class="fa-solid fa-money-check-dollar"></i> <span>Konfirmasi & Akses</span></a>
+                <a href="admin-penjualan.html" class="sidebar-link"><i class="fa-solid fa-chart-line"></i> <span>Input Penjualan</span></a>
+                <a href="admin-author.html" class="sidebar-link"><i class="fa-solid fa-users"></i> <span>Data Penulis</span></a>
+                <a href="admin-naskah.html" class="sidebar-link"><i class="fa-solid fa-file-lines"></i> <span>Naskah Masuk</span></a>
+                <a href="admin-pesan.html" class="sidebar-link"><i class="fa-solid fa-envelope"></i> <span>Pesan Kontak</span></a>
+                <a href="admin-subscriber.html" class="sidebar-link"><i class="fa-solid fa-envelope-open-text"></i> <span>Subscriber</span></a>
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">KONTEN</p>
+                <a href="admin-buku.html" class="sidebar-link"><i class="fa-solid fa-book"></i> <span>Buku / Katalog</span></a>
+                <a href="admin-blog.html" class="sidebar-link"><i class="fa-solid fa-newspaper"></i> <span>Blog</span></a>
+                <a href="admin-mitra.html" class="sidebar-link"><i class="fa-solid fa-handshake"></i> <span>Mitra &amp; Komunitas</span></a>
+                <a href="admin-testimoni.html" class="sidebar-link active"><i class="fa-solid fa-quote-left"></i> <span>Testimoni</span></a>
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">LAINNYA</p>
+                <a href="../index.html" target="_blank" class="sidebar-link"><i class="fa-solid fa-external-link-alt"></i> <span>Lihat Website</span></a>
+            </nav>
+            <div class="p-4 border-t border-slate-100">
+                <div class="bg-slate-50 rounded-2xl p-3">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">A</div>
+                        <div class="flex-1 min-w-0"><p class="text-xs font-bold text-slate-800 truncate" id="userEmail">admin@...</p></div>
+                    </div>
+                    <button id="logoutBtn" class="w-full btn btn-outline text-xs justify-center"><i class="fa-solid fa-right-from-bracket text-[10px]"></i> <span>Logout</span></button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="flex-1 min-w-0">
+            <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-lg border-b border-slate-200">
+                <div class="flex items-center justify-between px-4 md:px-6 h-16">
+                    <div class="flex items-center gap-3">
+                        <button id="sidebarToggle" class="lg:hidden w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600"><i class="fa-solid fa-bars"></i></button>
+                        <div><h1 class="font-display text-lg md:text-xl font-black text-slate-800">Testimoni</h1></div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button id="addBtn" class="btn btn-gold text-xs"><i class="fa-solid fa-plus"></i> <span>Tambah Testimoni</span></button>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">A</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-4 md:p-6">
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wider border-b border-slate-200">
+                                    <th class="p-4 font-bold">Nama</th>
+                                    <th class="p-4 font-bold">Profesi</th>
+                                    <th class="p-4 font-bold">Testimoni</th>
+                                    <th class="p-4 font-bold">Status</th>
+                                    <th class="p-4 font-bold text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="testiTbody" class="divide-y divide-slate-100">
+                                <tr><td colspan="5" class="p-8 text-center text-slate-400">Memuat data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL FORM -->
+    <div id="formModal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="font-display text-lg font-black text-slate-800" id="formTitle">Tambah Testimoni</h3>
+                <button onclick="closeForm()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="testiForm" class="p-5 space-y-4">
+                <input type="hidden" id="testiId" />
+                <div>
+                    <label class="form-label">Nama <span class="text-red-500">*</span></label>
+                    <input type="text" id="nama" class="form-input" required placeholder="Contoh: Andini Rahmawati" />
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="form-label">Profesi</label>
+                        <input type="text" id="profesi" class="form-input" placeholder="Contoh: Penulis Novel" />
+                    </div>
+                    <div>
+                        <label class="form-label">Inisial Avatar</label>
+                        <input type="text" id="inisial" class="form-input" placeholder="A" maxlength="2" />
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">Isi Testimoni <span class="text-red-500">*</span></label>
+                    <textarea id="isi_testimoni" class="form-input" rows="4" required placeholder="Tulis testimoni..."></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="form-label">Warna Avatar</label>
+                        <select id="warna_avatar" class="form-input">
+                            <option value="sky">Biru (Sky)</option>
+                            <option value="gold">Emas (Gold)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Status</label>
+                        <select id="is_published" class="form-input">
+                            <option value="true">Tampilkan (Published)</option>
+                            <option value="false">Sembunyikan (Draft)</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+            <div class="p-5 border-t border-slate-100 flex gap-3 justify-end bg-slate-50 rounded-b-3xl">
+                <button onclick="closeForm()" class="btn btn-outline">Batal</button>
+                <button id="btnSave" class="btn btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/supabase-client.js"></script>
+    <script>
+        let allTestimonials = [];
+        let currentUser = null;
+
+        async function checkAuth() {
+            const user = await getCurrentUser();
+            if (!user) { window.location.href = 'admin-login.html'; return false; }
+            currentUser = user;
+            document.getElementById('userEmail').textContent = user.email;
+            return true;
+        }
+
+        async function loadTestimonials() {
+            const tbody = document.getElementById('testiTbody');
+            tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400"><i class="fa-solid fa-spinner fa-spin"></i> Memuat data...</td></tr>`;
+
+            const { data, error } = await supabaseClient.from('testimonials').select('*').order('created_at', { ascending: false });
+            
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-red-500">Gagal memuat data.</td></tr>`;
+                return;
+            }
+
+            allTestimonials = data || [];
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('testiTbody');
+            if (allTestimonials.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400">Belum ada testimoni.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = allTestimonials.map(t => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full ${t.warna_avatar === 'gold' ? 'bg-gold-500' : 'bg-sky-500'} text-white flex items-center justify-center font-bold text-xs">
+                                ${t.inisial || t.nama.charAt(0).toUpperCase()}
+                            </div>
+                            <div class="font-bold text-slate-800 text-sm">${t.nama}</div>
+                        </div>
+                    </td>
+                    <td class="p-4 text-sm text-slate-600">${t.profesi || '-'}</td>
+                    <td class="p-4 text-sm text-slate-600 max-w-xs truncate" title="${t.isi_testimoni}">${t.isi_testimoni}</td>
+                    <td class="p-4">
+                        ${t.is_published 
+                            ? `<span class="px-2 py-1 bg-green-100 text-green-700 rounded text-[10px] font-bold uppercase">Tampil</span>` 
+                            : `<span class="px-2 py-1 bg-slate-200 text-slate-600 rounded text-[10px] font-bold uppercase">Draft</span>`}
+                    </td>
+                    <td class="p-4 text-right">
+                        <div class="flex justify-end gap-2">
+                            <button onclick="openForm('${t.id}')" class="btn btn-outline !px-2 !py-1.5 text-sky-600 border-sky-200"><i class="fa-solid fa-pen text-[10px]"></i></button>
+                            <button onclick="deleteTestimoni('${t.id}')" class="btn btn-outline !px-2 !py-1.5 text-red-600 border-red-200"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openForm(id = null) {
+            document.getElementById('testiForm').reset();
+            document.getElementById('testiId').value = '';
+            
+            if (id) {
+                const t = allTestimonials.find(x => String(x.id) === String(id));
+                if (!t) return;
+                document.getElementById('formTitle').textContent = 'Edit Testimoni';
+                document.getElementById('testiId').value = t.id;
+                document.getElementById('nama').value = t.nama;
+                document.getElementById('profesi').value = t.profesi || '';
+                document.getElementById('inisial').value = t.inisial || '';
+                document.getElementById('isi_testimoni').value = t.isi_testimoni;
+                document.getElementById('warna_avatar').value = t.warna_avatar || 'sky';
+                document.getElementById('is_published').value = String(t.is_published);
+            } else {
+                document.getElementById('formTitle').textContent = 'Tambah Testimoni';
+            }
+            document.getElementById('formModal').classList.remove('hidden');
+        }
+
+        function closeForm() { document.getElementById('formModal').classList.add('hidden'); }
+
+        document.getElementById('btnSave').addEventListener('click', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('testiId').value;
+            const btn = e.target;
+            const originalText = btn.innerHTML;
+            
+            const payload = {
+                nama: document.getElementById('nama').value,
+                profesi: document.getElementById('profesi').value,
+                inisial: document.getElementById('inisial').value || document.getElementById('nama').value.charAt(0).toUpperCase(),
+                isi_testimoni: document.getElementById('isi_testimoni').value,
+                warna_avatar: document.getElementById('warna_avatar').value,
+                is_published: document.getElementById('is_published').value === 'true'
+            };
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+
+            if (id) {
+                await supabaseClient.from('testimonials').update(payload).eq('id', id);
+            } else {
+                await supabaseClient.from('testimonials').insert([payload]);
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            closeForm();
+            loadTestimonials();
+        });
+
+        async function deleteTestimoni(id) {
+            if (!confirm('Yakin hapus testimoni ini?')) return;
+            await supabaseClient.from('testimonials').delete().eq('id', id);
+            loadTestimonials();
+        }
+
+        document.getElementById('sidebarToggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        });
+        document.getElementById('sidebarOverlay').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        });
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            if(confirm('Logout?')) { await adminSignOut(); window.location.href = 'admin-login.html'; }
+        });
+
+        (async () => { if (await checkAuth()) loadTestimonials(); })();
+    </script>
+</body>
+</html>
