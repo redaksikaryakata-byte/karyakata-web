@@ -39,9 +39,10 @@
 <body>
     <div id="sidebarOverlay"></div>
     <div class="flex min-h-screen">
+        <!-- SIDEBAR -->
         <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50 -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
             <div class="p-5 border-b border-slate-100">
-                <a href="admin-order.html" class="flex items-center gap-3"><img src="../assets/img/logo.png" alt="Karyakata" class="h-10 w-auto" /><span class="font-display text-lg font-black leading-none"><span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span></span></a>
+                <a href="admin-order.html" class="flex items-center gap-3"><img src="../assets/img/logo.png" alt="Karyakata" class="h-10 w-auto" onerror="this.style.display='none'" /><span class="font-display text-lg font-black leading-none"><span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span></span></a>
             </div>
             <nav class="flex-1 overflow-y-auto p-4 space-y-1">
                 <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-2">MENU UTAMA</p>
@@ -69,6 +70,7 @@
             </div>
         </aside>
 
+        <!-- MAIN -->
         <main class="flex-1 min-w-0">
             <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-lg border-b border-slate-200">
                 <div class="flex items-center justify-between px-4 md:px-6 h-16">
@@ -151,9 +153,10 @@
 
         function showToast(message, type = 'info') {
             const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-sky-500' };
+            const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
             const toast = document.createElement('div');
             toast.className = `${colors[type]} text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-bold animate-fade-up max-w-sm`;
-            toast.textContent = message;
+            toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span class="flex-1">${message}</span>`;
             document.getElementById('toastWrap').appendChild(toast);
             setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
         }
@@ -168,7 +171,7 @@
 
         async function loadTeam() {
             const grid = document.getElementById('teamGrid');
-            grid.innerHTML = `<p class="text-center col-span-full text-slate-400 py-8">Memuat data...</p>`;
+            grid.innerHTML = `<p class="text-center col-span-full text-slate-400 py-8"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Memuat data...</p>`;
 
             const { data, error } = await supabaseClient.from('team_members').select('*').order('created_at', { ascending: true });
             
@@ -187,7 +190,7 @@
         function renderGrid() {
             const grid = document.getElementById('teamGrid');
             if (allTeam.length === 0) {
-                grid.innerHTML = `<p class="text-center col-span-full text-slate-400 py-8">Belum ada data tim.</p>`;
+                grid.innerHTML = `<p class="text-center col-span-full text-slate-400 py-8">Belum ada data tim. Silakan klik "Tambah Tim".</p>`;
                 return;
             }
 
@@ -196,8 +199,8 @@
                 return `
                     <div class="bg-white rounded-2xl border border-slate-200 p-5 text-center relative group hover:shadow-lg transition">
                         <div class="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition">
-                            <button onclick="openForm('${t.id}')" class="w-7 h-7 bg-white border border-sky-200 text-sky-600 rounded-md flex items-center justify-center shadow-sm hover:bg-sky-50"><i class="fa-solid fa-pen text-[10px]"></i></button>
-                            <button onclick="deleteTeam('${t.id}')" class="w-7 h-7 bg-white border border-red-200 text-red-600 rounded-md flex items-center justify-center shadow-sm hover:bg-red-50"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                            <button onclick="openForm('${t.id}')" class="w-7 h-7 bg-white border border-sky-200 text-sky-600 rounded-md flex items-center justify-center shadow-sm hover:bg-sky-50" title="Edit"><i class="fa-solid fa-pen text-[10px]"></i></button>
+                            <button onclick="deleteTeam('${t.id}')" class="w-7 h-7 bg-white border border-red-200 text-red-600 rounded-md flex items-center justify-center shadow-sm hover:bg-red-50" title="Hapus"><i class="fa-solid fa-trash text-[10px]"></i></button>
                         </div>
                         <div class="w-20 h-20 rounded-full mx-auto mb-3 overflow-hidden bg-slate-100 flex items-center justify-center border-2 border-slate-100">
                             ${foto ? `<img src="${foto}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-user text-slate-300 text-2xl"></i>`}
@@ -211,6 +214,7 @@
             }).join('');
         }
 
+        // --- FUNGSI BUKA MODAL ---
         window.openForm = function(id = null) {
             document.getElementById('teamForm').reset();
             document.getElementById('teamId').value = '';
@@ -259,6 +263,7 @@
             reader.readAsDataURL(file);
         });
 
+        // --- FUNGSI SIMPAN ---
         document.getElementById('btnSave').addEventListener('click', async (e) => {
             e.preventDefault();
             const id = document.getElementById('teamId').value;
@@ -310,6 +315,10 @@
             loadTeam();
         }
 
+        // Event Listener Tombol Tambah
+        document.getElementById('addBtn').addEventListener('click', () => openForm());
+
+        // Sidebar Mobile
         document.getElementById('sidebarToggle').addEventListener('click', () => {
             document.getElementById('sidebar').classList.toggle('-translate-x-full');
             document.getElementById('sidebarOverlay').classList.toggle('active');
@@ -322,6 +331,7 @@
             if(confirm('Logout?')) { await adminSignOut(); window.location.href = 'admin-login.html'; }
         });
 
+        // Init
         (async () => { if (await checkAuth()) loadTeam(); })();
     </script>
 </body>
