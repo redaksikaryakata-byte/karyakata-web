@@ -489,12 +489,17 @@
                         </div>
 
                         <div>
-                            <label class="form-label">Total Ongkir dari Hasil Cek <span class="text-red-500">*</span></label>
+                            <label class="form-label">Total Ongkir dari Hasil Cek <span class="text-slate-400 font-normal">(Opsional)</span></label>
                             <div class="relative">
                                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-bold">Rp</span>
-                                <input type="number" id="ongkir" class="form-input" style="padding-left: 48px;" placeholder="0" min="0" required />
+                                <input type="number" id="ongkir" class="form-input" style="padding-left: 48px;" placeholder="Kosongkan jika belum tahu" min="0" />
                             </div>
-                            <p class="text-slate-500 text-xs mt-1">Masukkan angka ongkir yang muncul di Berdu.id.</p>
+                            <div class="mt-2 p-3 bg-sky-50 border border-sky-100 rounded-lg">
+                                <p class="text-slate-600 text-xs leading-relaxed">
+                                    <i class="fa-solid fa-circle-info text-sky-500 mr-1"></i>
+                                    <b>Belum tahu ongkirnya?</b> Biarkan saja kosong. Ongkir bisa dikonfirmasi dan dibayarkan nanti saat buku Anda sudah selesai dicetak dan siap dikirim.
+                                </p>
+                            </div>
                         </div>
                     </div>
 
@@ -913,9 +918,6 @@
 
             if (halaman < 100) { alert('Minimal 100 halaman.'); return; }
             if (eksemplar < 30) { alert('Minimal 30 eksemplar.'); return; }
-            if (!inputs.ongkir.value || parseInt(inputs.ongkir.value) < 0) {
-                alert('Mohon isi total ongkir hasil cek di Berdu.id.'); return;
-            }
 
             const judul = document.getElementById('judul').value;
             const penulis = document.getElementById('penulis').value;
@@ -1010,8 +1012,14 @@
             msg += `× ${eksemplar} eks: ${rp(hargaBuku)}\n`;
             if (addonTotal > 0) msg += `Layanan tambahan: ${rp(addonTotal)}\n`;
             msg += `Subtotal: ${rp(subtotal)}\n`;
-            msg += `Ongkir: ${rp(ongkir)}\n`;
-            msg += `*TOTAL BAYAR: ${rp(total)}*\n\n`;
+            
+            if (ongkir > 0) {
+                msg += `Ongkir: ${rp(ongkir)}\n`;
+                msg += `*TOTAL BAYAR: ${rp(total)}*\n\n`;
+            } else {
+                msg += `Ongkir: *Belum dihitung* (Akan dikonfirmasi saat buku siap dikirim)\n`;
+                msg += `*TOTAL BAYAR (Sementara): ${rp(subtotal)}*\n\n`;
+            }
 
             msg += `👤 *PEMESAN*\n`;
             msg += `Nama: ${nama}\n`;
