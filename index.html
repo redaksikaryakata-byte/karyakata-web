@@ -314,7 +314,7 @@
                                 <i class="fa-solid fa-star"></i>
                                 <i class="fa-solid fa-star"></i>
                             </div>
-                            <span class="text-white text-sm font-semibold">4.9/5</span>
+                            <span class="text-white text-sm font-semibold"><span id="heroRating">4.9</span>/5</span>
                         </div>
                         <div class="hidden sm:block w-px h-6 bg-white/20"></div>
                         <div class="flex items-center gap-2 text-white/90 text-sm">
@@ -1406,8 +1406,14 @@
                 let totalRating = 0;
                 data.forEach(t => totalRating += (t.rating || 5));
                 const avgRating = (totalRating / data.length).toFixed(1);
+                
+                // Update Rating di bagian Stats
                 const ratingEl = document.getElementById('statRating');
                 if (ratingEl) ratingEl.textContent = avgRating;
+                
+                // Update Rating di bagian Hero (Banner)
+                const heroRatingEl = document.getElementById('heroRating');
+                if (heroRatingEl) heroRatingEl.textContent = avgRating;
 
                 // Render Testimoni
                 grid.innerHTML = data.map(t => {
