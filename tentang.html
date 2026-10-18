@@ -257,7 +257,7 @@
                             <p class="text-xs text-slate-600 font-semibold">Penulis Aktif</p>
                         </div>
                         <div class="text-center p-4 bg-sky-50 rounded-2xl border border-sky-100">
-                            <div class="font-display text-3xl font-black text-sky-600 mb-1">4.9<span class="text-gold-500">★</span></div>
+                            <div class="font-display text-3xl font-black text-sky-600 mb-1"><span id="statRatingTentang">4.9</span><span class="text-gold-500">★</span></div>
                             <p class="text-xs text-slate-600 font-semibold">Rating</p>
                         </div>
                     </div>
@@ -686,6 +686,35 @@
         if (yearEl) yearEl.textContent = new Date().getFullYear();
 
         console.log('%c📚 Karyakata.id — Tentang', 'font-size: 16px; font-weight: bold; color: #0B7BE8;');
+    </script>
+
+    <!-- SCRIPT SUPABASE & RATING DINAMIS -->
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/supabase-client.js"></script>
+    <script>
+        async function loadRatingTentang() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('testimonials')
+                    .select('rating')
+                    .eq('is_published', true);
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    let total = 0;
+                    data.forEach(t => total += (t.rating || 5));
+                    const avg = (total / data.length).toFixed(1);
+                    
+                    const el = document.getElementById('statRatingTentang');
+                    if (el) el.textContent = avg;
+                }
+            } catch (err) {
+                console.error('Gagal load rating tentang:', err);
+            }
+        }
+        
+        loadRatingTentang();
     </script>
 
 </body>
