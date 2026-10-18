@@ -692,8 +692,9 @@
     <script src="assets/js/config.js"></script>
     <script src="assets/js/supabase-client.js"></script>
     <script>
-        async function loadRatingTentang() {
+        document.addEventListener('DOMContentLoaded', async () => {
             try {
+                // 1. Ambil data testimoni yang published
                 const { data, error } = await supabaseClient
                     .from('testimonials')
                     .select('rating')
@@ -701,20 +702,27 @@
 
                 if (error) throw error;
 
+                // 2. Kalau ada datanya, hitung rata-rata
                 if (data && data.length > 0) {
                     let total = 0;
                     data.forEach(t => total += (t.rating || 5));
                     const avg = (total / data.length).toFixed(1);
                     
+                    // 3. Update angka di HTML
                     const el = document.getElementById('statRatingTentang');
-                    if (el) el.textContent = avg;
+                    if (el) {
+                        el.textContent = avg;
+                        console.log('✅ Rating tentang berhasil diupdate:', avg);
+                    } else {
+                        console.warn('❌ Elemen statRatingTentang tidak ditemukan di HTML');
+                    }
+                } else {
+                    console.warn('⚠️ Data testimoni kosong atau belum ada yang di-publish');
                 }
             } catch (err) {
-                console.error('Gagal load rating tentang:', err);
+                console.error('❌ Gagal load rating tentang:', err);
             }
-        }
-        
-        loadRatingTentang();
+        });
     </script>
 
 </body>
