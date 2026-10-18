@@ -35,6 +35,7 @@
 </head>
 <body>
     <div id="sidebarOverlay"></div>
+    <div id="toastWrap" class="fixed top-4 right-4 z-[200] space-y-2"></div>
     <div class="flex min-h-screen">
         <!-- SIDEBAR -->
         <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50 -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
@@ -164,6 +165,21 @@
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/supabase-client.js"></script>
     <script>
+        function showToast(message, type = 'info') {
+            const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-sky-500', warning: 'bg-gold-500' };
+            const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info', warning: 'fa-triangle-exclamation' };
+            const toast = document.createElement('div');
+            toast.className = `${colors[type]} text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-bold animate-fade-up max-w-sm`;
+            toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span class="flex-1">${message}</span>`;
+            document.getElementById('toastWrap').appendChild(toast);
+            setTimeout(() => {
+                toast.style.transition = 'all 0.3s ease';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
         let allTestimonials = [];
         let currentUser = null;
 
@@ -224,7 +240,8 @@
             `).join('');
         }
 
-        function openForm(id = null) {
+        // --- FUNGSI BUKA MODAL ---
+        window.openForm = function(id = null) {
             document.getElementById('testiForm').reset();
             document.getElementById('testiId').value = '';
             
@@ -245,8 +262,11 @@
             document.getElementById('formModal').classList.remove('hidden');
         }
 
-        function closeForm() { document.getElementById('formModal').classList.add('hidden'); }
+        window.closeForm = function() { 
+            document.getElementById('formModal').classList.add('hidden'); 
+        }
 
+        // --- FUNGSI SIMPAN ---
         document.getElementById('btnSave').addEventListener('click', async (e) => {
             e.preventDefault();
             const id = document.getElementById('testiId').value;
@@ -274,14 +294,22 @@
             btn.disabled = false;
             btn.innerHTML = originalText;
             closeForm();
+            showToast(id ? 'Testimoni berhasil diupdate!' : 'Testimoni berhasil ditambahkan!', 'success');
             loadTestimonials();
         });
 
-        async function deleteTestimoni(id) {
+        window.deleteTestimoni = async function(id) {
             if (!confirm('Yakin hapus testimoni ini?')) return;
             await supabaseClient.from('testimonials').delete().eq('id', id);
+            showToast('Testimoni berhasil dihapus!', 'success');
             loadTestimonials();
         }
+
+        // --- EVENT LISTENERS ---
+        // Pasang event listener untuk tombol Tambah Testimoni
+        document.getElementById('addBtn').addEventListener('click', () => {
+            openForm();
+        });
 
         document.getElementById('sidebarToggle').addEventListener('click', () => {
             document.getElementById('sidebar').classList.toggle('-translate-x-full');
