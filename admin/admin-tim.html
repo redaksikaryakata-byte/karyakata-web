@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin — Tim Kami — Karyakata.id</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { sky: { 50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD', 400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6', 800: '#064485', 900: '#053364' }, gold: { 100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A', 500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A' } }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['"Plus Jakarta Sans"', 'sans-serif'] } } } }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #F8FAFC; }
+        .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #475569; transition: all .2s ease; text-decoration: none; }
+        .sidebar-link:hover { background: #EFF6FF; color: #0B7BE8; }
+        .sidebar-link.active { background: linear-gradient(135deg, #0B7BE8, #0967C7); color: white; box-shadow: 0 6px 16px rgba(11, 123, 232, 0.3); }
+        .sidebar-link i { width: 20px; text-align: center; font-size: 15px; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 16px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all .2s ease; border: none; text-decoration: none; white-space: nowrap; }
+        .btn-primary { background: #0B7BE8; color: white; } .btn-primary:hover { background: #0967C7; }
+        .btn-outline { background: white; color: #475569; border: 2px solid #E2E8F0; } .btn-outline:hover { border-color: #0B7BE8; color: #0B7BE8; }
+        .btn-gold { background: #F5A623; color: white; } .btn-gold:hover { background: #D98B0E; }
+        .form-input { width: 100%; padding: 12px 14px; border: 2px solid #E2E8F0; border-radius: 12px; font-size: 14px; outline: none; transition: all .2s ease; background: white; }
+        .form-input:focus { border-color: #0B7BE8; box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1); }
+        .form-label { display: block; font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 6px; }
+        .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; }
+        .modal-content { background: white; border-radius: 24px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; }
+        .foto-upload { aspect-ratio: 1/1; border: 2px dashed #CBD5E1; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; width: 120px; margin: 0 auto; position: relative; background: #F8FAFC; }
+        .foto-upload:hover { border-color: #0B7BE8; background: #EFF6FF; }
+        .foto-upload img { width: 100%; height: 100%; object-fit: cover; }
+        #sidebarOverlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 40; } #sidebarOverlay.active { display: block; }
+    </style>
+</head>
+<body>
+    <div id="sidebarOverlay"></div>
+    <div class="flex min-h-screen">
+        <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50 -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
+            <div class="p-5 border-b border-slate-100">
+                <a href="admin-order.html" class="flex items-center gap-3"><img src="../assets/img/logo.png" alt="Karyakata" class="h-10 w-auto" /><span class="font-display text-lg font-black leading-none"><span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span></span></a>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-2">MENU UTAMA</p>
+                <a href="admin-order.html" class="sidebar-link"><i class="fa-solid fa-receipt"></i> <span>Order</span></a>
+                <a href="admin-konfirmasi.html" class="sidebar-link"><i class="fa-solid fa-money-check-dollar"></i> <span>Konfirmasi & Akses</span></a>
+                <a href="admin-penjualan.html" class="sidebar-link"><i class="fa-solid fa-chart-line"></i> <span>Input Penjualan</span></a>
+                <a href="admin-author.html" class="sidebar-link"><i class="fa-solid fa-users"></i> <span>Data Penulis</span></a>
+                <a href="admin-naskah.html" class="sidebar-link"><i class="fa-solid fa-file-lines"></i> <span>Naskah Masuk</span></a>
+                <a href="admin-pesan.html" class="sidebar-link"><i class="fa-solid fa-envelope"></i> <span>Pesan Kontak</span></a>
+                <a href="admin-subscriber.html" class="sidebar-link"><i class="fa-solid fa-envelope-open-text"></i> <span>Subscriber</span></a>
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">KONTEN</p>
+                <a href="admin-buku.html" class="sidebar-link"><i class="fa-solid fa-book"></i> <span>Buku / Katalog</span></a>
+                <a href="admin-blog.html" class="sidebar-link"><i class="fa-solid fa-newspaper"></i> <span>Blog</span></a>
+                <a href="admin-mitra.html" class="sidebar-link"><i class="fa-solid fa-handshake"></i> <span>Mitra &amp; Komunitas</span></a>
+                <a href="admin-testimoni.html" class="sidebar-link"><i class="fa-solid fa-quote-left"></i> <span>Testimoni</span></a>
+                <a href="admin-tim.html" class="sidebar-link active"><i class="fa-solid fa-user-group"></i> <span>Tim Kami</span></a>
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">LAINNYA</p>
+                <a href="../index.html" target="_blank" class="sidebar-link"><i class="fa-solid fa-external-link-alt"></i> <span>Lihat Website</span></a>
+            </nav>
+            <div class="p-4 border-t border-slate-100">
+                <div class="bg-slate-50 rounded-2xl p-3">
+                    <div class="flex items-center gap-3 mb-3"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">A</div><p class="text-xs font-bold text-slate-800 truncate" id="userEmail">admin@...</p></div>
+                    <button id="logoutBtn" class="w-full btn btn-outline text-xs justify-center"><i class="fa-solid fa-right-from-bracket text-[10px]"></i> <span>Logout</span></button>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-1 min-w-0">
+            <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-lg border-b border-slate-200">
+                <div class="flex items-center justify-between px-4 md:px-6 h-16">
+                    <div class="flex items-center gap-3">
+                        <button id="sidebarToggle" class="lg:hidden w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600"><i class="fa-solid fa-bars"></i></button>
+                        <h1 class="font-display text-lg md:text-xl font-black text-slate-800">Tim Kami</h1>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button id="addBtn" class="btn btn-gold text-xs"><i class="fa-solid fa-plus"></i> <span>Tambah Tim</span></button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-4 md:p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="teamGrid">
+                    <!-- Render via JS -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL FORM -->
+    <div id="formModal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="font-display text-lg font-black text-slate-800" id="formTitle">Tambah Tim</h3>
+                <button onclick="closeForm()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="teamForm" class="p-5 space-y-4">
+                <input type="hidden" id="teamId" />
+                <input type="hidden" id="existingFoto" />
+                
+                <div>
+                    <label class="form-label">Foto (Rasio 1:1)</label>
+                    <div class="foto-upload" id="fotoUpload">
+                        <input type="file" id="fotoInput" accept="image/*" class="hidden" />
+                        <div id="fotoPlaceholder" class="text-center text-slate-400 p-2">
+                            <i class="fa-solid fa-camera text-2xl mb-1"></i>
+                            <p class="text-[10px] font-bold">Upload Foto</p>
+                        </div>
+                        <img id="fotoPreview" src="" class="hidden" />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label">Nama Lengkap <span class="text-red-500">*</span></label>
+                    <input type="text" id="nama" class="form-input" required placeholder="Contoh: Abd. Rahman" />
+                </div>
+                <div>
+                    <label class="form-label">Jabatan <span class="text-red-500">*</span></label>
+                    <input type="text" id="jabatan" class="form-input" required placeholder="Contoh: Founder" />
+                </div>
+                <div>
+                    <label class="form-label">Deskripsi Singkat</label>
+                    <textarea id="deskripsi" class="form-input" rows="2" placeholder="Contoh: Visioner di balik Karyakata."></textarea>
+                </div>
+                <div>
+                    <label class="form-label">Status</label>
+                    <select id="is_published" class="form-input">
+                        <option value="true">Tampilkan (Published)</option>
+                        <option value="false">Sembunyikan (Draft)</option>
+                    </select>
+                </div>
+            </form>
+            <div class="p-5 border-t border-slate-100 flex gap-3 justify-end bg-slate-50 rounded-b-3xl">
+                <button onclick="closeForm()" class="btn btn-outline">Batal</button>
+                <button id="btnSave" class="btn btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastWrap" class="fixed top-4 right-4 z-[200] space-y-2"></div>
+
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/supabase-client.js"></script>
+    <script>
+        let allTeam = [];
+        let currentUser = null;
+        let fotoFile = null;
+
+        function showToast(message, type = 'info') {
+            const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-sky-500' };
+            const toast = document.createElement('div');
+            toast.className = `${colors[type]} text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-bold animate-fade-up max-w-sm`;
+            toast.textContent = message;
+            document.getElementById('toastWrap').appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+
+        async function checkAuth() {
+            const user = await getCurrentUser();
+            if (!user) { window.location.href = 'admin-login.html'; return false; }
+            currentUser = user;
+            document.getElementById('userEmail').textContent = user.email;
+            return true;
+        }
+
+        async function loadTeam() {
+            const grid = document.getElementById('teamGrid');
+            grid.innerHTML = `<p class="text-center col-span-full text-slate-400 py-8">Memuat data...</p>`;
+
+            const { data, error } = await supabaseClient.from('team_members').select('*').order('created_at', { ascending: true });
+            
+            if (error) { grid.innerHTML = `<p class="text-center col-span-full text-red-500">Gagal memuat data.</p>`; return; }
+
+            allTeam = data || [];
+            renderGrid();
+        }
+
+        function getFotoUrl(path) {
+            if (!path) return null;
+            if (path.startsWith('http')) return path;
+            return supabaseClient.storage.from('team-photos').getPublicUrl(path).data.publicUrl;
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('teamGrid');
+            if (allTeam.length === 0) {
+                grid.innerHTML = `<p class="text-center col-span-full text-slate-400 py-8">Belum ada data tim.</p>`;
+                return;
+            }
+
+            grid.innerHTML = allTeam.map(t => {
+                const foto = getFotoUrl(t.foto_url);
+                return `
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 text-center relative group hover:shadow-lg transition">
+                        <div class="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition">
+                            <button onclick="openForm('${t.id}')" class="w-7 h-7 bg-white border border-sky-200 text-sky-600 rounded-md flex items-center justify-center shadow-sm hover:bg-sky-50"><i class="fa-solid fa-pen text-[10px]"></i></button>
+                            <button onclick="deleteTeam('${t.id}')" class="w-7 h-7 bg-white border border-red-200 text-red-600 rounded-md flex items-center justify-center shadow-sm hover:bg-red-50"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                        </div>
+                        <div class="w-20 h-20 rounded-full mx-auto mb-3 overflow-hidden bg-slate-100 flex items-center justify-center border-2 border-slate-100">
+                            ${foto ? `<img src="${foto}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-user text-slate-300 text-2xl"></i>`}
+                        </div>
+                        <h4 class="font-display font-bold text-slate-800 text-sm leading-tight mb-1">${t.nama}</h4>
+                        <p class="text-xs text-sky-600 font-bold mb-2">${t.jabatan}</p>
+                        <p class="text-[11px] text-slate-500 leading-relaxed line-clamp-2">${t.deskripsi || '-'}</p>
+                        ${!t.is_published ? `<span class="mt-3 inline-block px-2 py-0.5 bg-slate-200 text-slate-600 rounded text-[9px] font-bold uppercase">Draft</span>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.openForm = function(id = null) {
+            document.getElementById('teamForm').reset();
+            document.getElementById('teamId').value = '';
+            document.getElementById('existingFoto').value = '';
+            document.getElementById('fotoPreview').classList.add('hidden');
+            document.getElementById('fotoPlaceholder').classList.remove('hidden');
+            fotoFile = null;
+            
+            if (id) {
+                const t = allTeam.find(x => String(x.id) === String(id));
+                if (!t) return;
+                document.getElementById('formTitle').textContent = 'Edit Tim';
+                document.getElementById('teamId').value = t.id;
+                document.getElementById('existingFoto').value = t.foto_url || '';
+                document.getElementById('nama').value = t.nama;
+                document.getElementById('jabatan').value = t.jabatan;
+                document.getElementById('deskripsi').value = t.deskripsi || '';
+                document.getElementById('is_published').value = String(t.is_published);
+                
+                const foto = getFotoUrl(t.foto_url);
+                if (foto) {
+                    document.getElementById('fotoPreview').src = foto;
+                    document.getElementById('fotoPreview').classList.remove('hidden');
+                    document.getElementById('fotoPlaceholder').classList.add('hidden');
+                }
+            } else {
+                document.getElementById('formTitle').textContent = 'Tambah Tim';
+            }
+            document.getElementById('formModal').classList.remove('hidden');
+        }
+
+        window.closeForm = function() { document.getElementById('formModal').classList.add('hidden'); }
+
+        // Upload Foto Logic
+        document.getElementById('fotoUpload').addEventListener('click', () => document.getElementById('fotoInput').click());
+        document.getElementById('fotoInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            fotoFile = file;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                document.getElementById('fotoPreview').src = ev.target.result;
+                document.getElementById('fotoPreview').classList.remove('hidden');
+                document.getElementById('fotoPlaceholder').classList.add('hidden');
+            };
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById('btnSave').addEventListener('click', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('teamId').value;
+            const btn = e.target;
+            const originalText = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+
+            try {
+                let fotoUrl = document.getElementById('existingFoto').value;
+
+                if (fotoFile) {
+                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Upload foto...';
+                    const upload = await uploadFile('team-photos', fotoFile, 'team');
+                    if (!upload.success) throw new Error(upload.error);
+                    fotoUrl = upload.path;
+                }
+
+                const payload = {
+                    nama: document.getElementById('nama').value,
+                    jabatan: document.getElementById('jabatan').value,
+                    deskripsi: document.getElementById('deskripsi').value,
+                    foto_url: fotoUrl,
+                    is_published: document.getElementById('is_published').value === 'true'
+                };
+
+                if (id) {
+                    await supabaseClient.from('team_members').update(payload).eq('id', id);
+                } else {
+                    await supabaseClient.from('team_members').insert([payload]);
+                }
+
+                showToast(id ? 'Data tim diupdate!' : 'Data tim ditambahkan!', 'success');
+                closeForm();
+                loadTeam();
+            } catch (err) {
+                showToast('Gagal: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        });
+
+        window.deleteTeam = async function(id) {
+            if (!confirm('Yakin hapus data tim ini?')) return;
+            await supabaseClient.from('team_members').delete().eq('id', id);
+            showToast('Data tim dihapus!', 'success');
+            loadTeam();
+        }
+
+        document.getElementById('sidebarToggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        });
+        document.getElementById('sidebarOverlay').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        });
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            if(confirm('Logout?')) { await adminSignOut(); window.location.href = 'admin-login.html'; }
+        });
+
+        (async () => { if (await checkAuth()) loadTeam(); })();
+    </script>
+</body>
+</html>

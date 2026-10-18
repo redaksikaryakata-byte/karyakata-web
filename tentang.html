@@ -34,6 +34,7 @@
             }
         }
     </script>
+    
     <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -406,52 +407,9 @@
                 </p>
             </div>
 
-            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-
-                <div class="bg-white rounded-3xl p-6 border-2 border-sky-100 text-center card-lift">
-                    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-sky-400 to-sky-700 flex items-center justify-center text-white font-display font-black text-3xl mx-auto mb-4 shadow-lg shadow-sky-500/30">
-                        A
-                    </div>
-                    <h3 class="font-display font-black text-slate-800 mb-1">Abd. Rahman Danial, S.E., M.M.</h3>
-                    <p class="text-sky-600 text-xs font-bold mb-3">Founder &amp; Leader of Management</p>
-                    <p class="text-slate-500 text-xs leading-relaxed">
-                        Visioner di balik Karyakata. Berpengalaman 10+ tahun di dunia literasi.
-                    </p>
-                </div>
-
-                <div class="bg-white rounded-3xl p-6 border-2 border-sky-100 text-center card-lift">
-                    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-white font-display font-black text-3xl mx-auto mb-4 shadow-lg shadow-gold-500/30">
-                        B
-                    </div>
-                    <h3 class="font-display font-black text-slate-800 mb-1">Virya Anisa Towalu, M.I.Kom</h3>
-                    <p class="text-gold-600 text-xs font-bold mb-3">Editorial Management</p>
-                    <p class="text-slate-500 text-xs leading-relaxed">
-                        Memimpin tim redaksi untuk menghasilkan naskah berkualitas.
-                    </p>
-                </div>
-
-                <div class="bg-white rounded-3xl p-6 border-2 border-sky-100 text-center card-lift">
-                    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-sky-400 to-sky-700 flex items-center justify-center text-white font-display font-black text-3xl mx-auto mb-4 shadow-lg shadow-sky-500/30">
-                        C
-                    </div>
-                    <h3 class="font-display font-black text-slate-800 mb-1">Aditya Z. Rahim, S.Pd.</h3>
-                    <p class="text-sky-600 text-xs font-bold mb-3">Platform Design and Marketing</p>
-                    <p class="text-slate-500 text-xs leading-relaxed">
-                        Menampilkan wajah platform yang menarik &amp; jangkauan yang luas.
-                    </p>
-                </div>
-
-                <div class="bg-white rounded-3xl p-6 border-2 border-sky-100 text-center card-lift">
-                    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-white font-display font-black text-3xl mx-auto mb-4 shadow-lg shadow-gold-500/30">
-                        D
-                    </div>
-                    <h3 class="font-display font-black text-slate-800 mb-1">Siti Nurgian Utina, S.Pd.</h3>
-                    <p class="text-gold-600 text-xs font-bold mb-3">Collaboration and Community Programs</p>
-                    <p class="text-slate-500 text-xs leading-relaxed">
-                        Membawa platform untuk menjalin kolaborasi dan tumbuh bersama dengan program yang inovatif, berdampak dan bermanfaat.
-                    </p>
-                </div>
-
+            <!-- Wadah Kosong untuk Data Tim Dinamis -->
+            <div id="teamGrid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+                <div class="skeleton h-48 rounded-3xl col-span-full"></div>
             </div>
         </div>
     </section>
@@ -725,6 +683,58 @@
                 console.error('❌ Gagal load rating tentang:', err);
             }
         });
+
+        // ========================================
+        // LOAD TEAM DINAMIS
+        // ========================================
+        async function loadTeamTentang() {
+            const grid = document.getElementById('teamGrid');
+            if (!grid) return;
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('team_members')
+                    .select('*')
+                    .eq('is_published', true)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    grid.innerHTML = `<p class="text-center col-span-full text-slate-500">Belum ada data tim.</p>`;
+                    return;
+                }
+
+                grid.innerHTML = data.map((t, i) => {
+                    const foto = t.foto_url 
+                        ? (t.foto_url.startsWith('http') ? t.foto_url : supabaseClient.storage.from('team-photos').getPublicUrl(t.foto_url).data.publicUrl)
+                        : null;
+                    
+                    const isGold = i % 2 !== 0;
+                    const bgColor = isGold ? 'from-gold-400 to-gold-600' : 'from-sky-400 to-sky-700';
+                    const textColor = isGold ? 'text-gold-600' : 'text-sky-600';
+
+                    return `
+                        <div class="bg-white rounded-3xl p-6 border-2 border-sky-100 text-center card-lift">
+                            <div class="w-24 h-24 rounded-full bg-gradient-to-br ${bgColor} flex items-center justify-center text-white font-display font-black text-3xl mx-auto mb-4 shadow-lg overflow-hidden">
+                                ${foto ? `<img src="${foto}" class="w-full h-full object-cover">` : t.nama.charAt(0).toUpperCase()}
+                            </div>
+                            <h3 class="font-display font-black text-slate-800 mb-1">${t.nama}</h3>
+                            <p class="${textColor} text-xs font-bold mb-3">${t.jabatan}</p>
+                            <p class="text-slate-500 text-xs leading-relaxed">
+                                ${t.deskripsi || '-'}
+                            </p>
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error('Gagal load team:', err);
+                grid.innerHTML = '';
+                grid.style.display = 'none';
+            }
+        }
+
+        loadTeamTentang();
     </script>
 
 </body>

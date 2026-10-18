@@ -824,6 +824,22 @@ async function getPartners() {
             testiLink.innerHTML = '<i class="fa-solid fa-quote-left"></i><span>Testimoni</span>';
             blogLink.parentNode.insertBefore(testiLink, blogLink.nextSibling);
         }
+
+        // 5. Menu Tim Kami
+        const isTimPage = window.location.pathname.includes('admin-tim.html');
+        if (isTimPage) {
+            nav.querySelectorAll('.sidebar-link.active').forEach(el => el.classList.remove('active'));
+        }
+        const testiLink = nav.querySelector('a[href="admin-testimoni.html"]');
+        if (testiLink && !nav.querySelector('a[href="admin-tim.html"]')) {
+            const timLink = document.createElement('a');
+            timLink.href = 'admin-tim.html';
+            let baseClass = orderLink.className.replace('active', '').trim();
+            timLink.className = baseClass;
+            if (isTimPage) timLink.classList.add('active');
+            timLink.innerHTML = '<i class="fa-solid fa-user-group"></i><span>Tim Kami</span>';
+            testiLink.parentNode.insertBefore(timLink, testiLink.nextSibling);
+        }
     });
 })();
 
