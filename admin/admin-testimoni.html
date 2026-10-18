@@ -138,7 +138,17 @@
                     <label class="form-label">Isi Testimoni <span class="text-red-500">*</span></label>
                     <textarea id="isi_testimoni" class="form-input" rows="4" required placeholder="Tulis testimoni..."></textarea>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label class="form-label">Rating (Bintang)</label>
+                        <select id="rating" class="form-input">
+                            <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4)</option>
+                            <option value="3">⭐⭐⭐ (3)</option>
+                            <option value="2">⭐⭐ (2)</option>
+                            <option value="1">⭐ (1)</option>
+                        </select>
+                    </div>
                     <div>
                         <label class="form-label">Warna Avatar</label>
                         <select id="warna_avatar" class="form-input">
@@ -255,6 +265,7 @@
                 document.getElementById('inisial').value = t.inisial || '';
                 document.getElementById('isi_testimoni').value = t.isi_testimoni;
                 document.getElementById('warna_avatar').value = t.warna_avatar || 'sky';
+                document.getElementById('rating').value = t.rating || 5;
                 document.getElementById('is_published').value = String(t.is_published);
             } else {
                 document.getElementById('formTitle').textContent = 'Tambah Testimoni';
@@ -279,6 +290,7 @@
                 inisial: document.getElementById('inisial').value || document.getElementById('nama').value.charAt(0).toUpperCase(),
                 isi_testimoni: document.getElementById('isi_testimoni').value,
                 warna_avatar: document.getElementById('warna_avatar').value,
+                rating: parseInt(document.getElementById('rating').value), // Tambahan Rating
                 is_published: document.getElementById('is_published').value === 'true'
             };
 

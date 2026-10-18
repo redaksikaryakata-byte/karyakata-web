@@ -374,7 +374,7 @@
                     <p class="text-sm md:text-base text-slate-600 font-semibold">Kota Jangkauan</p>
                 </div>
                 <div class="text-center">
-                    <div class="font-display text-4xl md:text-5xl font-black text-sky-600 mb-2">4.9<span class="text-gold-500">★</span></div>
+                    <div class="font-display text-4xl md:text-5xl font-black text-sky-600 mb-2"><span id="statRating">4.9</span><span class="text-gold-500">★</span></div>
                     <p class="text-sm md:text-base text-slate-600 font-semibold">Rating Penulis</p>
                 </div>
             </div>
@@ -1402,6 +1402,14 @@
                     return;
                 }
 
+                // Hitung Rata-rata Rating
+                let totalRating = 0;
+                data.forEach(t => totalRating += (t.rating || 5));
+                const avgRating = (totalRating / data.length).toFixed(1);
+                const ratingEl = document.getElementById('statRating');
+                if (ratingEl) ratingEl.textContent = avgRating;
+
+                // Render Testimoni
                 grid.innerHTML = data.map(t => {
                     const isGold = t.warna_avatar === 'gold';
                     const bgColor = isGold ? 'from-gold-400 to-gold-600' : 'from-sky-400 to-sky-700';
