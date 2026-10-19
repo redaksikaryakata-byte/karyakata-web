@@ -840,6 +840,22 @@ async function getPartners() {
             timLink.innerHTML = '<i class="fa-solid fa-user-group"></i><span>Tim Kami</span>';
             testiLink.parentNode.insertBefore(timLink, testiLink.nextSibling);
         }
+
+        // 6. Menu Banner Promosi
+        const isBannerPage = window.location.pathname.includes('admin-banner.html');
+        if (isBannerPage) {
+            nav.querySelectorAll('.sidebar-link.active').forEach(el => el.classList.remove('active'));
+        }
+        const timLink = nav.querySelector('a[href="admin-tim.html"]');
+        if (timLink && !nav.querySelector('a[href="admin-banner.html"]')) {
+            const bannerLink = document.createElement('a');
+            bannerLink.href = 'admin-banner.html';
+            let baseClass = orderLink.className.replace('active', '').trim();
+            bannerLink.className = baseClass;
+            if (isBannerPage) bannerLink.classList.add('active');
+            bannerLink.innerHTML = '<i class="fa-solid fa-images"></i><span>Banner Promosi</span>';
+            timLink.parentNode.insertBefore(bannerLink, timLink.nextSibling);
+        }
     });
 })();
 

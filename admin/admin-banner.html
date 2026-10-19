@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin — Banner Promosi — Karyakata.id</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { sky: { 50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD', 400: '#4A9EF0', 500: '#0B7BE8', 600: '#0967C7', 700: '#0755A6', 800: '#064485', 900: '#053364' }, gold: { 100: '#FEF3E2', 200: '#FDE0B5', 300: '#FBC97D', 400: '#F8B84A', 500: '#F5A623', 600: '#D98B0E', 700: '#A86B0A' } }, fontFamily: { sans: ['Inter', 'sans-serif'], display: ['"Plus Jakarta Sans"', 'sans-serif'] } } } }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #F8FAFC; }
+        .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; color: #475569; transition: all .2s ease; text-decoration: none; }
+        .sidebar-link:hover { background: #EFF6FF; color: #0B7BE8; }
+        .sidebar-link.active { background: linear-gradient(135deg, #0B7BE8, #0967C7); color: white; box-shadow: 0 6px 16px rgba(11, 123, 232, 0.3); }
+        .sidebar-link i { width: 20px; text-align: center; font-size: 15px; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 16px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all .2s ease; border: none; text-decoration: none; white-space: nowrap; }
+        .btn-primary { background: #0B7BE8; color: white; } .btn-primary:hover { background: #0967C7; }
+        .btn-outline { background: white; color: #475569; border: 2px solid #E2E8F0; } .btn-outline:hover { border-color: #0B7BE8; color: #0B7BE8; }
+        .btn-gold { background: #F5A623; color: white; } .btn-gold:hover { background: #D98B0E; }
+        .form-input { width: 100%; padding: 12px 14px; border: 2px solid #E2E8F0; border-radius: 12px; font-size: 14px; outline: none; transition: all .2s ease; background: white; }
+        .form-input:focus { border-color: #0B7BE8; box-shadow: 0 0 0 4px rgba(11, 123, 232, 0.1); }
+        .form-label { display: block; font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 6px; }
+        .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; }
+        .modal-content { background: white; border-radius: 24px; max-width: 540px; width: 100%; max-height: 90vh; overflow-y: auto; }
+        #sidebarOverlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 40; } #sidebarOverlay.active { display: block; }
+    </style>
+</head>
+<body>
+    <div id="sidebarOverlay"></div>
+    <div class="flex min-h-screen">
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50 -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
+            <div class="p-5 border-b border-slate-100">
+                <a href="admin-order.html" class="flex items-center gap-3"><img src="../assets/img/logo.png" alt="Karyakata" class="h-10 w-auto" onerror="this.style.display='none'" /><span class="font-display text-lg font-black leading-none"><span class="text-sky-500">Karyakata</span><span class="text-gold-500">.id</span></span></a>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-2">MENU UTAMA</p>
+                <a href="admin-order.html" class="sidebar-link"><i class="fa-solid fa-receipt"></i> <span>Order</span></a>
+                <a href="admin-konfirmasi.html" class="sidebar-link"><i class="fa-solid fa-money-check-dollar"></i> <span>Konfirmasi & Akses</span></a>
+                <a href="admin-penjualan.html" class="sidebar-link"><i class="fa-solid fa-chart-line"></i> <span>Input Penjualan</span></a>
+                <a href="admin-author.html" class="sidebar-link"><i class="fa-solid fa-users"></i> <span>Data Penulis</span></a>
+                <a href="admin-naskah.html" class="sidebar-link"><i class="fa-solid fa-file-lines"></i> <span>Naskah Masuk</span></a>
+                <a href="admin-pesan.html" class="sidebar-link"><i class="fa-solid fa-envelope"></i> <span>Pesan Kontak</span></a>
+                <a href="admin-subscriber.html" class="sidebar-link"><i class="fa-solid fa-envelope-open-text"></i> <span>Subscriber</span></a>
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">KONTEN</p>
+                <a href="admin-buku.html" class="sidebar-link"><i class="fa-solid fa-book"></i> <span>Buku / Katalog</span></a>
+                <a href="admin-blog.html" class="sidebar-link"><i class="fa-solid fa-newspaper"></i> <span>Blog</span></a>
+                <a href="admin-mitra.html" class="sidebar-link"><i class="fa-solid fa-handshake"></i> <span>Mitra &amp; Komunitas</span></a>
+                <a href="admin-testimoni.html" class="sidebar-link"><i class="fa-solid fa-quote-left"></i> <span>Testimoni</span></a>
+                <a href="admin-tim.html" class="sidebar-link"><i class="fa-solid fa-user-group"></i> <span>Tim Kami</span></a>
+                <a href="admin-banner.html" class="sidebar-link active"><i class="fa-solid fa-images"></i> <span>Banner Promosi</span></a>
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest px-4 mb-2 mt-5">LAINNYA</p>
+                <a href="../index.html" target="_blank" class="sidebar-link"><i class="fa-solid fa-external-link-alt"></i> <span>Lihat Website</span></a>
+            </nav>
+            <div class="p-4 border-t border-slate-100">
+                <div class="bg-slate-50 rounded-2xl p-3">
+                    <div class="flex items-center gap-3 mb-3"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-500 to-sky-700 text-white flex items-center justify-center font-black text-sm">A</div><p class="text-xs font-bold text-slate-800 truncate" id="userEmail">admin@...</p></div>
+                    <button id="logoutBtn" class="w-full btn btn-outline text-xs justify-center"><i class="fa-solid fa-right-from-bracket text-[10px]"></i> <span>Logout</span></button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="flex-1 min-w-0">
+            <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-lg border-b border-slate-200">
+                <div class="flex items-center justify-between px-4 md:px-6 h-16">
+                    <div class="flex items-center gap-3">
+                        <button id="sidebarToggle" class="lg:hidden w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600"><i class="fa-solid fa-bars"></i></button>
+                        <h1 class="font-display text-lg md:text-xl font-black text-slate-800">Banner Promosi</h1>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button id="addBtn" class="btn btn-gold text-xs"><i class="fa-solid fa-plus"></i> <span>Tambah Banner</span></button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-4 md:p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="bannerGrid">
+                    <!-- Render via JS -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL FORM -->
+    <div id="formModal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="font-display text-lg font-black text-slate-800" id="formTitle">Tambah Banner</h3>
+                <button onclick="closeForm()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="bannerForm" class="p-5 space-y-4">
+                <input type="hidden" id="bannerId" />
+                <input type="hidden" id="existingGambar" />
+                
+                <div>
+                    <label class="form-label">Gambar Banner (Rasio 16:9 atau 21:9)</label>
+                    <div class="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center cursor-pointer hover:bg-slate-50 transition relative overflow-hidden" id="gambarUpload" style="aspect-ratio: 16/9;">
+                        <input type="file" id="gambarInput" accept="image/*" class="hidden" />
+                        <div id="gambarPlaceholder" class="flex flex-col items-center justify-center h-full text-slate-400">
+                            <i class="fa-solid fa-image text-3xl mb-2"></i>
+                            <p class="text-xs font-bold">Klik untuk upload gambar</p>
+                            <p class="text-[10px]">Disarankan ukuran 1200x600px</p>
+                        </div>
+                        <img id="gambarPreview" src="" class="hidden w-full h-full object-cover absolute inset-0" />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label">Judul Banner (Internal)</label>
+                    <input type="text" id="judul" class="form-input" placeholder="Contoh: Promo Buku Baru" />
+                </div>
+                <div>
+                    <label class="form-label">Link Tujuan (Saat diklik)</label>
+                    <input type="url" id="linkUrl" class="form-input" placeholder="https://karyakata.id/katalog" />
+                </div>
+                <div>
+                    <label class="form-label">Status</label>
+                    <select id="is_active" class="form-input">
+                        <option value="true">Tampilkan (Aktif)</option>
+                        <option value="false">Sembunyikan (Nonaktif)</option>
+                    </select>
+                </div>
+            </form>
+            <div class="p-5 border-t border-slate-100 flex gap-3 justify-end bg-slate-50 rounded-b-3xl">
+                <button onclick="closeForm()" class="btn btn-outline">Batal</button>
+                <button id="btnSave" class="btn btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastWrap" class="fixed top-4 right-4 z-[200] space-y-2"></div>
+
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/supabase-client.js"></script>
+    <script>
+        let allBanners = [];
+        let currentUser = null;
+        let gambarFile = null;
+
+        function showToast(message, type = 'info') {
+            const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-sky-500' };
+            const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
+            const toast = document.createElement('div');
+            toast.className = `${colors[type]} text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-bold animate-fade-up max-w-sm`;
+            toast.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span class="flex-1">${message}</span>`;
+            document.getElementById('toastWrap').appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+
+        async function checkAuth() {
+            const user = await getCurrentUser();
+            if (!user) { window.location.href = 'admin-login.html'; return false; }
+            currentUser = user;
+            document.getElementById('userEmail').textContent = user.email;
+            return true;
+        }
+
+        async function loadBanners() {
+            const grid = document.getElementById('bannerGrid');
+            grid.innerHTML = `<p class="text-center col-span-full text-slate-400 py-8"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Memuat data...</p>`;
+
+            const { data, error } = await supabaseClient.from('banners').select('*').order('created_at', { ascending: false });
+            
+            if (error) { grid.innerHTML = `<p class="text-center col-span-full text-red-500">Gagal memuat data.</p>`; return; }
+
+            allBanners = data || [];
+            renderGrid();
+        }
+
+        function getGambarUrl(path) {
+            if (!path) return null;
+            if (path.startsWith('http')) return path;
+            return supabaseClient.storage.from('banners').getPublicUrl(path).data.publicUrl;
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('bannerGrid');
+            if (allBanners.length === 0) {
+                grid.innerHTML = `<p class="text-center col-span-full text-slate-400 py-8">Belum ada banner. Silakan klik "Tambah Banner".</p>`;
+                return;
+            }
+
+            grid.innerHTML = allBanners.map(b => {
+                const gambar = getGambarUrl(b.gambar_url);
+                return `
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden relative group hover:shadow-lg transition flex flex-col">
+                        <div class="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition z-10">
+                            <button onclick="openForm('${b.id}')" class="w-7 h-7 bg-white/90 backdrop-blur border border-sky-200 text-sky-600 rounded-md flex items-center justify-center shadow-sm hover:bg-sky-50" title="Edit"><i class="fa-solid fa-pen text-[10px]"></i></button>
+                            <button onclick="deleteBanner('${b.id}')" class="w-7 h-7 bg-white/90 backdrop-blur border border-red-200 text-red-600 rounded-md flex items-center justify-center shadow-sm hover:bg-red-50" title="Hapus"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                        </div>
+                        <div class="aspect-[21/9] bg-slate-100 relative">
+                            ${gambar ? `<img src="${gambar}" class="w-full h-full object-cover">` : `<div class="flex items-center justify-center h-full text-slate-300"><i class="fa-solid fa-image text-4xl"></i></div>`}
+                            ${!b.is_active ? `<div class="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-bold text-sm">NONAKTIF</div>` : ''}
+                        </div>
+                        <div class="p-4 flex-1">
+                            <h4 class="font-display font-bold text-slate-800 text-sm leading-tight mb-1">${b.judul || 'Tanpa Judul'}</h4>
+                            <p class="text-[11px] text-sky-600 truncate">${b.link_url || 'Tanpa Link'}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.openForm = function(id = null) {
+            document.getElementById('bannerForm').reset();
+            document.getElementById('bannerId').value = '';
+            document.getElementById('existingGambar').value = '';
+            document.getElementById('gambarPreview').classList.add('hidden');
+            document.getElementById('gambarPlaceholder').classList.remove('hidden');
+            gambarFile = null;
+            
+            if (id) {
+                const b = allBanners.find(x => String(x.id) === String(id));
+                if (!b) return;
+                document.getElementById('formTitle').textContent = 'Edit Banner';
+                document.getElementById('bannerId').value = b.id;
+                document.getElementById('existingGambar').value = b.gambar_url || '';
+                document.getElementById('judul').value = b.judul || '';
+                document.getElementById('linkUrl').value = b.link_url || '';
+                document.getElementById('is_active').value = String(b.is_active);
+                
+                const gambar = getGambarUrl(b.gambar_url);
+                if (gambar) {
+                    document.getElementById('gambarPreview').src = gambar;
+                    document.getElementById('gambarPreview').classList.remove('hidden');
+                    document.getElementById('gambarPlaceholder').classList.add('hidden');
+                }
+            } else {
+                document.getElementById('formTitle').textContent = 'Tambah Banner';
+            }
+            document.getElementById('formModal').classList.remove('hidden');
+        }
+
+        window.closeForm = function() { document.getElementById('formModal').classList.add('hidden'); }
+
+        document.getElementById('gambarUpload').addEventListener('click', () => document.getElementById('gambarInput').click());
+        document.getElementById('gambarInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            gambarFile = file;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                document.getElementById('gambarPreview').src = ev.target.result;
+                document.getElementById('gambarPreview').classList.remove('hidden');
+                document.getElementById('gambarPlaceholder').classList.add('hidden');
+            };
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById('btnSave').addEventListener('click', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('bannerId').value;
+            const btn = e.target;
+            const originalText = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+
+            try {
+                let gambarUrl = document.getElementById('existingGambar').value;
+
+                if (gambarFile) {
+                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Upload gambar...';
+                    // Upload ke bucket 'banners'
+                    const upload = await uploadFile('banners', gambarFile, 'promo');
+                    if (!upload.success) throw new Error(upload.error);
+                    gambarUrl = upload.path;
+                }
+
+                if (!gambarUrl) throw new Error('Gambar banner wajib diunggah.');
+
+                const payload = {
+                    judul: document.getElementById('judul').value,
+                    link_url: document.getElementById('linkUrl').value,
+                    gambar_url: gambarUrl,
+                    is_active: document.getElementById('is_active').value === 'true'
+                };
+
+                if (id) {
+                    await supabaseClient.from('banners').update(payload).eq('id', id);
+                } else {
+                    await supabaseClient.from('banners').insert([payload]);
+                }
+
+                showToast(id ? 'Banner diupdate!' : 'Banner ditambahkan!', 'success');
+                closeForm();
+                loadBanners();
+            } catch (err) {
+                showToast('Gagal: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        });
+
+        window.deleteBanner = async function(id) {
+            if (!confirm('Yakin hapus banner ini?')) return;
+            await supabaseClient.from('banners').delete().eq('id', id);
+            showToast('Banner dihapus!', 'success');
+            loadBanners();
+        }
+
+        document.getElementById('addBtn').addEventListener('click', () => openForm());
+
+        document.getElementById('sidebarToggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        });
+        document.getElementById('sidebarOverlay').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        });
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            if(confirm('Logout?')) { await adminSignOut(); window.location.href = 'admin-login.html'; }
+        });
+
+        (async () => { if (await checkAuth()) loadBanners(); })();
+    </script>
+</body>
+</html>
