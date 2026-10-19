@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Testimoni — Karyakata.id</title>
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+    <style>
+        * { font-family: 'Roboto', sans-serif; }
+        body { background: #fff; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .google-card { width: 100%; max-width: 450px; padding: 48px 40px 36px; border: 1px solid #dadce0; border-radius: 8px; text-align: center; }
+        .google-logo { font-size: 24px; font-weight: 500; color: #202124; margin-bottom: 10px; }
+        .google-title { font-size: 24px; color: #202124; margin-bottom: 10px; }
+        .google-subtitle { font-size: 16px; color: #202124; margin-bottom: 30px; }
+        .input-group { position: relative; margin-bottom: 16px; text-align: left; }
+        .input-group input { width: 100%; padding: 13px 15px; font-size: 16px; border: 1px solid #dadce0; border-radius: 4px; outline: none; transition: border 0.2s; }
+        .input-group input:focus { border: 2px solid #1a73e8; padding: 12px 14px; }
+        .btn-blue { background: #1a73e8; color: white; font-weight: 500; font-size: 14px; padding: 10px 24px; border-radius: 4px; border: none; cursor: pointer; transition: background 0.2s; }
+        .btn-blue:hover { background: #1557b0; }
+        .btn-text { background: transparent; color: #1a73e8; font-weight: 500; font-size: 14px; border: none; cursor: pointer; padding: 10px 8px; }
+        .btn-text:hover { background: #f6fafe; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="google-card">
+        <div class="google-logo">
+            <span style="color: #4285F4;">G</span><span style="color: #EA4335;">o</span><span style="color: #FBBC05;">o</span><span style="color: #4285F4;">g</span><span style="color: #34A853;">l</span><span style="color: #EA4335;">e</span>
+        </div>
+        
+        <h1 class="google-title">Masuk</h1>
+        <p class="google-subtitle">Gunakan email dan kode akses untuk memberi ulasan</p>
+        
+        <form id="loginForm" class="text-left">
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Email" required />
+            </div>
+            
+            <div class="input-group">
+                <input type="text" id="kode" placeholder="Kode Akses (sebagai password)" required />
+                <p class="text-xs text-slate-500 mt-1 ml-1">*Ketik kode unik apa saja (contoh: rahasia123).</p>
+            </div>
+            
+            <div class="flex items-center justify-between mt-8">
+                <button type="button" class="btn-text" onclick="window.location.href='index.html'">Kembali</button>
+                <button type="submit" class="btn-blue">Masuk</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const kode = document.getElementById('kode').value.trim();
+
+            if (kode.length < 4) {
+                alert('Kode akses minimal 4 karakter.');
+                return;
+            }
+
+            // Simpan data sementara di browser, lalu langsung pindah halaman
+            localStorage.setItem('testi_email', email);
+            localStorage.setItem('testi_kode', kode);
+            window.location.href = 'testimoni-form.html';
+        });
+    </script>
+</body>
+</html>

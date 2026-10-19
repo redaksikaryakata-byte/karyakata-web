@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Beri Ulasan — Karyakata.id</title>
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { sky: { 500: '#0B7BE8', 600: '#0967C7' }, gold: { 500: '#F5A623' } } } } }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #F8FAFC; }
+        .form-input { width: 100%; padding: 12px 16px; border: 2px solid #E2E8F0; border-radius: 12px; font-size: 14px; outline: none; }
+        .form-input:focus { border-color: #0B7BE8; }
+        .star-rating { display: flex; gap: 8px; font-size: 32px; color: #CBD5E1; cursor: pointer; }
+        .star-rating .active { color: #F5A623; }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-white rounded-3xl border-2 border-sky-100 p-8 w-full max-w-lg shadow-xl text-center">
+        
+        <div class="w-16 h-16 bg-sky-50 rounded-full flex items-center justify-center mx-auto mb-4 text-sky-500 text-2xl">
+            <i class="fa-solid fa-pen-nib"></i>
+        </div>
+        <h1 class="font-bold text-2xl text-slate-800 mb-2">Berikan Ulasan Anda</h1>
+        <p class="text-slate-500 text-sm mb-6">Ulasan Anda akan ditinjau terlebih dahulu sebelum tampil di halaman utama.</p>
+
+        <form id="formUlasan" class="text-left space-y-4">
+            <!-- Input Email (Readonly dari localStorage) -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Email Anda</label>
+                <input type="email" id="emailP" class="form-input bg-slate-100 text-slate-500" readonly />
+            </div>
+
+            <!-- Nama -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Nama Anda / Nama Pena <span class="text-red-500">*</span></label>
+                <input type="text" id="namaP" class="form-input" required placeholder="Contoh: Andini Rahmawati" />
+            </div>
+
+            <!-- Buku yang ditulis -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Judul Buku yang Anda Tulis (Opsional)</label>
+                <input type="text" id="bukuP" class="form-input" placeholder="Contoh: Langit di Ujung Senja" />
+            </div>
+
+            <!-- Rating Bintang -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Rating Bintang <span class="text-red-500">*</span></label>
+                <div class="star-rating" id="starContainer">
+                    <i class="fa-solid fa-star" data-value="1"></i>
+                    <i class="fa-solid fa-star" data-value="2"></i>
+                    <i class="fa-solid fa-star" data-value="3"></i>
+                    <i class="fa-solid fa-star" data-value="4"></i>
+                    <i class="fa-solid fa-star" data-value="5"></i>
+                </div>
+                <input type="hidden" id="ratingP" value="5" required />
+            </div>
+
+            <!-- Isi Testimoni -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Testimoni / Ulasan <span class="text-red-500">*</span></label>
+                <textarea id="isiP" class="form-input" rows="4" required placeholder="Ceritakan pengalaman Anda..."></textarea>
+            </div>
+
+            <button type="submit" id="btnKirim" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3.5 rounded-xl mt-4 transition">
+                Kirim Ulasan
+            </button>
+        </form>
+
+        <button onclick="logout()" class="text-xs text-red-500 hover:underline mt-6">Batal & Keluar</button>
+    </div>
+
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/supabase-client.js"></script>
+    <script>
+        // 1. Proteksi Halaman
+        const email = localStorage.getItem('testi_email');
+        const kode = localStorage.getItem('testi_kode');
+        if (!email || !kode) {
+            window.location.href = 'testimoni-login.html';
+        }
+        document.getElementById('emailP').value = email;
+
+        function logout() {
+            localStorage.removeItem('testi_email');
+            localStorage.removeItem('testi_kode');
+            window.location.href = 'testimoni-login.html';
+        }
+
+        // 2. Logika Bintang
+        const stars = document.querySelectorAll('#starContainer i');
+        const ratingInput = document.getElementById('ratingP');
+        
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                const value = parseInt(star.dataset.value);
+                ratingInput.value = value;
+                stars.forEach(s => {
+                    s.classList.remove('active');
+                    if (parseInt(s.dataset.value) <= value) s.classList.add('active');
+                });
+            });
+            star.classList.add('active'); // Default 5 bintang menyala
+        });
+
+        // 3. Submit Form ke Supabase
+        document.getElementById('formUlasan').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnKirim');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+
+            const payload = {
+                email: email,
+                kode_akses: kode,
+                nama: document.getElementById('namaP').value,
+                buku_ditulis: document.getElementById('bukuP').value,
+                rating: parseInt(ratingInput.value),
+                isi_testimoni: document.getElementById('isiP').value,
+                inisial: document.getElementById('namaP').value.charAt(0).toUpperCase(),
+                warna_avatar: 'sky', 
+                is_published: false // PENTING: Masuk sebagai Draft (belum tayang di publik)
+            };
+
+            try {
+                const { error } = await supabaseClient.from('testimonials').insert([payload]);
+                if (error) throw error;
+
+                alert('Terima kasih! Ulasan Anda telah terkirim dan akan ditinjau oleh Admin sebelum tayang.');
+                logout();
+            } catch (err) {
+                console.error(err);
+                alert('Gagal mengirim ulasan: ' + err.message);
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        });
+    </script>
+</body>
+</html>
