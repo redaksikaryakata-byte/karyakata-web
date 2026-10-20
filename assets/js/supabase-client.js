@@ -182,7 +182,7 @@ async function getBooks(filters = {}) {
             .from('books')
             .select('*')
             .eq('is_published', true)
-            .order('created_at', { ascending: false });
+            .order('sort_order', { ascending: true });
 
         if (filters.genre && filters.genre !== 'all') {
             query = query.eq('genre', filters.genre);

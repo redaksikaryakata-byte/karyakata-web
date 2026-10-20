@@ -470,6 +470,11 @@
                         <input type="text" id="penulis" class="form-input" placeholder="Nama penulis" required />
                     </div>
                     <div>
+                        <label class="form-label">Urutan Tampil</label>
+                        <input type="number" id="sortOrder" class="form-input" placeholder="0" value="0" />
+                        <p class="text-[10px] text-slate-500 mt-1">Angka kecil = tampil lebih dulu.</p>
+                    </div>
+                    <div>
                         <label class="form-label">Genre Utama <span class="req">*</span></label>
                         <select id="genre" class="form-input" required onchange="updateSubGenreAdmin()">
                             <option value="">Pilih genre...</option>
@@ -938,6 +943,7 @@
                 authorEmailSelect.value = '';
             }
             document.getElementById('persen_royalti').value = book.persen_royalti || 15;
+            document.getElementById('sortOrder').value = book.sort_order || 0;
 
             const tipeArr = Array.isArray(book.tipe_buku) ? book.tipe_buku : ['fisik'];
             document.getElementById('tipeFisik').checked = tipeArr.includes('fisik');
@@ -1037,7 +1043,7 @@
             }
             if (coverRemoved && !coverFile) coverUrl = null;
 
-            const bookData = {
+                    const bookData = {
                 judul, penulis, genre, sub_genre: subGenre,
                 harga: isFisik ? harga : 0,
                 link_beli: isFisik ? (linkBeli || null) : null,
@@ -1048,9 +1054,10 @@
                 cover_url: coverUrl,
                 tipe_buku: tipeBuku.length > 0 ? tipeBuku : ['fisik'],
                 author_email: document.getElementById('author_email').value.trim().toLowerCase() || null,
-                tahap: 'terbit', // Otomatis terbit karena masuk katalog
-                persen_royalti: parseInt(document.getElementById('persen_royalti').value) || 15
-            };
+                tahap: 'terbit',
+                persen_royalti: parseInt(document.getElementById('persen_royalti').value) || 15,
+                sort_order: parseInt(document.getElementById('sortOrder').value) || 0
+            }; 
 
             formSaveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Menyimpan...</span>';
 

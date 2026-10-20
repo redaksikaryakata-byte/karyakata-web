@@ -1245,7 +1245,7 @@
                     .from('books')
                     .select('*')
                     .eq('is_published', true)
-                    .order('created_at', { ascending: false })
+                    .order('sort_order', { ascending: true })
                     .limit(8);
 
                 if (error) throw error;

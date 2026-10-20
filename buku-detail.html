@@ -659,6 +659,7 @@
                 .eq('is_published', true)
                 .neq('id', book.id)
                 .eq('genre', book.genre || '')
+                .order('sort_order', { ascending: true })
                 .limit(4);
 
             if (error) throw error;
